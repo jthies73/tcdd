@@ -13,5 +13,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  get "clean-up" => "clean_up#index"
+  namespace :admin do
+    resources :clean_ups, only: %i[index new create show]
+  end
 end

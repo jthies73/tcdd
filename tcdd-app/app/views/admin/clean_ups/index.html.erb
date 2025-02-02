@@ -1,0 +1,21 @@
+<h1>CleanUps</h1>
+<%= link_to 'New CleanUp', new_admin_clean_up_path %>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @clean_ups.each do |clean_up| %>
+      <tr>
+        <td><%= clean_up.name %></td>
+        <td><%= clean_up.description %></td>
+        <td><%= link_to 'Show', admin_clean_up_path(clean_up) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
