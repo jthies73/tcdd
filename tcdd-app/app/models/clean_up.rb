@@ -1,0 +1,2 @@
+class CleanUp < ApplicationRecord
+end
