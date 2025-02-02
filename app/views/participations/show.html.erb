@@ -1,0 +1,33 @@
+<div class="pt-10 px-4 sm:px-6 lg:px-8">
+  <% if @participation.status == "registered" %>
+
+    <% if @participation.clean_up.started? %>
+      <h1>Es geht los! Klicke auf starten, um den Clean-Up zu beginnen.</h1>
+      <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
+        <%= f.hidden_field :participation_action, value: "start" %>
+        <div class="fixed bottom-4 right-4">
+          <%= render 'shared/button', label: 'Starten', icon: 'play', color: 'green', type: 'submit' %>
+        </div>
+      <% end %>
+    <% elsif @participation.clean_up.ended? %>
+      <h1>Sorry, das CleanUp ist bereits beendet. Vielen Dank für dein Interesse und hoffentlich bis bald!</h1>
+    <% else %>
+      <h1>Danke für deine Anmeldung. Komm zurück auf diese Seite, sobald das CleanUp gestartet wurde.</h1>
+    <% end %>
+
+  <% elsif @participation.status == "started" %>
+
+    <h1>Das CleanUp läuft. Klicke auf beenden, wenn du wieder am Treffpunkt angekommen bist.</h1>
+    <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
+      <%= f.hidden_field :participation_action, value: "return" %>
+      <div class="fixed bottom-4 right-4">
+        <%= render 'shared/button', label: 'Beenden', icon: 'stop', color: 'red', type: 'submit' %>
+      </div>
+    <% end %>
+
+  <% elsif @participation.status == "returned" %>
+
+    <h1>Vielen Dank für deine Teilnahme!</h1>
+
+  <% end %>
+</div>

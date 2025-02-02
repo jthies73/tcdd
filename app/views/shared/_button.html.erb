@@ -1,0 +1,17 @@
+<!-- app/views/shared/_button.html.erb -->
+
+<% type = type || 'button' %>
+<% if type == 'submit' %>
+  <button type="submit" class="<%= button_classes(color) %>">
+    <%= icon(icon) %>
+    <%= label %>
+  </button>
+<% else %>
+  <%= button_to path, class: button_classes(color), method: method || :get do %>
+    <%# ICON Prop %>
+    <%= icon(icon) %>
+    <div>
+      <%= label %>
+    </div>
+  <% end %>
+<% end %>
