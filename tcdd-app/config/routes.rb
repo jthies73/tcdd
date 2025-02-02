@@ -13,5 +13,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  get "cleanup" => "clean_up#index"
+  get "clean-up" => "clean_up#index"
 end
