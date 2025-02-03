@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :clean_ups, only: %i[index new create show]
   end
+
+  get "clean-up/anmeldung" => "participations#new"
 end
