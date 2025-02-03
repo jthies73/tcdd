@@ -1,6 +1,6 @@
-<h1>Gib eine oder mehrere Namen an, die bei dem nächsten clean-up dabei sein sollen:</h1>
+<h1>Gib deinen Namen an, um dich für den nächsten Clean-Up anzumelden</h1>
 
-<%= form_with model: @participation, local: true do |f| %>
+<%= form_for @participation, url: clean_up_anmeldung_path do |f| %>
   <%= f.text_field :name %>
   <%= f.submit "Eintragen" %>
 <% end %>

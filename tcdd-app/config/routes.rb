@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   end
 
   get "clean-up/anmeldung" => "participations#new"
+  post "clean-up/anmeldung" => "participations#create"
 end
