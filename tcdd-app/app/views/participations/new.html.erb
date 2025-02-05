@@ -1,6 +1,31 @@
-<h1>Gib deinen Namen an, um dich für den nächsten Clean-Up anzumelden</h1>
+<% if @participation.status.nil? %>
+  <h1>Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
+  <%= form_for @participation, url: register_path do |f| %>
+    <%= f.text_field :name %>
+    <%= f.submit "Eintragen" %>
+  <% end %>
 
-<%= form_for @participation, url: clean_up_anmeldung_path do |f| %>
-  <%= f.text_field :name %>
-  <%= f.submit "Eintragen" %>
+  <h1>Du hast schonmal teilgenommen? Dann wähle deinen Namen aus:</h1>
+
+  <%= form_for @participation, url: register_path, method: :post do |f| %>
+    <%= f.collection_select :id, Participation.all, :id, :name %>
+    <%= f.submit "Eintragen" %>
+  <% end %>
+
+<% elsif @participation.status == "registered" %>
+
+  <h1>Clicke auf starten, um das CleanUp zu beginnen.</h1>
+  <%= form_for @participation, url: start_path, method: :post do |f| %>
+    <%= f.hidden_field :id, value: params[:id] %>
+    <%= f.submit "Starten" %>
+  <% end %>
+
+<% elsif @participation.status == "started" %>
+
+  <h1>Das CleanUp läuft. Klicke auf beenden, um das CleanUp zu beenden.</h1>
+  <%= form_for @participation, url: return_path, method: :post do |f| %>
+    <%= f.hidden_field :id, value: params[:id] %>
+    <%= f.submit "Beenden" %>
+  <% end %>
+
 <% end %>

@@ -19,6 +19,7 @@ module Admin
 
     def show
       @clean_up = CleanUp.find(params[:id])
+      @participations = Participation.where(id: @clean_up.id)
     end
 
     private

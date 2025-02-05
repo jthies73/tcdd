@@ -17,6 +17,13 @@ Rails.application.routes.draw do
     resources :clean_ups, only: %i[index new create show]
   end
 
-  get "clean-up/anmeldung" => "participations#new"
-  post "clean-up/anmeldung" => "participations#create"
+  root to: redirect("/go")
+
+  get "go" => "participations#new", as: :new_participation
+
+  post "register" => "participations#register", as: :register
+  post "start" => "participations#start", as: :start
+  post "return" => "participations#return", as: :return
+
+  get "thank-you" => "pages#thank_you", as: :thank_you
 end

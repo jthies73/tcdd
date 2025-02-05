@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_03_231524) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_05_145334) do
   create_table "clean_ups", force: :cascade do |t|
     t.string "name"
     t.text "description"
