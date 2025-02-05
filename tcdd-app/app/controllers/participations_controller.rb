@@ -5,6 +5,13 @@ class ParticipationsController < ApplicationController
     else
       @participation = Participation.new
     end
+
+    if CleanUp.last.status == "ended"
+      # render pages/no_active_clean_up.html.erb
+      render "pages/no_active_clean_up"
+    else
+      render :new
+    end
   end
 
   def register
@@ -18,7 +25,9 @@ class ParticipationsController < ApplicationController
 
     @participation.register!
     if @participation.save
-      CleanUp.last.participations << @participation
+      clean_up = CleanUp.last
+      clean_up.participations << @participation
+      clean_up.save
       redirect_to new_participation_path(id: @participation.id)
     end
 

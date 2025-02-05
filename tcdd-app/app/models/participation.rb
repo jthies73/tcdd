@@ -2,7 +2,7 @@ class Participation < ApplicationRecord
   belongs_to :clean_up
 
   validates :name, presence: true, uniqueness: true
-  validates :status, inclusion: { in: %w[registered started returned] }
+  validates :status, inclusion: { in: %w[registered started returned], allow_nil: true }
 
   # Method to change status to 'registered'
   def register!
@@ -11,7 +11,12 @@ class Participation < ApplicationRecord
 
   # Method to change status to 'participating'
   def start!
-    update!(status: "started")
+    if clean_up.started?
+      update!(status: "started")
+    else
+      errors.add(:base, "Clean up has not started yet")
+      throw :abort
+    end
   end
 
   # Method to change status to 'returned'
