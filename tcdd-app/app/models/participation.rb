@@ -19,6 +19,10 @@ class Participation < ApplicationRecord
     end
   end
 
+  def started?
+    status == "started"
+  end
+
   # Method to change status to 'returned'
   def return!
     update!(status: "returned")

@@ -6,7 +6,7 @@ class ParticipationsController < ApplicationController
       @participation = Participation.new
     end
 
-    if CleanUp.last.status == "ended"
+    if CleanUp.last.status == "ended" || CleanUp.last.status.nil?
       # render pages/no_active_clean_up.html.erb
       render "pages/no_active_clean_up"
     else
@@ -23,7 +23,10 @@ class ParticipationsController < ApplicationController
       @participation = Participation.find(register_params[:id])
     end
 
-    @participation.register!
+    if !@participation.started?
+      @participation.register!
+    end
+    
     if @participation.save
       clean_up = CleanUp.last
       clean_up.participations << @participation

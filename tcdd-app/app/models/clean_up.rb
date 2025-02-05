@@ -16,6 +16,10 @@ class CleanUp < ApplicationRecord
     update!(status: "started")
   end
 
+  def started?
+    status == "started"
+  end
+
   def end!
     update!(status: "ended")
     participations.each do |participation|
