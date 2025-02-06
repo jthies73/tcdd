@@ -10,11 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_02_201807) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_05_151729) do
   create_table "clean_ups", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
   end
+
+  create_table "participation_logs", force: :cascade do |t|
+    t.integer "participation_id", null: false
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["participation_id"], name: "index_participation_logs_on_participation_id"
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "clean_up_id", null: false
+    t.index ["clean_up_id"], name: "index_participations_on_clean_up_id"
+  end
+
+  add_foreign_key "participation_logs", "participations"
+  add_foreign_key "participations", "clean_ups"
 end

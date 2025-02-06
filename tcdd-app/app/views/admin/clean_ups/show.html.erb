@@ -1,4 +1,5 @@
 <h1>CleanUp Details</h1>
+<p>Status: <%= @clean_up.status %></p>
 <p>
   <strong>Name:</strong>
   <%= @clean_up.name %>
@@ -7,3 +8,16 @@
   <strong>Description:</strong>
   <%= @clean_up.description %>
 </p>
+
+<p>
+  <button><%= button_to "Registrierung freigeben", enable_registration_admin_clean_up_path(@clean_up), method: :post %></button>
+  <button><%= button_to "Starten", start_admin_clean_up_path(@clean_up), method: :post %></button>
+  <button><%= button_to "Beenden", end_admin_clean_up_path(@clean_up), method: :post %></button>
+</p>
+
+<p>Participants:</p>
+<ul>
+  <% @clean_up.participations.each do |participation| %>
+    <li><%= participation.name %>, <%= participation.status %></li>
+  <% end %>
+</ul>

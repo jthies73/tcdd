@@ -14,6 +14,23 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :admin do
-    resources :clean_ups, only: %i[index new create show]
+    resources :clean_ups, only: %i[index new create show] do
+      member do
+        post 'enable_registration', to: 'clean_ups#enable_registration'
+        post 'disable_registration', to: 'clean_ups#disable_registration'
+        post 'start', to: 'clean_ups#start'
+        post 'end', to: 'clean_ups#end'
+      end
+    end
   end
+
+  root to: redirect("/go")
+
+  get "go" => "participations#new", as: :new_participation
+
+  post "register" => "participations#register", as: :register
+  post "start" => "participations#start", as: :start
+  post "return" => "participations#return", as: :return
+
+  get "thank-you" => "pages#thank_you", as: :thank_you
 end
