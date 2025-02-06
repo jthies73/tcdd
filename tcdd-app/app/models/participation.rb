@@ -1,35 +1,18 @@
 class Participation < ApplicationRecord
-  belongs_to :clean_up
+  belongs_to :clean_up, inverse_of: :participations
+  belongs_to :participant, inverse_of: :participations
 
-  validates :name, presence: true, uniqueness: true
-  validates :status, inclusion: { in: %w[registered started returned], allow_nil: true }
+  validates :status, inclusion: { in: %w[registered started returned] }
 
-  # Method to change status to 'registered'
-  def register!
-    update!(status: "registered")
-  end
-
-  # Method to change status to 'participating'
   def start!
     if clean_up.started?
       update!(status: "started")
     else
-      errors.add(:base, "Clean up has not started yet")
-      throw :abort
+      Rails.logger.error("Cannot start participation for clean up that is not started")
     end
   end
 
-  def started?
-    status == "started"
-  end
-
-  # Method to change status to 'returned'
   def return!
     update!(status: "returned")
-  end
-
-  # Method to remove the status of the participation
-  def reset!
-    update!(status: nil)
   end
 end

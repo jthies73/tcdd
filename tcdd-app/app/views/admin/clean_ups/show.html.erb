@@ -18,6 +18,6 @@
 <p>Participants:</p>
 <ul>
   <% @clean_up.participations.each do |participation| %>
-    <li><%= participation.name %>, <%= participation.status %></li>
+    <li><%= participation.participant.name %>, <%= participation.status %></li>
   <% end %>
 </ul>

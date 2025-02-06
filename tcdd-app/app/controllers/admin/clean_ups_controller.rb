@@ -10,9 +10,12 @@ module Admin
 
     def create
       @clean_up = CleanUp.new(clean_up_params)
+      @clean_up.status = "created"
+      
       if @clean_up.save
         redirect_to admin_clean_ups_path, notice: "CleanUp was successfully created."
       else
+        puts @clean_up.errors.full_messages
         render :new
       end
     end
@@ -52,7 +55,7 @@ module Admin
     private
 
     def clean_up_params
-      params.require(:clean_up).permit(:id, :name, :description)
+      params.require(:clean_up).permit(:id, :name, :description, :status, :datetime, :address, :location)
     end
   end
 end

@@ -25,12 +25,7 @@ Rails.application.routes.draw do
   end
 
   root to: redirect("/go")
-
   get "go" => "participations#new", as: :new_participation
-
-  post "register" => "participations#register", as: :register
-  post "start" => "participations#start", as: :start
-  post "return" => "participations#return", as: :return
-
-  get "thank-you" => "pages#thank_you", as: :thank_you
+  get "go/:id" => "participations#show", as: :show_participation
+  resources :participations, only: %i[create update]
 end

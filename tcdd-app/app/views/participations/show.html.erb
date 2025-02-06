@@ -1,0 +1,30 @@
+This page displayes the following participation flows:
+
+cleanup
+- registered: come back to this page, once the cleanup has started in order to participate
+- started: google maps integration, timer, zigarettencounter, etc.
+- ended: thanks for participation, summary of the cleanup: zigarettencounter, distance, time, etc.
+
+PARTICIPATION STATUS: <%= @participation.status %>
+
+<% if @participation.status == "registered" %>
+
+  <h1>Clicke auf starten, um das CleanUp zu beginnen.</h1>
+  <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
+    <%= f.hidden_field :participation_action, value: "start" %>
+    <%= f.submit "Starten" %>
+  <% end %>
+
+<% elsif @participation.status == "started" %>
+
+  <h1>Das CleanUp läuft. Klicke auf beenden, um das CleanUp zu beenden.</h1>
+  <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
+    <%= f.hidden_field :participation_action, value: "return" %>
+    <%= f.submit "Beenden" %>
+  <% end %>
+
+<% elsif @participation.status == "ended" %>
+
+  <h1>Vielen Dank für deine Teilnahme!</h1>
+
+<% end %>

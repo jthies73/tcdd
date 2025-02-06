@@ -1,15 +1,20 @@
 class CleanUp < ApplicationRecord
   has_many :participations
-  has_many :participation_logs
 
-  validates :status, inclusion: { in: %w[registration_enabled started ended], allow_nil: true }
+  validates :name, presence: true
+  validates :status, inclusion: { in: %w[created registration_enabled started ended] }
 
   def enable_registration!
+    # end all clean ups that are currently NOT ended
+    CleanUp.where.not(status: "ended").each do |clean_up|
+      clean_up.end!
+    end
+    
     update!(status: "registration_enabled")
   end
 
-  def disable_registration!
-    update!(status: nil)
+  def registerable?
+    status == "registration_enabled" || status == "started"
   end
 
   def start!
@@ -22,14 +27,5 @@ class CleanUp < ApplicationRecord
 
   def end!
     update!(status: "ended")
-    participations.each do |participation|
-      # add a log to the clean up that shows all the participations and their status
-      participation_log = ParticipationLog.new(participation_id: participation.id, status: participation.status)
-      participation_log.save
-
-
-      # reset the status of the participation
-      participation.reset!
-    end
   end
 end

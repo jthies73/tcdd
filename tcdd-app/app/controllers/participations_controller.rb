@@ -1,69 +1,78 @@
 class ParticipationsController < ApplicationController
   def new
+    render "pages/no_active_clean_up" and return if CleanUp.last.status == "ended" || CleanUp.last.status == "created"
+
     if params[:id]
       @participation = Participation.find(params[:id])
+      render :show 
     else
       @participation = Participation.new
-    end
-
-    if CleanUp.last.status == "ended" || CleanUp.last.status.nil?
-      # render pages/no_active_clean_up.html.erb
-      render "pages/no_active_clean_up"
-    else
       render :new
     end
   end
 
-  def register
-    puts "register_params: #{register_params}"
-    if register_params[:id].nil?
-      @participation = Participation.new(name: register_params[:name])
-      @participation.clean_up = CleanUp.last
-    else
-      @participation = Participation.find(register_params[:id])
-    end
-
-    if !@participation.started?
-      @participation.register!
-    end
-    
-    if @participation.save
-      clean_up = CleanUp.last
-      clean_up.participations << @participation
-      clean_up.save
-      redirect_to new_participation_path(id: @participation.id)
-    end
-
-    puts "participation_errors: #{@participation.errors.full_messages}"
+  def show
+    @participation = Participation.find(participation_params[:id])
+    render :show
   end
 
-  def start
-    @participation = Participation.find(start_params[:id])
-    @participation.start!
-    redirect_to new_participation_path(id: @participation.id)
+  # POST /participations
+  def create
+    # initialize participation
+    participation = Participation.new
+    participation.status = "registered"
+    participation.clean_up = CleanUp.last
+
+    # if the clean up is not in the registration enabled state, redirect to the participation page
+    if !participation.clean_up.registerable? && !participation.idle?
+      redirect_to root_path and return
+    end
+
+    # if a participant id is provided, use it to create the participation
+    # this means the participant has already registered at least once for a clean up
+    if registration_params[:participant_id].present?
+      existing_participation = participation.clean_up.participations.where(participant_id: registration_params[:participant_id]).first
+      if existing_participation.present?
+        # if the participant has already registered for the latest active clean up, redirect him to the participation page
+        redirect_to show_participation_path(existing_participation) and return
+      else
+        # if the participant has not registered for this clean up, create a new participation
+        participation.participant_id = registration_params[:participant_id]
+      end
+    else 
+      # if only a participant name is provided, create a new participant
+      participant = Participant.new
+      participant.name = registration_params[:participant_name]
+      participant.save
+      participation.participant_id = participant.id
+    end
+
+    if participation.save
+      # once the participation is saved, redirect to the participation page
+      redirect_to show_participation_path(participation)
+    end
   end
 
-  def return
-    @participation = Participation.find(return_params[:id])
-    @participation.return!
-    redirect_to thank_you_path
+  # PATCH /participations/:id
+  def update
+    participation = Participation.find(participation_params[:id])
+    if participation_params[:participation_action] == "start"
+      participation.start!
+    elsif participation_params[:participation_action] == "return"
+      participation.return!
+    end
+    redirect_to show_participation_path(participation)
   end
 
   private
 
+  def registration_params
+    puts "registration params: #{params}"
+    params.permit(:participant_id, :participant_name)
+  end
+
   def participation_params
-    params.require(:participation).permit(:name)
-  end
-
-  def register_params
-    params.require(:participation).permit(:id, :name)
-  end
-
-  def start_params
-    params.require(:participation).permit(:id)
-  end
-
-  def return_params
-    params.require(:participation).permit(:id)
+    puts "participation params: #{params}"
+    params.permit(:id, :participation_action)
   end
 end
