@@ -1,4 +1,4 @@
-<h1>Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
+<h1 class="bg-blue-500">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
 <%= form_with url: participations_path, method: :post, local: true do |f| %>
   <%= f.text_field :participant_name %>
   <%= f.submit "Eintragen" %>
@@ -9,3 +9,6 @@
   <%= f.collection_select :participant_id, Participant.all, :id, :name %>
   <%= f.submit "Eintragen" %>
 <% end %>
+
+
+<%= render 'shared/button', button_text: 'Button text' %>
