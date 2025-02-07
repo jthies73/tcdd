@@ -16,10 +16,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :clean_ups, only: %i[index new create show] do
       member do
-        post 'enable_registration', to: 'clean_ups#enable_registration'
-        post 'disable_registration', to: 'clean_ups#disable_registration'
-        post 'start', to: 'clean_ups#start'
-        post 'end', to: 'clean_ups#end'
+        post 'change_status', to: 'clean_ups#change_status'
       end
     end
   end

@@ -10,9 +10,9 @@
 </p>
 
 <p>
-  <button><%= button_to "Registrierung freigeben", enable_registration_admin_clean_up_path(@clean_up), method: :post %></button>
-  <button><%= button_to "Starten", start_admin_clean_up_path(@clean_up), method: :post %></button>
-  <button><%= button_to "Beenden", end_admin_clean_up_path(@clean_up), method: :post %></button>
+  <button><%= button_to "Registrierung freigeben", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "enable_registration") %></button>
+  <button><%= button_to "Starten", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "start") %></button>
+  <button><%= button_to "Beenden", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "end") %></button>
 </p>
 
 <p>Participants:</p>
