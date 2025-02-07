@@ -1,9 +1,10 @@
 class ParticipationsController < ApplicationController
   def new
-    render "pages/no_active_clean_up" and return if CleanUp.last.status == "ended" || CleanUp.last.status == "created"
+    @latest_clean_up = CleanUp.last
+    render "pages/no_active_clean_up" and return if @latest_clean_up.inactive?
 
-    if params[:id]
-      @participation = Participation.find(params[:id])
+    if participation_params[:id].present?
+      @participation = Participation.find(participation_params[:id])
       render :show 
     else
       @participation = Participation.new
@@ -21,7 +22,7 @@ class ParticipationsController < ApplicationController
     # initialize participation
     participation = Participation.new
     participation.status = "registered"
-    participation.clean_up = CleanUp.last
+    participation.clean_up = CleanUp.find(registration_params[:clean_up_id])
 
     # if the clean up is not in the registration enabled state, redirect to the participation page
     if !participation.clean_up.registerable? && !participation.idle?
@@ -31,9 +32,9 @@ class ParticipationsController < ApplicationController
     # if a participant id is provided, use it to create the participation
     # this means the participant has already registered at least once for a clean up
     if registration_params[:participant_id].present?
-      existing_participation = participation.clean_up.participations.where(participant_id: registration_params[:participant_id]).first
+       existing_participation = participation.clean_up.find_participation_by_participant_id(registration_params[:participant_id])
       if existing_participation.present?
-        # if the participant has already registered for the latest active clean up, redirect him to the participation page
+        # if the participant has already registered for the clean up, redirect him to the participation page
         redirect_to show_participation_path(existing_participation) and return
       else
         # if the participant has not registered for this clean up, create a new participation
@@ -68,7 +69,7 @@ class ParticipationsController < ApplicationController
 
   def registration_params
     puts "registration params: #{params}"
-    params.permit(:participant_id, :participant_name)
+    params.permit(:participant_id, :participant_name, :clean_up_id)
   end
 
   def participation_params
