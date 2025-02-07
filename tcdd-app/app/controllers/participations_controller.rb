@@ -15,7 +15,7 @@ class ParticipationsController < ApplicationController
     # initialize participation
     participation = Participation.new
     participation.status = "registered"
-    participation.clean_up = CleanUp.find(registration_params[:clean_up_id])
+    participation.clean_up = CleanUp.last
 
     # if the clean up is not in the registration enabled state, redirect to the participation page
     if !participation.clean_up.registerable? && !participation.idle?
@@ -62,7 +62,7 @@ class ParticipationsController < ApplicationController
 
   def registration_params
     puts "registration params: #{params}"
-    params.permit(:participant_id, :participant_name, :clean_up_id)
+    params.permit(:participant_id, :participant_name)
   end
 
   def participation_params
