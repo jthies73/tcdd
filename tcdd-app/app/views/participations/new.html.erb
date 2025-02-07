@@ -1,13 +1,11 @@
 <h1>Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
 <%= form_with url: participations_path, method: :post, local: true do |f| %>
   <%= f.text_field :participant_name %>
-  <%= f.hidden_field :clean_up_id, value: @latest_clean_up.id %>
   <%= f.submit "Eintragen" %>
 <% end %>
 
 <h1>Du hast schonmal teilgenommen? Dann wähle deinen Namen aus:</h1>
 <%= form_with url: participations_path, method: :post, local: true do |f| %>
   <%= f.collection_select :participant_id, Participant.all, :id, :name %>
-  <%= f.hidden_field :clean_up_id, value: @latest_clean_up.id %>
   <%= f.submit "Eintragen" %>
 <% end %>
