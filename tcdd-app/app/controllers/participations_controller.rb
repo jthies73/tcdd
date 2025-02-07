@@ -2,14 +2,7 @@ class ParticipationsController < ApplicationController
   def new
     @latest_clean_up = CleanUp.last
     render "pages/no_active_clean_up" and return if @latest_clean_up.inactive?
-
-    if participation_params[:id].present?
-      @participation = Participation.find(participation_params[:id])
-      render :show 
-    else
-      @participation = Participation.new
-      render :new
-    end
+    render :new
   end
 
   def show
