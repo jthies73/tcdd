@@ -4,6 +4,28 @@ class Participation < ApplicationRecord
 
   validates :status, inclusion: { in: %w[registered started returned] }
 
+  def color_by_status
+    case status
+    when "registered"
+      "gray"
+    when "started"
+      "red"
+    when "returned"
+      "green"
+    end
+  end
+
+  def label_by_status
+    case status
+    when "registered"
+      "registriert"
+    when "started"
+      "unterwegs"
+    when "returned"
+      "zurück"
+    end
+  end
+
   def start!
     if clean_up.started?
       update!(status: "started")

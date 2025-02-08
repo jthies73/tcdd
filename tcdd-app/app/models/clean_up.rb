@@ -8,6 +8,30 @@ class CleanUp < ApplicationRecord
     participations.where(participant_id: participant_id)
   end
 
+  def color_by_status
+    case status
+    when "created"
+      "gray"
+    when "registration_enabled"
+    when "started"
+      "green"
+    when "ended"
+      "red"
+    end
+  end
+
+  def label_by_status
+    case status
+    when "created"
+      "erstellt"
+    when "registration_enabled"
+    when "started"
+      "Aktiv"
+    when "ended"
+      "Beendet"
+    end
+  end
+
   def inactive?
     status == "created" || status == "ended"
   end

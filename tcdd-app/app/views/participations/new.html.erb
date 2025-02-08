@@ -9,6 +9,4 @@
   <%= f.collection_select :participant_id, Participant.all, :id, :name %>
   <%= f.submit "Eintragen" %>
 <% end %>
-
-<%= render 'shared/button', button_text: 'Button text' %>
 <%= render 'shared/table' %>

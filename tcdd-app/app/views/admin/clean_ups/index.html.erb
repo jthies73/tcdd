@@ -1,21 +1,47 @@
-<h1 class="">CleanUps</h1>
-<%= link_to 'New CleanUp', new_admin_clean_up_path %>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="mt-10">
+  <%# CREATE A NEW CLEAN-UP %>
+  <div class="absolute bottom-4 right-4">
+    <%= render 'shared/button', label: 'Neuer Clean-Up', icon: 'plus', color: 'indigo', path: new_admin_clean_up_url, method: :get %>
+  </div>
 
-  <tbody>
-    <% @clean_ups.each do |clean_up| %>
-      <tr>
-        <td><%= clean_up.name %></td>
-        <td><%= clean_up.description %></td>
-        <td><%= link_to 'Show', admin_clean_up_path(clean_up) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <%# CLEAN-UPS TABLE %>
+  <div id="table" class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-2xl font-semibold text-gray-900">Clean-Ups</h1>
+      </div>
+    </div>
+    <div class="mt-8 flow-root">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <div class="overflow-hidden ring-1 shadow-sm ring-black/5 sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Datum</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Teilnehmer</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <% @clean_ups.each do |clean_up| %>
+                  <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='<%= admin_clean_up_path(clean_up) %>'">
+                    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6"><%= clean_up.name %></td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">-</td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500"><%= clean_up.participations.count %></td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                      <% color = clean_up.color_by_status %>
+                      <% label = clean_up.label_by_status %>
+                      <%= render 'shared/badge', label: label, color: color %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

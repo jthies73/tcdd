@@ -1,23 +1,69 @@
-<h1>CleanUp Details</h1>
-<p>Status: <%= @clean_up.status %></p>
-<p>
-  <strong>Name:</strong>
-  <%= @clean_up.name %>
-</p>
-<p>
-  <strong>Description:</strong>
-  <%= @clean_up.description %>
-</p>
+<div class="mt-10 px-4 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-semibold text-gray-900">Clean-Up Details</h1>
 
-<p>
-  <button><%= button_to "Registrierung freigeben", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "enable_registration") %></button>
-  <button><%= button_to "Starten", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "start") %></button>
-  <button><%= button_to "Beenden", change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: "end") %></button>
-</p>
+  <div class="absolute bottom-4 right-4">
+    <%# ACTIONS %>
+    <% case @clean_up.status %>
+      <% when 'created' %>
+        <%= render 'shared/button', label: 'Zur Registrierung Freigeben', icon: 'person', color: 'indigo', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'enable_registration'), method: :post %>
+      <% when 'registration_enabled' %>
+        <%= render 'shared/button', label: 'Clean-Up Starten', icon: 'play', color: 'green', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'start'), method: :post %>
+      <% when 'started' %>
+        <%= render 'shared/button', label: 'Clean-Up Beenden', icon: 'stop', color: 'red', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'end'), method: :post %>
+    <% end %>
+  </div>
 
-<p>Participants:</p>
-<ul>
-  <% @clean_up.participations.each do |participation| %>
-    <li><%= participation.participant.name %>, <%= participation.status %></li>
-  <% end %>
-</ul>
+  <%# CLEAN-UP DETAILS %>
+  <div class="gap-5 grid grid-cols-1 mt-6">
+    <div>
+      <label for="name" class="block text-sm/6 font-medium text-gray-900">Name</label>
+      <div class="mt-2">
+        <input type="name" name="name" id="name" value="<%= @clean_up.name %>" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6">
+      </div>
+    </div>
+    <div>
+      <label for="description" class="block text-sm/6 font-medium text-gray-900">Beschreibung</label>
+      <div class="mt-2">
+        <textarea type="description" name="description" id="description" value="<%= @clean_up.description %>" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+  <%# PARTICIPANTS TABLE %>
+  <div id="table" class="mt-10">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="block text-sm/6 font-medium text-gray-900">Teilnehmer</h1>
+      </div>
+    </div>
+    <div class="mt-2 flow-root">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <div class="overflow-hidden ring-1 shadow-sm ring-black/5 sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <% @clean_up.participations.each do |participation| %>
+                  <tr>
+                    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6"><%= participation.participant.name %></td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+                      <% color = participation.color_by_status %>
+                      <% label = participation.label_by_status %>
+                      <%= render 'shared/badge', label: label, color: color %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
