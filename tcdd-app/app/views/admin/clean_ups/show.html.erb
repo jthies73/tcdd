@@ -1,4 +1,4 @@
-<div class="pt-10 px-4 sm:px-6 lg:px-8">
+<div class="pt-10 pb-30 px-4 sm:px-6 lg:px-8">
   <div class="flex justify-between items-center">
     <div class="flex justify-start items-center space-x-4">
       <%= link_to admin_clean_ups_path do %>
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="absolute bottom-4 right-4">
+  <div class="fixed bottom-4 right-4">
     <%# ACTIONS %>
     <% case @clean_up.status %>
       <% when 'created' %>

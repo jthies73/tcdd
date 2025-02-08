@@ -1,11 +1,11 @@
-<div class="pt-10">
+<div class="pt-10 pb-30">
   <div class="bg-green-100 bg-red-100 bg-yellow-100 bg-indigo-100 bg-gray-100"></div>
   <div class="bg-green-500 bg-red-500 bg-yellow-500 bg-indigo-500 bg-gray-500"></div>
   <div class="bg-green-600 bg-red-600 bg-yellow-600 bg-indigo-600 bg-gray-600"></div> 
   <div class="text-green-600 text-red-600 text-yellow-600 text-indigo-600 text-gray-600"></div>
   
   <%# CREATE A NEW CLEAN-UP %>
-  <div class="absolute bottom-4 right-4">
+  <div class="fixed bottom-4 right-4">
     <%= render 'shared/button', label: 'Neuer Clean-Up', icon: 'plus', color: 'indigo', path: new_admin_clean_up_url, method: :get %>
   </div>
 

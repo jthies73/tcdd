@@ -14,7 +14,7 @@ cleanup
       <h1>Es geht los! Klicke auf starten, um den Clean-Up zu beginnen.</h1>
       <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
         <%= f.hidden_field :participation_action, value: "start" %>
-        <div class="absolute bottom-4 right-4">
+        <div class="fixed bottom-4 right-4">
           <%= render 'shared/button', label: 'Starten', icon: 'play', color: 'green', type: 'submit' %>
         </div>
       <% end %>
@@ -29,7 +29,7 @@ cleanup
     <h1>Das CleanUp läuft. Klicke auf beenden, um das CleanUp zu beenden.</h1>
     <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
       <%= f.hidden_field :participation_action, value: "return" %>
-      <div class="absolute bottom-4 right-4">
+      <div class="fixed bottom-4 right-4">
         <%= render 'shared/button', label: 'Beenden', icon: 'stop', color: 'red', type: 'submit' %>
       </div>
     <% end %>
