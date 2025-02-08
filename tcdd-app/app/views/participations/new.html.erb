@@ -1,7 +1,19 @@
-<div class="mt-10 px-4 sm:px-6 lg:px-8">
+<div class="pt-10 px-4 sm:px-6 lg:px-8">
   <h1 class="text-2xl font-semibold text-gray-900">Willkommen bei <br> Trashcan Dresden!</h1>
 
-  <h1 class="mt-5">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
+  <div class="mt-10 divide-y divide-gray-300 overflow-hidden rounded-lg bg-gray-100 shadow-lg">
+    <div class="px-4 py-5 sm:px-6 font-semibold text-gray-900">
+      Nächster Clean-Up: <%= @latest_clean_up.name %>
+    </div>
+    <div class="px-4 py-5 sm:p-6 space-y-2">
+      <p><%= @latest_clean_up.description %></p>
+      <p>Wann? <span class="font-bold text-lg"><%= @latest_clean_up.starts_at.strftime("%d.%m.%Y %H:%M") %> Uhr</span></p>
+      <p>Wo? <span class="font-bold text-lg"><%= @latest_clean_up.address %></span></p>
+      <p>Registrierte Teilnehmer: <%= @latest_clean_up.participant_count %></p>
+    </div>
+  </div>
+
+  <h1 class="mt-10">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
   <%= form_with url: participations_path, method: :post, local: true do |form| %>
     <div class="gap-5 grid grid-cols-1 mt-6">
       <div>

@@ -12,11 +12,14 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_02_06_151443) do
   create_table "clean_ups", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
+    t.string "status", default: "created", null: false
+    t.datetime "starts_at"
+    t.string "address"
+    t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status"
   end
 
   create_table "participants", force: :cascade do |t|
@@ -26,17 +29,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_06_151443) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "participation_logs", force: :cascade do |t|
-    t.integer "participation_id", null: false
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["participation_id"], name: "index_participation_logs_on_participation_id"
-  end
-
   create_table "participations", force: :cascade do |t|
-    t.string "name"
-    t.string "status"
+    t.string "status", default: "registered", null: false
+    t.datetime "started_at"
+    t.datetime "returned_at"
+    t.integer "steps_count"
+    t.integer "cigarettes_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "clean_up_id", null: false
@@ -45,7 +43,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_06_151443) do
     t.index ["participant_id"], name: "index_participations_on_participant_id"
   end
 
-  add_foreign_key "participation_logs", "participations"
   add_foreign_key "participations", "clean_ups"
   add_foreign_key "participations", "participants"
 end

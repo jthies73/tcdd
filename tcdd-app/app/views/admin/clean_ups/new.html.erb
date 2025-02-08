@@ -1,4 +1,4 @@
-<div class="mt-10 px-4 sm:px-6 lg:px-8">
+<div class="pt-10 px-4 sm:px-6 lg:px-8">
   <h1 class="text-2xl font-semibold text-gray-900">Neuer Clean-Up</h1>
 
   <%= form_with model: [:admin, @clean_up], local: true do |form| %>
@@ -12,6 +12,20 @@
       <%= form.label :description, "Beschreibung", class: "block text-sm/6 font-medium text-gray-900" %>
       <%= form.text_area :description, rows: "2", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
     </div>
+
+    <div>
+      <%= form.label "Datum", class: "block text-sm/6 font-medium text-gray-900" %>
+      <div class="flex items-center space-x-2">
+        <%= form.date_field :date, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+        <%= form.time_field :time, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :address, "Ort", class: "block text-sm/6 font-medium text-gray-900" %>
+      <%= form.text_area :address, rows: "2", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+    </div>
+
     <%# SAVE BUTTON %>
     <div class="absolute bottom-4 right-4">
       <%= render 'shared/button', label: 'Speichern', icon: 'save', color: 'indigo', path: admin_clean_ups_path, method: :post %>

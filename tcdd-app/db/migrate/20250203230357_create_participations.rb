@@ -3,8 +3,8 @@ class CreateParticipations < ActiveRecord::Migration[8.0]
     create_table :participations do |t|
       t.string :status, null: false, default: "registered"
 
-      t.start_time :datetime
-      t.end_time :datetime
+      t.datetime :started_at
+      t.datetime :returned_at
 
       t.integer :steps_count
       t.integer :cigarettes_count

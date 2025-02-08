@@ -9,7 +9,13 @@ module Admin
     end
 
     def create
-      @clean_up = CleanUp.new(clean_up_params)
+      date = Date.parse(clean_up_params[:date])
+      time = Time.parse(clean_up_params[:time])
+      datetime = DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec)
+      modified_params = clean_up_params.except(:date, :time).merge(starts_at: datetime)
+
+      puts "CREATE PARAMS: #{modified_params}"
+      @clean_up = CleanUp.new(modified_params)
       @clean_up.status = "created"
       
       if @clean_up.save
@@ -43,7 +49,7 @@ module Admin
 
     def clean_up_params
       puts "clean up params: #{params}"
-      params.require(:clean_up).permit(:id, :name, :description, :status, :datetime, :address, :location)
+      params.require(:clean_up).permit(:id, :name, :description, :status, :date, :time, :address, :location)
     end
 
     def change_params

@@ -71,4 +71,8 @@ class CleanUp < ApplicationRecord
   def end!
     update!(status: "ended")
   end
+
+  def ended?
+    status == "ended"
+  end
 end
