@@ -1,5 +1,12 @@
 <div class="mt-10 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-2xl font-semibold text-gray-900">Clean-Up Details</h1>
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-semibold text-gray-900">Clean-Up Details</h1>
+    <div>
+      <% label = @clean_up.label_by_status %>
+      <% color = @clean_up.color_by_status %>
+      <%= render 'shared/badge', label: label, color: color %>
+    </div>
+  </div>
 
   <div class="absolute bottom-4 right-4">
     <%# ACTIONS %>
