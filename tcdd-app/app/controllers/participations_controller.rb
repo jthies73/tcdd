@@ -6,7 +6,8 @@ class ParticipationsController < ApplicationController
   end
 
   def show
-    @participation = Participation.find(participation_params[:id])
+    puts "params: #{params}"
+    @participation = Participation.find(params[:id])
     render :show
   end
 
@@ -37,7 +38,7 @@ class ParticipationsController < ApplicationController
       # if only a participant name is provided, create a new participant
       participant = Participant.new
       participant.name = registration_params[:participant_name]
-      participant.people_count = registration_params[:participant_people_count]
+      participant.people_count = registration_params[:participant_people_count] || 1
       participant.save
       participation.participant_id = participant.id
     end
@@ -50,7 +51,7 @@ class ParticipationsController < ApplicationController
 
   # PATCH /participations/:id
   def update
-    participation = Participation.find(participation_params[:id])
+    participation = Participation.find(participation_params[:participation_id])
     if participation_params[:participation_action] == "start"
       participation.start!
     elsif participation_params[:participation_action] == "return"
@@ -68,6 +69,6 @@ class ParticipationsController < ApplicationController
 
   def participation_params
     puts "participation params: #{params}"
-    params.permit(:id, :participation_action)
+    params.permit(:participation_id, :participation_action)
   end
 end

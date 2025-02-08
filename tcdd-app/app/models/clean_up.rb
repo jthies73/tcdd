@@ -14,7 +14,7 @@ class CleanUp < ApplicationRecord
   end
 
   def find_participation_by_participant_id(participant_id)
-    participations.where(participant_id: participant_id)
+    participations.where(participant_id: participant_id).first
   end
 
   def color_by_status

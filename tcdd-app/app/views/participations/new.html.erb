@@ -1,8 +1,8 @@
 <div class="mt-10 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-2xl font-semibold text-gray-900">Neuer Teilnehmer</h1>
+  <h1 class="text-2xl font-semibold text-gray-900">Willkommen bei <br> Trashcan Dresden!</h1>
 
-  <h1 class="">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
-  <%= form_with url:participations_path, method: :post, local: true do |form| %>
+  <h1 class="mt-5">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
+  <%= form_with url: participations_path, method: :post, local: true do |form| %>
     <div class="gap-5 grid grid-cols-1 mt-6">
       <div>
         <%= form.label :participant_name, "Name", class: "block text-sm/6 font-medium text-gray-900" %>
@@ -11,16 +11,21 @@
 
       <div>
         <%= form.label :participant_people_count, "Gruppengröße", class: "block text-sm/6 font-medium text-gray-900" %>
-        <%= form.text_field :participant_people_count, type: "number", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+        <%= form.text_field :participant_people_count, type: "number", value: "1", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
       </div>
 
-      <%= form.submit "Eintragen" %>
+      <%= form.submit "Eintragen", class: "rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer" %>
     </div>
   <% end %>
 
-  <h1>Du hast schonmal teilgenommen? Dann wähle deinen Namen aus:</h1>
-  <%= form_with url: participations_path, method: :post, local: true do |f| %>
-    <%= f.collection_select :participant_id, Participant.all, :id, :name %>
-    <%= f.submit "Eintragen" %>
+  <h1 class="mt-10">Du hast schonmal teilgenommen? Dann wähle deinen Namen aus:</h1>
+  <%= form_with url: participations_path, method: :post, local: true do |form| %>
+    <div class="gap-5 grid grid-cols-1 mt-6">
+      <%= form.collection_select :participant_id, Participant.all, :id, :name, {}, class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">
+        <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+      </svg>
+      <%= form.submit "Eintragen", class: "rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer" %>
+    </div>
   <% end %>
 </div>
