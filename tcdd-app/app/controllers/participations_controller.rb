@@ -51,7 +51,7 @@ class ParticipationsController < ApplicationController
 
   # PATCH /participations/:id
   def update
-    participation = Participation.find(participation_params[:participation_id])
+    participation = Participation.find(params[:id])
     if participation_params[:participation_action] == "start"
       participation.start!
     elsif participation_params[:participation_action] == "return"
@@ -69,6 +69,6 @@ class ParticipationsController < ApplicationController
 
   def participation_params
     puts "participation params: #{params}"
-    params.permit(:participation_id, :participation_action)
+    params.permit(:participation_action)
   end
 end
