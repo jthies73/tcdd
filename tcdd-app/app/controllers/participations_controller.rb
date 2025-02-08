@@ -37,6 +37,7 @@ class ParticipationsController < ApplicationController
       # if only a participant name is provided, create a new participant
       participant = Participant.new
       participant.name = registration_params[:participant_name]
+      participant.people_count = registration_params[:participant_people_count]
       participant.save
       participation.participant_id = participant.id
     end
@@ -62,7 +63,7 @@ class ParticipationsController < ApplicationController
 
   def registration_params
     puts "registration params: #{params}"
-    params.permit(:participant_id, :participant_name)
+    params.permit(:participant_id, :participant_name, :participant_people_count)
   end
 
   def participation_params

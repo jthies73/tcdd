@@ -4,6 +4,15 @@ class CleanUp < ApplicationRecord
   validates :name, presence: true
   validates :status, inclusion: { in: %w[created registration_enabled started ended] }
 
+  def participant_count
+    # sum of all people counts (participant.count)
+    sum = 0
+    participations.each do |participation|
+      sum += participation.participant.people_count
+    end
+    return sum
+  end
+
   def find_participation_by_participant_id(participant_id)
     participations.where(participant_id: participant_id)
   end
