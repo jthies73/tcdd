@@ -1,30 +1,20 @@
-<%= form_with url: participations_path, method: :post, local: true do |f| %>
-  <%= f.text_field :participant_name %>
-  <%= f.hidden_field :participant_people_count, value: 1 %>
-  <%= f.submit "Eintragen" %>
-<% end %>
-
-
-
-
 <div class="mt-10 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-2xl font-semibold text-gray-900">Neuer Clean-Up</h1>
+  <h1 class="text-2xl font-semibold text-gray-900">Neuer Teilnehmer</h1>
 
-  <h1 class="bg-blue-500">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
-  <%= form_with model: [:admin, @clean_up], local: true do |form| %>
-  <div class="gap-5 grid grid-cols-1 mt-6">
-    <div>
-      <%= form.label :name, class: "block text-sm/6 font-medium text-gray-900" %>
-      <%= form.text_field :name, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
-    </div>
+  <h1 class="">Gib einen Spitznamen oder Gruppennamen an damit wir am Ende des CleanUps prüfen können, ob alle Teilnehmer*innen sicher wieder angekommen sind.</h1>
+  <%= form_with url:participations_path, method: :post, local: true do |form| %>
+    <div class="gap-5 grid grid-cols-1 mt-6">
+      <div>
+        <%= form.label :participant_name, "Name", class: "block text-sm/6 font-medium text-gray-900" %>
+        <%= form.text_field :participant_name, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
 
-    <div>
-      <%= form.label :description, "Beschreibung", class: "block text-sm/6 font-medium text-gray-900" %>
-      <%= form.text_area :description, rows: "2", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
-    </div>
-    <%# SAVE BUTTON %>
-    <div class="absolute bottom-4 right-4">
-      <%= render 'shared/button', label: 'Speichern', icon: 'save', color: 'indigo', path: admin_clean_ups_path, method: :post %>
+      <div>
+        <%= form.label :participant_people_count, "Gruppengröße", class: "block text-sm/6 font-medium text-gray-900" %>
+        <%= form.text_field :participant_people_count, type: "number", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
+
+      <%= form.submit "Eintragen" %>
     </div>
   <% end %>
 
