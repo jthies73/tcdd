@@ -72,3 +72,27 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test, lint, scan_ruby]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Build image
+        run: |
+          echo "Building tcdd-app-be image... 🏗"
+          docker build -t tcdd-app-image .
+      
+      - name: Deploy image
+        run: |
+          echo "Deploying tcdd-app-be image 🚀"
+          docker stop tcdd-app || true && docker rm tcdd-app || true
+          docker run -d --net tcdd-net --ip 172.43.0.10 -v tcdd-app-data:/app/data/ --name tcdd-app tcdd-app-image
