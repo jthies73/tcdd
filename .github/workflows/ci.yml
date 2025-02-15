@@ -9,10 +9,6 @@ jobs:
   scan_ruby:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./tcdd-app
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,11 +24,6 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./tcdd-app
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,10 +39,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./tcdd-app
 
     # services:
     #  redis:
