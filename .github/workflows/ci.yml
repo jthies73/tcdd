@@ -95,4 +95,4 @@ jobs:
         run: |
           echo "Deploying tcdd-app-be image 🚀"
           docker stop tcdd-app || true && docker rm tcdd-app || true
-          docker run -d --net tcdd-net --ip 172.43.0.10 -v tcdd-app-data:/app/data/ --name tcdd-app tcdd-app-image
+          docker run -d --net yafa-net --ip 172.37.0.27 --name tcdd-app tcdd-app-image
