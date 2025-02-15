@@ -377,7 +377,6 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
-  net-smtp (~> 0.5.1)
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.1)

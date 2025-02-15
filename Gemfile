@@ -43,8 +43,6 @@ gem "thruster", require: false
 # Use Tailwind CSS for stylesheets [https://tailwindcss.com/docs/installation]
 gem "tailwindcss-rails"
 
-gem "net-smtp", "~> 0.5.1"
-
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
