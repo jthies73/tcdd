@@ -10,7 +10,7 @@ class CleanUp < ApplicationRecord
     participations.each do |participation|
       sum += participation.participant.people_count
     end
-    return sum
+    sum
   end
 
   def find_participation_by_participant_id(participant_id)
@@ -52,7 +52,7 @@ class CleanUp < ApplicationRecord
     CleanUp.where.not(status: "ended").each do |clean_up|
       clean_up.end!
     end
-    
+
     update!(status: "registration_enabled")
   end
 

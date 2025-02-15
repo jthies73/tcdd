@@ -34,7 +34,7 @@ class ParticipationsController < ApplicationController
         # if the participant has not registered for this clean up, create a new participation
         participation.participant_id = registration_params[:participant_id]
       end
-    else 
+    else
       # if only a participant name is provided, create a new participant
       participant = Participant.new
       participant.name = registration_params[:participant_name]

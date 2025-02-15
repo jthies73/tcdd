@@ -17,7 +17,7 @@ module Admin
       puts "CREATE PARAMS: #{modified_params}"
       @clean_up = CleanUp.new(modified_params)
       @clean_up.status = "created"
-      
+
       if @clean_up.save
         redirect_to admin_clean_ups_path, notice: "CleanUp was successfully created."
       else
@@ -29,7 +29,7 @@ module Admin
     def show
       @clean_up = CleanUp.find(params[:id])
     end
-       
+
     # POST /admin/clean_ups/:id/change_status
     def change_status
       @clean_up = CleanUp.find(change_params[:clean_up_id])

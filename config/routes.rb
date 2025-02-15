@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :clean_ups, only: %i[index new create show] do
       member do
-        post 'change_status', to: 'clean_ups#change_status'
+        post "change_status", to: "clean_ups#change_status"
       end
     end
   end
