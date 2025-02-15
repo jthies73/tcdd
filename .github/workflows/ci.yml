@@ -11,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./tdcc-app
+        working-directory: ./tcdd-app
 
     steps:
       - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./tdcc-app
+        working-directory: ./tcdd-app
 
     steps:
       - name: Checkout code
@@ -51,7 +51,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./tdcc-app
+        working-directory: ./tcdd-app
 
     # services:
     #  redis:
