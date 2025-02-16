@@ -75,7 +75,7 @@ jobs:
 
   deploy:
     runs-on: self-hosted
-    # needs: [test, lint, scan_ruby]
+    needs: [test, lint, scan_ruby]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -93,12 +93,21 @@ jobs:
           echo "$RAILS_MASTER_KEY" > config/master.key 
 
       - name: Build image
+        env:
+          RAILS_ENV: production
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         run: |
           echo "Building tcdd-app-be image... 🏗"
           docker build -t tcdd-app-image .
-          
+  
       - name: Deploy image
+        env:
+          RAILS_ENV: production
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           echo "Deploying tcdd-app-be image 🚀"
           docker stop tcdd-app || true && docker rm tcdd-app || true
+          docker network ls
+          docker ps -a
           docker run -d --net tcdd-net --ip 172.43.0.10 -v tcdd-app-data:/app/data/ --name tcdd-app tcdd-app-image
