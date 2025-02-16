@@ -113,5 +113,8 @@ jobs:
           docker stop tcdd-app || true && docker rm tcdd-app || true
           docker network ls
           docker ps -a
-          docker run -d -e "SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}" -e "RAILS_ENV=production" \
-                     --net tcdd-net --ip 172.43.0.10 -v tcdd-app-data:/app/data/ --name tcdd-app tcdd-app-image
+          docker run -d -e "SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}" \
+                     -e "RAILS_ENV=production" \
+                     --net tcdd-net --ip 172.43.0.10 \
+                     -v tcdd-app-data:/app/data/ \
+                     --name tcdd-app tcdd-app-image
