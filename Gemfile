@@ -43,6 +43,10 @@ gem "thruster", require: false
 # Use Tailwind CSS for stylesheets [https://tailwindcss.com/docs/installation]
 gem "tailwindcss-rails"
 
+gem "rqrcode"
+
+gem "chunky_png"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
