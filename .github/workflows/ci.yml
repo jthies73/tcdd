@@ -94,6 +94,7 @@ jobs:
       - name: Deploy image
         env:
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           echo "Deploying tcdd-app-be image 🚀"
           docker stop tcdd-app || true && docker rm tcdd-app || true
