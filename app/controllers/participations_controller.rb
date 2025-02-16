@@ -1,7 +1,7 @@
 class ParticipationsController < ApplicationController
   def new
     @latest_clean_up = CleanUp.last
-    render "pages/no_active_clean_up" and return if @latest_clean_up.inactive?
+    render "pages/no_active_clean_up" and return if @latest_clean_up.nil? || @latest_clean_up.inactive?
     render :new
   end
 
