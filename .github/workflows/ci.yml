@@ -93,7 +93,7 @@ jobs:
         run: | 
           echo "$RAILS_MASTER_KEY" > config/master.key 
           echo "SECRET_KEY_BASE=$SECRET_KEY_BASE" >> .env
-          echt "RAILS_ENV=production" >> .env
+          echo "RAILS_ENV=production" >> .env
 
       - name: Build image
         run: |
