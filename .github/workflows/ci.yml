@@ -86,18 +86,22 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Set up Rails credentials
-        env:
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        run: | 
-          echo "$RAILS_MASTER_KEY" > config/master.key 
+      # - name: Set up Rails credentials
+      #   env:
+      #     RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      #   run: | 
+      #     echo "$RAILS_MASTER_KEY" > config/master.key 
 
       - name: Build image
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           echo "Building tcdd-app-be image... 🏗"
           docker build -t tcdd-app-image .
           
       - name: Deploy image
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           echo "Deploying tcdd-app-be image 🚀"
           docker stop tcdd-app || true && docker rm tcdd-app || true
