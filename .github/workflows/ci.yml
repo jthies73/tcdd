@@ -88,23 +88,18 @@ jobs:
 
       - name: Set up Rails credentials
         env:
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: | 
           echo "$RAILS_MASTER_KEY" > config/master.key 
+          echo "SECRET_KEY_BASE=$SECRET_KEY_BASE" >> .env
 
       - name: Build image
-        env:
-          RAILS_ENV: production
-          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         run: |
           echo "Building tcdd-app-be image... 🏗"
           docker build -t tcdd-app-image .
   
       - name: Deploy image
-        env:
-          RAILS_ENV: production
-          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
           echo "Deploying tcdd-app-be image 🚀"
           docker stop tcdd-app || true && docker rm tcdd-app || true
