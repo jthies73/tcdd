@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ ci ]
+    branches: [ main ]
 
 jobs:
   scan_ruby:
@@ -116,5 +116,6 @@ jobs:
           docker run -d -e "SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}" \
                      -e "RAILS_ENV=production" \
                      --net tcdd-net --ip 172.43.0.10 \
-                     -v tcdd-app-data:/app/data/ \
+                     -v tcdd-app-data:/rails/db/production.sqlite3 \
+                     -v tcdd-app-data:/rails/storage \
                      --name tcdd-app tcdd-app-image
