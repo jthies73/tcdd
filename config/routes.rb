@@ -25,4 +25,6 @@ Rails.application.routes.draw do
   get "go" => "participations#new", as: :new_participation
   get "go/:id" => "participations#show", as: :show_participation
   resources :participations, only: %i[create update]
+
+  get "/qr" => "qr_codes#show", as: :qr_code
 end
