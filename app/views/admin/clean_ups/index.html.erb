@@ -12,8 +12,9 @@
   <%# CLEAN-UPS TABLE %>
   <div id="table" class="px-4 sm:px-6 lg:px-8">
     <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
+      <div class="sm:flex-auto flex justify-between">
         <h1 class="text-2xl font-semibold text-gray-900">Clean-Ups</h1>
+        <%= button_to 'QR-Code', qr_code_path, method: :get, class: "text-xl rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer" %>
       </div>
     </div>
     <div class="mt-8 flow-root">
