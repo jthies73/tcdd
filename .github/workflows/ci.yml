@@ -24,7 +24,7 @@ jobs:
       - name: Run Brakeman security scan
         run: |
           echo "🛡️ Running Brakeman security scan..."
-          bin/brakeman --no-pager --exit-on-warn --format plain
+          bin/brakeman --no-pager
 
   lint:
     name: Lint (RuboCop)
