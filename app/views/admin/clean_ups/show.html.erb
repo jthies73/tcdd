@@ -1,4 +1,4 @@
-<div class="pt-10 pb-30 px-4 sm:px-6 lg:px-8">
+<div class="pt-10 pb-30 px-4 sm:px-6 lg:px-8" data-controller="confirm-modal">
   <div class="flex justify-between items-center">
     <div class="flex justify-start items-center space-x-4">
       <%= link_to admin_clean_ups_path do %>
@@ -55,42 +55,47 @@
   </div>
 
 
-  <%# PARTICIPANTS TABLE %>
-  <div id="table" class="mt-10">
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="block text-sm/6 font-medium text-gray-900">Teilnehmer</h1>
-      </div>
-    </div>
-    <div class="mt-2 flow-root">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <div class="overflow-hidden ring-1 shadow-sm ring-black/5 sm:rounded-lg">
-            <table class="min-w-full divide-y divide-gray-300">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                  <th scope="col" class="px-3 py-3.5 text-sm font-semibold text-gray-900 text-center">Gruppengröße</th>
-                  <th scope="col" class="px-3 py-3.5 text-sm font-semibold text-gray-900 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 bg-white">
-                <% @clean_up.participations.each do |participation| %>
-                  <tr>
-                    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6"><%= participation.participant.name %></td>
-                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 text-center"><%= participation.participant.people_count %></td>
-                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 text-center">
-                      <% color = participation.color_by_status %>
-                      <% label = participation.label_by_status %>
-                      <%= render 'shared/badge', label: label, color: color %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
+  <%# ADD PARTICIPANT FORM %>
+  <% if @clean_up.registerable? %>
+    <div class="mt-10">
+      <h2 class="block text-sm/6 font-medium text-gray-900">Teilnehmer hinzufügen</h2>
+      <%= form_with url: admin_clean_up_participations_path(@clean_up), method: :post, local: true, class: "mt-2" do |f| %>
+        <div class="flex gap-4 items-end">
+          <div class="flex-1">
+            <label for="participant_id" class="block text-sm/6 font-medium text-gray-900">Bestehender Teilnehmer</label>
+            <select name="participant_id" id="participant_id" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <option value="">-- Oder neuen Namen eingeben --</option>
+              <% @participants.each do |participant| %>
+                <option value="<%= participant.id %>"><%= participant.name %> (<%= participant.people_count %> Personen)</option>
+              <% end %>
+            </select>
+          </div>
+          <div class="flex-1">
+            <label for="participant_name" class="block text-sm/6 font-medium text-gray-900">Neuer Name</label>
+            <input type="text" name="participant_name" id="participant_name" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+          </div>
+          <div class="w-32">
+            <label for="participant_people_count" class="block text-sm/6 font-medium text-gray-900">Gruppengröße</label>
+            <input type="number" name="participant_people_count" id="participant_people_count" value="1" min="1" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+          </div>
+          <div>
+            <button type="submit" class="mt-2 inline-flex items-center justify-center gap-x-2 h-[38px] rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
+              Hinzufügen
+            </button>
           </div>
         </div>
-      </div>
+      <% end %>
     </div>
-  </div>
+  <% end %>
+
+  <%# PARTICIPANTS TABLE %>
+  <%= render "admin/participations/participants_table", clean_up: @clean_up %>
+
+  <%# CONFIRMATION MODAL %>
+  <%= render 'shared/confirmation_modal', 
+      title: 'Teilnehmer entfernen',
+      message: 'Möchten Sie diesen Teilnehmer wirklich entfernen?',
+      confirm_text: 'Entfernen',
+      cancel_text: 'Abbrechen',
+      danger: true %>
 </div>

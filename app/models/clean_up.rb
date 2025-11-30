@@ -17,6 +17,10 @@ class CleanUp < ApplicationRecord
     participations.where(participant_id: participant_id).first
   end
 
+  def participant_already_registered?(participant)
+    find_participation_by_participant_id(participant.id).present?
+  end
+
   def color_by_status
     case status
     when "created"
@@ -62,6 +66,7 @@ class CleanUp < ApplicationRecord
 
   def start!
     update!(status: "started")
+    schedule_auto_end
   end
 
   def started?
@@ -74,5 +79,14 @@ class CleanUp < ApplicationRecord
 
   def ended?
     status == "ended"
+  end
+
+  private
+
+  def schedule_auto_end
+    return unless starts_at.present?
+
+    end_time = starts_at + 24.hours
+    EndCleanUpJob.set(wait_until: end_time).perform_later(id)
   end
 end

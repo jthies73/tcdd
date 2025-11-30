@@ -3,9 +3,12 @@ name: CI
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   scan_ruby:
+    name: Security Scan (Brakeman)
     runs-on: self-hosted
 
     steps:
@@ -18,11 +21,15 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: Run Brakeman security scan
+        run: |
+          echo "🛡️ Running Brakeman security scan..."
+          bin/brakeman --no-pager
 
   lint:
+    name: Lint (RuboCop)
     runs-on: self-hosted
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,22 +40,16 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
+      - name: Run RuboCop linter
+        run: |
+          echo "🎨 Running RuboCop code style check..."
+          bin/rubocop -f github
 
   test:
+    name: Test Suite (Rails Test)
     runs-on: self-hosted
 
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -57,12 +58,20 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Prepare test database
+        env:
+          RAILS_ENV: test
+        run: |
+          echo "🗄️ Preparing test database..."
+          bin/rails db:test:prepare
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
+        run: |
+          echo "🧪 Running test suite..."
+          bin/rails test test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
@@ -73,8 +82,10 @@ jobs:
           if-no-files-found: ignore
 
   deploy:
+    name: Deploy to Production
     runs-on: self-hosted
-    needs: [test, lint, scan_ruby]
+    needs: [scan_ruby, lint, test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
