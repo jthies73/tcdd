@@ -69,11 +69,25 @@ module Admin
         return redirect_to admin_clean_up_path(@clean_up), alert: "Ungültige Aktion."
       end
 
-      redirect_to admin_clean_up_path(@clean_up)
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "participants_table",
+            partial: "admin/participations/participants_table",
+            locals: { clean_up: @clean_up }
+          )
+        end
+        format.html { redirect_to admin_clean_up_path(@clean_up) }
+      end
     end
 
     # DELETE /admin/clean_ups/:clean_up_id/participations/:id
     def destroy
+      # Only allow deletion of participants in registered state
+      unless @participation.status == "registered"
+        return redirect_to admin_clean_up_path(@clean_up), alert: "Nur Teilnehmer im Status 'registriert' können entfernt werden."
+      end
+
       @participation.destroy
       redirect_to admin_clean_up_path(@clean_up), notice: "Teilnehmer wurde entfernt."
     end
