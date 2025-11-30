@@ -8,8 +8,20 @@ module Admin
       @participation = @clean_up.participations.new
       @participation.status = "registered"
 
+      # Validate input: ensure only one method is used
+      participant_id_present = participation_params[:participant_id].present?
+      participant_name_present = participation_params[:participant_name].present?
+
+      if participant_id_present && participant_name_present
+        return redirect_to admin_clean_up_path(@clean_up), alert: "Bitte wählen Sie entweder einen bestehenden Teilnehmer ODER geben Sie einen neuen Namen ein - nicht beides."
+      end
+
+      if !participant_id_present && !participant_name_present
+        return redirect_to admin_clean_up_path(@clean_up), alert: "Bitte einen Namen eingeben oder einen Teilnehmer auswählen."
+      end
+
       # Check if participant_id is provided (existing user selected from dropdown)
-      if participation_params[:participant_id].present?
+      if participant_id_present
         existing_participant = Participant.find_by(id: participation_params[:participant_id])
         if existing_participant.nil?
           return redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer nicht gefunden."
@@ -22,7 +34,7 @@ module Admin
         end
 
         @participation.participant = existing_participant
-      elsif participation_params[:participant_name].present?
+      elsif participant_name_present
         # Check if participant already exists by name
         existing_participant = Participant.find_by(name: participation_params[:participant_name])
 
@@ -47,8 +59,6 @@ module Admin
 
           @participation.participant = participant
         end
-      else
-        return redirect_to admin_clean_up_path(@clean_up), alert: "Bitte einen Namen eingeben oder einen Teilnehmer auswählen."
       end
 
       if @participation.save
