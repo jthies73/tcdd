@@ -2,7 +2,7 @@ require "test_helper"
 
 class CleanUpTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
- 
+
   def setup
     @clean_up = CleanUp.create!(
       name: "Test Clean-Up",
@@ -69,6 +69,7 @@ class CleanUpTest < ActiveSupport::TestCase
     assert_raises(NoMethodError) do
       @clean_up.participant_already_registered?(nil)
     end
+  end
 
   test "start! schedules EndCleanUpJob for 24 hours after starts_at" do
     starts_at = Time.current + 1.hour
