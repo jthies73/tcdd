@@ -62,15 +62,24 @@
       <%= form_with url: admin_clean_up_participations_path(@clean_up), method: :post, local: true, class: "mt-2" do |f| %>
         <div class="flex gap-4 items-end">
           <div class="flex-1">
-            <label for="participant_name" class="block text-sm/6 font-medium text-gray-900">Name</label>
-            <input type="text" name="participant_name" id="participant_name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label for="participant_id" class="block text-sm/6 font-medium text-gray-900">Bestehender Teilnehmer</label>
+            <select name="participant_id" id="participant_id" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <option value="">-- Oder neuen Namen eingeben --</option>
+              <% @participants.each do |participant| %>
+                <option value="<%= participant.id %>"><%= participant.name %> (<%= participant.people_count %> Personen)</option>
+              <% end %>
+            </select>
+          </div>
+          <div class="flex-1">
+            <label for="participant_name" class="block text-sm/6 font-medium text-gray-900">Neuer Name</label>
+            <input type="text" name="participant_name" id="participant_name" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
           </div>
           <div class="w-32">
-            <label for="participant_people_count" class="block text-sm/6 font-medium text-gray-900">Anzahl</label>
-            <input type="number" name="participant_people_count" id="participant_people_count" value="1" min="1" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label for="participant_people_count" class="block text-sm/6 font-medium text-gray-900">Gruppengröße</label>
+            <input type="number" name="participant_people_count" id="participant_people_count" value="1" min="1" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
           </div>
           <div>
-            <button type="submit" class="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
+            <button type="submit" class="mt-2 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
               <%= icon('plus') %>
               Hinzufügen
             </button>

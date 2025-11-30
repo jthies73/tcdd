@@ -28,6 +28,7 @@ module Admin
 
     def show
       @clean_up = CleanUp.find(params[:id])
+      @participants = Participant.all
     end
 
     # POST /admin/clean_ups/:id/change_status
