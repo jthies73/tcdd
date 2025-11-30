@@ -62,6 +62,7 @@ class CleanUp < ApplicationRecord
 
   def start!
     update!(status: "started")
+    schedule_auto_end
   end
 
   def started?
@@ -74,5 +75,14 @@ class CleanUp < ApplicationRecord
 
   def ended?
     status == "ended"
+  end
+
+  private
+
+  def schedule_auto_end
+    return unless starts_at.present?
+
+    end_time = starts_at + 24.hours
+    EndCleanUpJob.set(wait_until: end_time).perform_later(id)
   end
 end
