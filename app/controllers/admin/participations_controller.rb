@@ -15,10 +15,10 @@ module Admin
         # Check if this participant is already registered for this cleanup
         existing_participation = @clean_up.find_participation_by_participant_id(existing_participant.id)
         if existing_participation.present?
-          redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer ist bereits registriert." and return
-        else
-          @participation.participant = existing_participant
+          return redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer ist bereits registriert."
         end
+
+        @participation.participant = existing_participant
       else
         # Create a new participant
         participant = Participant.new(
@@ -26,11 +26,11 @@ module Admin
           people_count: participation_params[:participant_people_count].presence || 1
         )
 
-        if participant.save
-          @participation.participant = participant
-        else
-          redirect_to admin_clean_up_path(@clean_up), alert: participant.errors.full_messages.join(", ") and return
+        unless participant.save
+          return redirect_to admin_clean_up_path(@clean_up), alert: participant.errors.full_messages.join(", ")
         end
+
+        @participation.participant = participant
       end
 
       if @participation.save
@@ -47,6 +47,8 @@ module Admin
         @participation.start!
       when "return"
         @participation.return!
+      else
+        return redirect_to admin_clean_up_path(@clean_up), alert: "Ungültige Aktion."
       end
 
       redirect_to admin_clean_up_path(@clean_up)
