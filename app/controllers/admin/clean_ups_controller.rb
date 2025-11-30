@@ -46,6 +46,15 @@ module Admin
 
       redirect_to admin_clean_up_path(@clean_up)
     end
+
+    # DELETE /admin/clean_ups/:id
+    def destroy
+      @clean_up = CleanUp.find(params[:id])
+      @clean_up.destroy
+
+      redirect_to admin_clean_ups_path, notice: "Clean-Up wurde erfolgreich gelöscht."
+    end
+
     private
 
     def clean_up_params

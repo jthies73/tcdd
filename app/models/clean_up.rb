@@ -1,5 +1,5 @@
 class CleanUp < ApplicationRecord
-  has_many :participations
+  has_many :participations, dependent: :destroy
 
   validates :name, presence: true
   validates :status, inclusion: { in: %w[created registration_enabled started ended] }
