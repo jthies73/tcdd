@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :admin do
-    resources :clean_ups, only: %i[index new create show] do
+    resources :clean_ups, only: %i[index new create show destroy] do
       member do
         post "change_status", to: "clean_ups#change_status"
       end

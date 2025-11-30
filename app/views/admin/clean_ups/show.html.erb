@@ -7,10 +7,20 @@
       <h1 class="text-2xl font-semibold text-gray-900">Clean-Up Details</h1>
     </div>
 
-    <div>
+    <div class="flex items-center space-x-4">
       <% label = @clean_up.label_by_status %>
       <% color = @clean_up.color_by_status %>
       <%= render 'shared/badge', label: label, color: color %>
+
+      <%# DELETE BUTTON %>
+      <%= form_with url: admin_clean_up_path(@clean_up), method: :delete do %>
+        <button type="button"
+                data-action="click->confirm-modal#open"
+                data-confirm-message="Möchten Sie das Clean-Up '<%= h(@clean_up.name) %>' wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+                class="inline-flex items-center gap-x-1 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 cursor-pointer">
+          Löschen
+        </button>
+      <% end %>
     </div>
   </div>
 
@@ -93,9 +103,9 @@
 
   <%# CONFIRMATION MODAL %>
   <%= render 'shared/confirmation_modal', 
-      title: 'Teilnehmer entfernen',
-      message: 'Möchten Sie diesen Teilnehmer wirklich entfernen?',
-      confirm_text: 'Entfernen',
+      title: 'Löschen bestätigen',
+      message: 'Möchten Sie dieses Element wirklich löschen?',
+      confirm_text: 'Löschen',
       cancel_text: 'Abbrechen',
       danger: true %>
 </div>
