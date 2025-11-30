@@ -5,66 +5,27 @@ module Admin
 
     # POST /admin/clean_ups/:clean_up_id/participations
     def create
-      @participation = @clean_up.participations.new
-      @participation.status = "registered"
+      @participation = @clean_up.participations.new(status: "registered")
 
-      # Validate input: ensure only one method is used
-      participant_id_present = participation_params[:participant_id].present?
-      participant_name_present = participation_params[:participant_name].present?
+      # Validate input parameters
+      validation_error = validate_participation_input
+      return redirect_with_alert(validation_error) if validation_error
 
-      if participant_id_present && participant_name_present
-        return redirect_to admin_clean_up_path(@clean_up), alert: "Bitte wählen Sie entweder einen bestehenden Teilnehmer ODER geben Sie einen neuen Namen ein - nicht beides."
+      # Find or create participant
+      participant = find_or_create_participant
+      return redirect_with_alert(participant) if participant.is_a?(String) # Error message
+
+      # Check if participant is already registered
+      if @clean_up.participant_already_registered?(participant)
+        return redirect_with_alert("Teilnehmer ist bereits registriert.")
       end
 
-      if !participant_id_present && !participant_name_present
-        return redirect_to admin_clean_up_path(@clean_up), alert: "Bitte einen Namen eingeben oder einen Teilnehmer auswählen."
-      end
-
-      # Check if participant_id is provided (existing user selected from dropdown)
-      if participant_id_present
-        existing_participant = Participant.find_by(id: participation_params[:participant_id])
-        if existing_participant.nil?
-          return redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer nicht gefunden."
-        end
-
-        # Check if this participant is already registered for this cleanup
-        existing_participation = @clean_up.find_participation_by_participant_id(existing_participant.id)
-        if existing_participation.present?
-          return redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer ist bereits registriert."
-        end
-
-        @participation.participant = existing_participant
-      elsif participant_name_present
-        # Check if participant already exists by name
-        existing_participant = Participant.find_by(name: participation_params[:participant_name])
-
-        if existing_participant
-          # Check if this participant is already registered for this cleanup
-          existing_participation = @clean_up.find_participation_by_participant_id(existing_participant.id)
-          if existing_participation.present?
-            return redirect_to admin_clean_up_path(@clean_up), alert: "Teilnehmer ist bereits registriert."
-          end
-
-          @participation.participant = existing_participant
-        else
-          # Create a new participant
-          participant = Participant.new(
-            name: participation_params[:participant_name],
-            people_count: participation_params[:participant_people_count].presence || 1
-          )
-
-          unless participant.save
-            return redirect_to admin_clean_up_path(@clean_up), alert: participant.errors.full_messages.join(", ")
-          end
-
-          @participation.participant = participant
-        end
-      end
+      @participation.participant = participant
 
       if @participation.save
         redirect_to admin_clean_up_path(@clean_up), notice: "Teilnehmer wurde erfolgreich registriert."
       else
-        redirect_to admin_clean_up_path(@clean_up), alert: @participation.errors.full_messages.join(", ")
+        redirect_with_alert(@participation.errors.full_messages.join(", "))
       end
     end
 
@@ -118,6 +79,58 @@ module Admin
 
     def change_status_params
       params.permit(:status_action)
+    end
+
+    # Validation methods
+    def validate_participation_input
+      participant_id_present = participation_params[:participant_id].present?
+      participant_name_present = participation_params[:participant_name].present?
+
+      if participant_id_present && participant_name_present
+        "Bitte wählen Sie entweder einen bestehenden Teilnehmer ODER geben Sie einen neuen Namen ein - nicht beides."
+      elsif !participant_id_present && !participant_name_present
+        "Bitte einen Namen eingeben oder einen Teilnehmer auswählen."
+      end
+    end
+
+    def find_or_create_participant
+      if participation_params[:participant_id].present?
+        find_existing_participant_by_id
+      elsif participation_params[:participant_name].present?
+        find_or_create_participant_by_name
+      end
+    end
+
+    def find_existing_participant_by_id
+      participant = Participant.find_by(id: participation_params[:participant_id])
+      return "Teilnehmer nicht gefunden." if participant.nil?
+
+      participant
+    end
+
+    def find_or_create_participant_by_name
+      existing_participant = Participant.find_by(name: participation_params[:participant_name])
+
+      if existing_participant
+        existing_participant
+      else
+        create_new_participant
+      end
+    end
+
+    def create_new_participant
+      participant = Participant.new(
+        name: participation_params[:participant_name],
+        people_count: participation_params[:participant_people_count].presence || 1
+      )
+
+      return participant.errors.full_messages.join(", ") unless participant.save
+
+      participant
+    end
+
+    def redirect_with_alert(message)
+      redirect_to admin_clean_up_path(@clean_up), alert: message
     end
   end
 end
