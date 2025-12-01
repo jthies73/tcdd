@@ -1,5 +1,6 @@
 class CleanUp < ApplicationRecord
   broadcasts_refreshes
+  broadcasts_refreshes_to ->(clean_up) { :clean_ups }
 
   has_many :participations, dependent: :destroy
 
