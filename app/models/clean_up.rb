@@ -95,10 +95,6 @@ class CleanUp < ApplicationRecord
     sum_from_participations + sum_from_manual
   end
 
-  def self.total_registered_participants
-    Participant.all.distinct.sum(:people_count)
-  end
-
   private
 
   def schedule_auto_end

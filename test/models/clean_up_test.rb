@@ -161,6 +161,7 @@ class CleanUpTest < ActiveSupport::TestCase
 
   test "total_registered_participants returns sum of people_count from all participations" do
     Participation.destroy_all
+    Participant.destroy_all
     CleanUp.destroy_all
 
     clean_up = CleanUp.create!(name: "Test Clean-Up", status: "ended", starts_at: 1.day.ago)
@@ -174,18 +175,19 @@ class CleanUpTest < ActiveSupport::TestCase
     clean_up.participations.create!(participant: participant3, status: "returned")
 
     # Total should be: 1 + 3 + 2 = 6
-    assert_equal 6, CleanUp.total_registered_participants
+    assert_equal 6, Participant.total_people_count
   end
 
   test "total_registered_participants returns 0 when no participants exist" do
     Participant.destroy_all
     CleanUp.destroy_all
 
-    assert_equal 0, CleanUp.total_registered_participants
+    assert_equal 0, Participant.total_people_count
   end
 
   test "total_registered_participants counts participants across multiple clean ups" do
     Participation.destroy_all
+    Participant.destroy_all
     CleanUp.destroy_all
 
     clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", starts_at: 1.day.ago)
@@ -200,6 +202,6 @@ class CleanUpTest < ActiveSupport::TestCase
     clean_up2.participations.create!(participant: participant2, status: "returned")
 
     # Total should be: 2 + 4 = 6
-    assert_equal 6, CleanUp.total_registered_participants
+    assert_equal 6, Participant.total_people_count
   end
 end
