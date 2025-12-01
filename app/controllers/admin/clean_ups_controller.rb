@@ -61,8 +61,7 @@ module Admin
       amount = add_cigarettes_params[:amount].to_i
 
       if amount > 0
-        new_total = @clean_up.manual_cigarettes_count + amount
-        @clean_up.update!(manual_cigarettes_count: new_total)
+        @clean_up.increment!(:manual_cigarettes_count, amount)
       end
 
       respond_to do |format|

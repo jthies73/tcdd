@@ -17,7 +17,7 @@ class CleanUp < ApplicationRecord
   end
 
   def total_cigarettes_count
-    participations.sum(:cigarettes_count) + (manual_cigarettes_count || 0)
+    participations.sum(:cigarettes_count) + manual_cigarettes_count
   end
 
   def find_participation_by_participant_id(participant_id)
