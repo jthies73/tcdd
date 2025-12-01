@@ -101,6 +101,10 @@ class CleanUp < ApplicationRecord
     sum_from_participations + sum_from_manual
   end
 
+  def self.total_count
+    where(status: "ended").count
+  end
+
   private
 
   def schedule_auto_end

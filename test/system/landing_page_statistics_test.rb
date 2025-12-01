@@ -60,6 +60,10 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     assert_text "7"
     assert_text "Teilnehmer insgesamt"
 
+    # Verify cleanup count: 2 (both ended clean-ups)
+    assert_text "2"
+    assert_text "Clean-Ups durchgeführt"
+
     # Verify the Instagram link is still visible
     assert_text "@trashcan_dresden"
   end
@@ -77,6 +81,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     assert_no_text "Unsere bisherigen Erfolge"
     assert_no_text "Zigaretten gesammelt"
     assert_no_text "Teilnehmer insgesamt"
+    assert_no_text "Clean-Ups durchgeführt"
   end
 
   test "user sees registration page when a cleanup is open for registration" do
