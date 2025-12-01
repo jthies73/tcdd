@@ -40,6 +40,3 @@
 !/app/assets/builds/.keep
 
 /config/credentials/production.key
-vendor/bundle
-vendor/bundle
-vendor/bundle
