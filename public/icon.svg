@@ -1,3 +1,25 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#4F46E5"/>
+  
+  <!-- Trash can body -->
+  <path d="M160 180h192v220c0 22-18 40-40 40H200c-22 0-40-18-40-40V180z" fill="#ffffff"/>
+  
+  <!-- Trash can lid -->
+  <rect x="140" y="148" width="232" height="28" rx="8" fill="#ffffff"/>
+  
+  <!-- Lid handle -->
+  <rect x="226" y="120" width="60" height="32" rx="8" fill="#ffffff"/>
+  
+  <!-- Trash can lines (detail) -->
+  <line x1="220" y1="220" x2="220" y2="380" stroke="#4F46E5" stroke-width="12" stroke-linecap="round"/>
+  <line x1="256" y1="220" x2="256" y2="380" stroke="#4F46E5" stroke-width="12" stroke-linecap="round"/>
+  <line x1="292" y1="220" x2="292" y2="380" stroke="#4F46E5" stroke-width="12" stroke-linecap="round"/>
+  
+  <!-- Recycling arrow symbol (small, on the body) -->
+  <g transform="translate(256, 300) scale(0.35)">
+    <path d="M-80 60 L-40 0 L0 60 L-25 60 L-25 100 L-55 100 L-55 60 Z" fill="#22C55E" transform="rotate(-120)"/>
+    <path d="M-80 60 L-40 0 L0 60 L-25 60 L-25 100 L-55 100 L-55 60 Z" fill="#22C55E" transform="rotate(0)"/>
+    <path d="M-80 60 L-40 0 L0 60 L-25 60 L-25 100 L-55 100 L-55 60 Z" fill="#22C55E" transform="rotate(120)"/>
+  </g>
 </svg>
