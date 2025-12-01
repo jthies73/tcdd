@@ -28,8 +28,8 @@ class CigaretteCounterTest < ApplicationSystemTestCase
 
     # Verify the cigarette counter is visible
     assert_selector "div[data-controller='cigarette-counter']"
-    assert_text "Zigarettenstummel"
-    assert_text "Gefundene Stummel zählen"
+    assert_text "Kippen"
+    assert_text "Gefundene Kippen zählen"
 
     # Check the input starts at 0
     counter_input = find("input[data-cigarette-counter-target='input']")
@@ -61,7 +61,7 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     visit show_participation_path(@participation)
 
     assert_no_selector "div[data-controller='cigarette-counter']"
-    assert_no_text "Zigarettenstummel"
+    assert_no_text "Kippen"
   end
 
   test "admin can view cigarette counts on cleanup detail page" do
@@ -79,7 +79,7 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     visit admin_clean_up_path(@clean_up)
 
     # Verify total count summary is displayed
-    assert_text "Zigarettenstummel Gesamt"
+    assert_text "Kippen Gesamt"
     assert_text "25"
 
     # Verify individual counts in table
@@ -98,7 +98,7 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     visit admin_clean_up_path(@clean_up)
 
     # Verify initial total count summary is displayed
-    assert_text "Zigarettenstummel Gesamt"
+    assert_text "Kippen Gesamt"
     assert_text "15"
 
     # Verify the manual addition form is visible
