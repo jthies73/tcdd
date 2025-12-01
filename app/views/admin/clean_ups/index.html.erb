@@ -82,7 +82,7 @@
 
               <tbody class="divide-y divide-gray-200 bg-white">
                 <% @clean_ups.each_with_index do |clean_up, index| %>
-                  <%= render 'admin/clean_ups/clean_up_row', clean_up: clean_up, number: @clean_ups.count - index %>
+                  <%= render 'admin/clean_ups/clean_up_row', clean_up: clean_up, number: @clean_ups.count - index || "N/A" %>
                 <% end %>
               </tbody>
             </table>
