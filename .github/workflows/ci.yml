@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel in-progress runs on main branch when a new run is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+
 jobs:
   scan_ruby:
     name: Security Scan (Brakeman)
@@ -81,10 +86,27 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
+  # Summary job that all checks must pass - required for PRs
+  ci_success:
+    name: All CI Checks Passed
+    runs-on: self-hosted
+    needs: [scan_ruby, lint, test]
+    if: always()
+    steps:
+      - name: Check all jobs succeeded
+        run: |
+          if [ "${{ needs.scan_ruby.result }}" != "success" ] || \
+             [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.test.result }}" != "success" ]; then
+            echo "❌ One or more CI checks failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed"
+
   deploy:
     name: Deploy to Production
     runs-on: self-hosted
-    needs: [scan_ruby, lint, test]
+    needs: [ci_success]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code
