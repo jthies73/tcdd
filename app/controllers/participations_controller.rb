@@ -70,8 +70,7 @@ class ParticipationsController < ApplicationController
       return
     end
 
-    cigarettes_count = cigarettes_params[:cigarettes_count].to_i
-    cigarettes_count = 0 if cigarettes_count < 0
+    cigarettes_count = [ cigarettes_params[:cigarettes_count].to_i, 0 ].max
 
     @participation.update!(cigarettes_count: cigarettes_count)
 

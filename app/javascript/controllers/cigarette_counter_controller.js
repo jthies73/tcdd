@@ -18,19 +18,18 @@ export default class extends Controller {
   }
 
   increment() {
-    const currentValue = parseInt(this.inputTarget.value) || 0
-    this.updateValue(currentValue + 1)
+    this.updateValue(this.getCurrentValue() + 1)
   }
 
   decrement() {
-    const currentValue = parseInt(this.inputTarget.value) || 0
+    const currentValue = this.getCurrentValue()
     if (currentValue > 0) {
       this.updateValue(currentValue - 1)
     }
   }
 
   inputChanged() {
-    let value = parseInt(this.inputTarget.value) || 0
+    let value = this.getCurrentValue()
     if (value < 0) value = 0
     this.inputTarget.value = value
     this.scheduleUpdate()
@@ -55,7 +54,7 @@ export default class extends Controller {
   }
 
   sendUpdate() {
-    const value = parseInt(this.inputTarget.value) || 0
+    const value = this.getCurrentValue()
     const participationId = this.participationIdValue
 
     fetch(`/participations/${participationId}/update_cigarettes_count`, {
@@ -75,5 +74,9 @@ export default class extends Controller {
     .catch(error => {
       console.error("Error updating cigarettes count:", error)
     })
+  }
+
+  getCurrentValue() {
+    return parseInt(this.inputTarget.value) || 0
   }
 }
