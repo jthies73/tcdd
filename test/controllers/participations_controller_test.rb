@@ -87,4 +87,38 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "div[data-controller='cigarette-counter']", count: 0
   end
+
+  test "new shows no_active_clean_up page when no clean up exists" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    get new_participation_path
+    assert_response :success
+    assert_select "h2", text: "Aktuell kein Clean-Up geplant"
+  end
+
+  test "new shows no_active_clean_up page when latest clean up is inactive (status: created)" do
+    @clean_up.update!(status: "created")
+
+    get new_participation_path
+    assert_response :success
+    assert_select "h2", text: "Aktuell kein Clean-Up geplant"
+  end
+
+  test "new shows no_active_clean_up page when latest clean up is inactive (status: ended)" do
+    @clean_up.update!(status: "ended")
+
+    get new_participation_path
+    assert_response :success
+    assert_select "h2", text: "Aktuell kein Clean-Up geplant"
+  end
+
+  test "new shows statistics on no_active_clean_up page when data exists" do
+    @clean_up.update!(status: "ended")
+    @participation.update!(cigarettes_count: 25)
+
+    get new_participation_path
+    assert_response :success
+    assert_select "h3", text: "Unsere bisherigen Erfolge"
+  end
 end

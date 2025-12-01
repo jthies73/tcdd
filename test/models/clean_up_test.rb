@@ -131,4 +131,75 @@ class CleanUpTest < ActiveSupport::TestCase
 
     assert_equal 5, @clean_up.total_cigarettes_count
   end
+
+  # Class method tests for global statistics
+
+  test "total_cigarettes_collected returns sum of all cigarettes across all clean ups" do
+    # Clear existing data
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    participant1 = Participant.create!(name: "Global Participant 1", people_count: 1)
+    participant2 = Participant.create!(name: "Global Participant 2", people_count: 1)
+
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", manual_cigarettes_count: 50, starts_at: 1.day.ago)
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", manual_cigarettes_count: 30, starts_at: 1.day.ago)
+
+    clean_up1.participations.create!(participant: participant1, status: "returned", cigarettes_count: 10)
+    clean_up2.participations.create!(participant: participant2, status: "returned", cigarettes_count: 20)
+
+    # Total should be: 10 + 20 (from participations) + 50 + 30 (manual) = 110
+    assert_equal 110, CleanUp.total_cigarettes_collected
+  end
+
+  test "total_cigarettes_collected returns 0 when no data exists" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    assert_equal 0, CleanUp.total_cigarettes_collected
+  end
+
+  test "total_registered_participants returns sum of people_count from all participations" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    clean_up = CleanUp.create!(name: "Test Clean-Up", status: "ended", starts_at: 1.day.ago)
+
+    participant1 = Participant.create!(name: "Solo Person", people_count: 1)
+    participant2 = Participant.create!(name: "Group of Three", people_count: 3)
+    participant3 = Participant.create!(name: "Duo", people_count: 2)
+
+    clean_up.participations.create!(participant: participant1, status: "returned")
+    clean_up.participations.create!(participant: participant2, status: "returned")
+    clean_up.participations.create!(participant: participant3, status: "returned")
+
+    # Total should be: 1 + 3 + 2 = 6
+    assert_equal 6, CleanUp.total_registered_participants
+  end
+
+  test "total_registered_participants returns 0 when no participations exist" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    assert_equal 0, CleanUp.total_registered_participants
+  end
+
+  test "total_registered_participants counts participants across multiple clean ups" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", starts_at: 1.day.ago)
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", starts_at: 1.day.ago)
+
+    participant1 = Participant.create!(name: "Person A", people_count: 2)
+    participant2 = Participant.create!(name: "Person B", people_count: 4)
+
+    # Same participant can register for different clean ups
+    clean_up1.participations.create!(participant: participant1, status: "returned")
+    clean_up2.participations.create!(participant: participant1, status: "returned")
+    clean_up2.participations.create!(participant: participant2, status: "returned")
+
+    # Total should be: 2 + 2 + 4 = 8 (counting each participation separately)
+    assert_equal 8, CleanUp.total_registered_participants
+  end
 end
