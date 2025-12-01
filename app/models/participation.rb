@@ -91,7 +91,8 @@ class Participation < ApplicationRecord
   end
 
   def broadcast_user_participation_content
-    # Broadcast to user's participation show page - update the participation content
+    # Broadcast to user's participation show page when status changes -
+    # replaces the participation content section with updated UI based on new status
     broadcast_replace_to(
       "participation_#{id}",
       target: "participation_content_#{id}",
