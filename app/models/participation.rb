@@ -52,5 +52,20 @@ class Participation < ApplicationRecord
       partial: "participations/cigarettes_counter",
       locals: { participation: self }
     )
+
+    # Broadcast to admin clean_up show page
+    broadcast_replace_to(
+      "admin_clean_up_#{clean_up_id}",
+      target: "admin_cigarettes_summary_#{clean_up_id}",
+      partial: "admin/clean_ups/cigarettes_summary",
+      locals: { clean_up: clean_up }
+    )
+
+    broadcast_replace_to(
+      "admin_clean_up_#{clean_up_id}",
+      target: "admin_participants_table_#{clean_up_id}",
+      partial: "admin/participations/participants_table",
+      locals: { clean_up: clean_up }
+    )
   end
 end
