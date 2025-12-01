@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* Disable double-click and pinch zoom */
+html {
+  touch-action: manipulation;
+}
