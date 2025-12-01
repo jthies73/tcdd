@@ -91,4 +91,48 @@ class CigaretteCounterTest < ApplicationSystemTestCase
       assert_text "10"
     end
   end
+
+  test "admin can manually add cigarettes to the total count" do
+    # Add some cigarette counts from participations
+    @participation.update!(cigarettes_count: 15)
+
+    visit admin_clean_up_path(@clean_up)
+
+    # Verify initial total count summary is displayed
+    assert_text "Zigarettenstummel Gesamt"
+    assert_text "15"
+
+    # Verify the manual addition form is visible
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_selector "input[name='amount']"
+      assert_selector "button[type='submit']", text: "Hinzufügen"
+
+      # Set the amount to add
+      fill_in "amount", with: 10
+
+      # Click the add button
+      click_button "Hinzufügen"
+    end
+
+    # Verify the total count is updated (15 from participation + 10 manual = 25)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "25"
+    end
+
+    # Add more manually
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      fill_in "amount", with: 5
+      click_button "Hinzufügen"
+    end
+
+    # Verify the accumulated total (15 + 10 + 5 = 30)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "30"
+    end
+
+    # Verify the database was updated
+    @clean_up.reload
+    assert_equal 15, @clean_up.manual_cigarettes_count
+    assert_equal 30, @clean_up.total_cigarettes_count
+  end
 end

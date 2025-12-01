@@ -33,5 +33,54 @@ module Admin
 
       assert_redirected_to admin_clean_ups_path
     end
+
+    test "add_cigarettes adds to manual cigarettes count" do
+      @clean_up.update!(status: "started")
+      assert_equal 0, @clean_up.manual_cigarettes_count
+
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: 15 }
+
+      @clean_up.reload
+      assert_equal 15, @clean_up.manual_cigarettes_count
+    end
+
+    test "add_cigarettes accumulates when called multiple times" do
+      @clean_up.update!(status: "started")
+
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: 10 }
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: 5 }
+
+      @clean_up.reload
+      assert_equal 15, @clean_up.manual_cigarettes_count
+    end
+
+    test "add_cigarettes does not add negative amounts" do
+      @clean_up.update!(status: "started", manual_cigarettes_count: 10)
+
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: -5 }
+
+      @clean_up.reload
+      assert_equal 10, @clean_up.manual_cigarettes_count
+    end
+
+    test "add_cigarettes does not add zero amount" do
+      @clean_up.update!(status: "started", manual_cigarettes_count: 10)
+
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: 0 }
+
+      @clean_up.reload
+      assert_equal 10, @clean_up.manual_cigarettes_count
+    end
+
+    test "add_cigarettes responds with turbo_stream" do
+      @clean_up.update!(status: "started")
+
+      post add_cigarettes_admin_clean_up_path(@clean_up),
+           params: { amount: 5 },
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      assert_response :success
+      assert_match "turbo-stream", response.body
+    end
   end
 end

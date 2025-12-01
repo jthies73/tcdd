@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :clean_ups, only: %i[index new create show destroy] do
       member do
         post "change_status", to: "clean_ups#change_status"
+        post "add_cigarettes", to: "clean_ups#add_cigarettes"
       end
 
       resources :participations, only: %i[create destroy] do
