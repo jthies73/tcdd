@@ -177,8 +177,8 @@ class CleanUpTest < ActiveSupport::TestCase
     assert_equal 6, CleanUp.total_registered_participants
   end
 
-  test "total_registered_participants returns 0 when no participations exist" do
-    Participation.destroy_all
+  test "total_registered_participants returns 0 when no participants exist" do
+    Participant.destroy_all
     CleanUp.destroy_all
 
     assert_equal 0, CleanUp.total_registered_participants
