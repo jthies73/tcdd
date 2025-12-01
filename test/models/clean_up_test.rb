@@ -91,4 +91,44 @@ class CleanUpTest < ActiveSupport::TestCase
 
     assert clean_up.started?
   end
+
+  test "total_cigarettes_count returns sum of all participations cigarettes_count" do
+    participant1 = Participant.create!(name: "Participant 1", people_count: 1)
+    participant2 = Participant.create!(name: "Participant 2", people_count: 1)
+
+    @clean_up.participations.create!(
+      participant: participant1,
+      status: "started",
+      cigarettes_count: 10
+    )
+    @clean_up.participations.create!(
+      participant: participant2,
+      status: "started",
+      cigarettes_count: 15
+    )
+
+    assert_equal 25, @clean_up.total_cigarettes_count
+  end
+
+  test "total_cigarettes_count returns 0 when no participations have counts" do
+    assert_equal 0, @clean_up.total_cigarettes_count
+  end
+
+  test "total_cigarettes_count handles nil cigarettes_count values" do
+    participant1 = Participant.create!(name: "Participant 1", people_count: 1)
+    participant2 = Participant.create!(name: "Participant 2", people_count: 1)
+
+    @clean_up.participations.create!(
+      participant: participant1,
+      status: "started",
+      cigarettes_count: nil
+    )
+    @clean_up.participations.create!(
+      participant: participant2,
+      status: "started",
+      cigarettes_count: 5
+    )
+
+    assert_equal 5, @clean_up.total_cigarettes_count
+  end
 end
