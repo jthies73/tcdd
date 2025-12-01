@@ -82,12 +82,30 @@ class ParticipationsController < ApplicationController
     end
 
     if participation.update(cigarettes_count: cigarettes_count)
+      # Broadcast to the participant's view
       Turbo::StreamsChannel.broadcast_replace_to(
         "participation_#{participation.id}",
         target: "cigarette_counter_#{participation.id}",
         partial: "participations/cigarette_counter",
         locals: { participation: participation }
       )
+
+      # Broadcast to the admin clean_up view - update total cigarettes
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "clean_up_#{participation.clean_up_id}_cigarettes",
+        target: "total_cigarettes_#{participation.clean_up_id}",
+        partial: "admin/clean_ups/total_cigarettes",
+        locals: { clean_up: participation.clean_up }
+      )
+
+      # Broadcast to the admin clean_up view - update individual cigarette count
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "clean_up_#{participation.clean_up_id}_cigarettes",
+        target: "cigarette_count_#{participation.id}",
+        partial: "admin/participations/cigarette_count_cell",
+        locals: { participation: participation }
+      )
+
       render json: { success: true, cigarettes_count: participation.cigarettes_count }
     else
       render json: { success: false, error: participation.errors.full_messages.join(", ") }, status: :unprocessable_entity

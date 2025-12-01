@@ -1,3 +1,4 @@
+<%= turbo_stream_from "clean_up_#{@clean_up.id}_cigarettes" %>
 <div class="pt-10 pb-30 px-4 sm:px-6 lg:px-8" data-controller="confirm-modal">
   <div class="flex justify-between items-center">
     <div class="flex justify-start items-center space-x-4">
@@ -100,10 +101,7 @@
 
   <%# TOTAL CIGARETTES SUMMARY %>
   <div class="mt-10">
-    <div class="bg-gray-100 rounded-lg shadow-sm p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-2">Gesammelte Zigaretten gesamt</h2>
-      <p class="text-3xl font-bold text-indigo-600"><%= Participation.total_cigarettes_for_clean_up(@clean_up) %></p>
-    </div>
+    <%= render "admin/clean_ups/total_cigarettes", clean_up: @clean_up %>
   </div>
 
   <%# PARTICIPANTS TABLE %>
