@@ -206,6 +206,35 @@ class CleanUpTest < ActiveSupport::TestCase
     assert_equal 0, CleanUp.total_cigarettes_collected
   end
 
+  test "total_count returns count of ended cleanups" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    CleanUp.create!(name: "Ended Clean-Up 1", status: "ended", starts_at: 2.weeks.ago)
+    CleanUp.create!(name: "Ended Clean-Up 2", status: "ended", starts_at: 1.week.ago)
+    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago)
+    CleanUp.create!(name: "Created Clean-Up", status: "created")
+
+    # Only ended cleanups should be counted
+    assert_equal 2, CleanUp.total_count
+  end
+
+  test "total_count returns 0 when no ended cleanups exist" do
+    Participation.destroy_all
+    CleanUp.destroy_all
+
+    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago)
+    CleanUp.create!(name: "Created Clean-Up", status: "created")
+
+    assert_equal 0, CleanUp.total_count
+  end
+
+  test "total_count returns 0 when no cleanups exist" do
+    CleanUp.destroy_all
+
+    assert_equal 0, CleanUp.total_count
+  end
+
   test "total_registered_participants returns sum of people_count from all participations" do
     Participation.destroy_all
     Participant.destroy_all
