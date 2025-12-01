@@ -3,7 +3,7 @@ class ParticipationsController < ApplicationController
     @latest_clean_up = CleanUp.last
     if @latest_clean_up.nil? || @latest_clean_up.inactive?
       @total_cigarettes = CleanUp.total_cigarettes_collected
-      @total_participants = CleanUp.total_registered_participants
+      @total_participants = Participant.total_people_count
       render "pages/no_active_clean_up" and return
     end
     render :new
