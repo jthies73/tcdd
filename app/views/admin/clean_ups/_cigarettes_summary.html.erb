@@ -11,5 +11,29 @@
         <p class="text-2xl font-bold text-amber-900"><%= clean_up.total_cigarettes_count %></p>
       </div>
     </div>
+
+    <%# Manual cigarette addition form %>
+    <div class="flex items-center gap-2">
+      <%= form_with url: add_cigarettes_admin_clean_up_path(clean_up), method: :post, local: false, class: "flex items-center gap-2" do |f| %>
+        <input type="number"
+               name="amount"
+               min="1"
+               value="1"
+               class="w-20 h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+               placeholder="Anzahl">
+        <button type="submit" class="inline-flex items-center justify-center gap-x-2 h-[38px] rounded-md bg-amber-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer">
+          Hinzufügen
+        </button>
+      <% end %>
+
+      <%# Revert button - only show if there is a last amount to revert %>
+      <% if clean_up.last_manual_cigarettes_amount > 0 %>
+        <%= button_to revert_cigarettes_admin_clean_up_path(clean_up), method: :post, form: { data: { turbo: true } }, class: "inline-flex items-center justify-center h-[38px] w-[38px] rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 cursor-pointer", title: "Letzte Eingabe rückgängig machen (-#{clean_up.last_manual_cigarettes_amount})" do %>
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 </div>

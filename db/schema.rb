@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_06_151443) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_01_015640) do
   create_table "clean_ups", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -20,6 +20,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_06_151443) do
     t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "manual_cigarettes_count", default: 0, null: false
+    t.integer "last_manual_cigarettes_amount", default: 0, null: false
   end
 
   create_table "participants", force: :cascade do |t|

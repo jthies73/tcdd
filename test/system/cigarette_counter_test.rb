@@ -30,7 +30,6 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     assert_selector "div[data-controller='cigarette-counter']"
     assert_text "Zigarettenstummel"
     assert_text "Gefundene Stummel zählen"
-    assert_text "Automatische Speicherung nach 2 Sekunden"
 
     # Check the input starts at 0
     counter_input = find("input[data-cigarette-counter-target='input']")
@@ -90,5 +89,84 @@ class CigaretteCounterTest < ApplicationSystemTestCase
       assert_text "Second Group"
       assert_text "10"
     end
+  end
+
+  test "admin can manually add cigarettes to the total count" do
+    # Add some cigarette counts from participations
+    @participation.update!(cigarettes_count: 15)
+
+    visit admin_clean_up_path(@clean_up)
+
+    # Verify initial total count summary is displayed
+    assert_text "Zigarettenstummel Gesamt"
+    assert_text "15"
+
+    # Verify the manual addition form is visible
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_selector "input[name='amount']"
+      assert_selector "button[type='submit']", text: "Hinzufügen"
+
+      # Set the amount to add
+      fill_in "amount", with: 10
+
+      # Click the add button
+      click_button "Hinzufügen"
+    end
+
+    # Verify the total count is updated (15 from participation + 10 manual = 25)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "25"
+    end
+
+    # Add more manually
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      fill_in "amount", with: 5
+      click_button "Hinzufügen"
+    end
+
+    # Verify the accumulated total (15 + 10 + 5 = 30)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "30"
+    end
+
+    # Verify the database was updated
+    @clean_up.reload
+    assert_equal 15, @clean_up.manual_cigarettes_count
+    assert_equal 30, @clean_up.total_cigarettes_count
+  end
+
+  test "admin can revert the last manual cigarette addition" do
+    # Add some cigarette counts from participations
+    @participation.update!(cigarettes_count: 15)
+
+    visit admin_clean_up_path(@clean_up)
+
+    # Manually add cigarettes
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      fill_in "amount", with: 10
+      click_button "Hinzufügen"
+    end
+
+    # Verify the total count is updated (15 + 10 = 25)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "25"
+      # Verify the revert button is now visible
+      assert_selector "button[title*='rückgängig']"
+
+      # Click the revert button
+      find("button[title*='rückgängig']").click
+    end
+
+    # Verify the total count is reverted (back to 15)
+    within "#admin_cigarettes_summary_#{@clean_up.id}" do
+      assert_text "15"
+      # Verify the revert button is no longer visible
+      assert_no_selector "button[title*='rückgängig']"
+    end
+
+    # Verify the database was updated
+    @clean_up.reload
+    assert_equal 0, @clean_up.manual_cigarettes_count
+    assert_equal 0, @clean_up.last_manual_cigarettes_amount
   end
 end

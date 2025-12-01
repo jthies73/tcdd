@@ -55,6 +55,38 @@ module Admin
       redirect_to admin_clean_ups_path, notice: "Clean-Up wurde erfolgreich gelöscht."
     end
 
+    # POST /admin/clean_ups/:id/add_cigarettes
+    def add_cigarettes
+      @clean_up = CleanUp.find(params[:id])
+      amount = add_cigarettes_params[:amount].to_i
+
+      if amount > 0
+        @clean_up.update!(last_manual_cigarettes_amount: amount)
+        @clean_up.increment!(:manual_cigarettes_count, amount)
+      end
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to admin_clean_up_path(@clean_up) }
+      end
+    end
+
+    # POST /admin/clean_ups/:id/revert_cigarettes
+    def revert_cigarettes
+      @clean_up = CleanUp.find(params[:id])
+      last_amount = @clean_up.last_manual_cigarettes_amount
+
+      if last_amount > 0 && @clean_up.manual_cigarettes_count >= last_amount
+        @clean_up.decrement!(:manual_cigarettes_count, last_amount)
+        @clean_up.update!(last_manual_cigarettes_amount: 0)
+      end
+
+      respond_to do |format|
+        format.turbo_stream { render "add_cigarettes" }
+        format.html { redirect_to admin_clean_up_path(@clean_up) }
+      end
+    end
+
     private
 
     def clean_up_params
@@ -65,6 +97,10 @@ module Admin
     def change_params
       puts "change params: #{params}"
       params.permit(:clean_up_id, :change_action)
+    end
+
+    def add_cigarettes_params
+      params.permit(:amount)
     end
   end
 end

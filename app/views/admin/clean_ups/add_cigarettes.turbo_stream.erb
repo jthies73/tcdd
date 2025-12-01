@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "admin_cigarettes_summary_#{@clean_up.id}" do %>
+  <%= render 'admin/clean_ups/cigarettes_summary', clean_up: @clean_up %>
+<% end %>
