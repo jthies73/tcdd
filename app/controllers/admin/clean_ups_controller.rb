@@ -1,7 +1,7 @@
 module Admin
   class CleanUpsController < ApplicationController
     def index
-      @clean_ups = CleanUp.all
+      @clean_ups = CleanUp.order(starts_at: :desc)
     end
 
     def new

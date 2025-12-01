@@ -81,7 +81,11 @@ class CleanUp < ApplicationRecord
   end
 
   def end!
-    update!(status: "ended")
+    update!(status: "ended", final_participant_count: compute_participant_count)
+  end
+
+  def compute_participant_count
+    participations.joins(:participant).sum("participants.people_count")
   end
 
   def ended?

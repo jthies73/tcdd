@@ -92,6 +92,53 @@ class CleanUpTest < ActiveSupport::TestCase
     assert clean_up.started?
   end
 
+  test "end! stores the final participant count" do
+    participant1 = Participant.create!(name: "Group A", people_count: 3)
+    participant2 = Participant.create!(name: "Group B", people_count: 5)
+    participant3 = Participant.create!(name: "Group C", people_count: 2)
+
+    @clean_up.participations.create!(participant: participant1, status: "registered")
+    @clean_up.participations.create!(participant: participant2, status: "started")
+    @clean_up.participations.create!(participant: participant3, status: "returned")
+
+    @clean_up.end!
+
+    assert_equal 10, @clean_up.reload.final_participant_count
+  end
+
+  test "end! stores zero final participant count when no participations exist" do
+    clean_up = CleanUp.create!(name: "Empty Cleanup", status: "started")
+    clean_up.end!
+
+    assert_equal 0, clean_up.reload.final_participant_count
+  end
+
+  test "end! handles nil people_count values" do
+    # Create participants - set valid people_count first to avoid broadcast issues
+    participant1 = Participant.create!(name: "Nil People", people_count: 0)
+    participant2 = Participant.create!(name: "Valid People", people_count: 4)
+
+    @clean_up.participations.create!(participant: participant1, status: "registered")
+    @clean_up.participations.create!(participant: participant2, status: "registered")
+
+    # Update the participant to have nil people_count after participation is created
+    participant1.update_column(:people_count, nil)
+
+    @clean_up.end!
+
+    assert_equal 4, @clean_up.reload.final_participant_count
+  end
+
+  test "compute_participant_count sums people_count across participations" do
+    participant1 = Participant.create!(name: "Solo", people_count: 1)
+    participant2 = Participant.create!(name: "Duo", people_count: 2)
+
+    @clean_up.participations.create!(participant: participant1, status: "registered")
+    @clean_up.participations.create!(participant: participant2, status: "registered")
+
+    assert_equal 3, @clean_up.compute_participant_count
+  end
+
   test "total_cigarettes_count returns sum of all participations cigarettes_count" do
     participant1 = Participant.create!(name: "Participant 1", people_count: 1)
     participant2 = Participant.create!(name: "Participant 2", people_count: 1)
