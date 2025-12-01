@@ -1,4 +1,6 @@
 class CleanUp < ApplicationRecord
+  broadcasts_refreshes
+
   has_many :participations, dependent: :destroy
 
   validates :name, presence: true
