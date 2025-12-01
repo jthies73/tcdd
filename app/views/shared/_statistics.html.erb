@@ -1,0 +1,34 @@
+<%# Statistics card %>
+<% if @total_cigarettes > 0 || @total_participants > 0 || @total_cleanups > 0 %>
+  <div class="mb-6 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+    <h3 class="text-sm font-medium text-gray-900 mb-4">
+      Unsere bisherigen Erfolge
+    </h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-indigo-50 rounded-xl p-4">
+        <div class="text-2xl font-bold text-indigo-600">
+          <%= number_with_delimiter(@total_cigarettes) %>
+        </div>
+
+        <div class="text-sm text-gray-600">Zigaretten gesammelt</div>
+      </div>
+
+      <div class="bg-green-50 rounded-xl p-4">
+        <div class="text-2xl font-bold text-green-600">
+          <%= number_with_delimiter(@total_participants) %>
+        </div>
+
+        <div class="text-sm text-gray-600">Teilnehmer insgesamt</div>
+      </div>
+
+      <div class="bg-amber-50 rounded-xl p-4">
+        <div class="text-2xl font-bold text-amber-600">
+          <%= number_with_delimiter(@total_cleanups) %>
+        </div>
+
+        <div class="text-sm text-gray-600">Clean-Ups durchgeführt</div>
+      </div>
+    </div>
+  </div>
+<% end %>
