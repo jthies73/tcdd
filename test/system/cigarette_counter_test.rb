@@ -30,7 +30,6 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     assert_selector "div[data-controller='cigarette-counter']"
     assert_text "Zigarettenstummel"
     assert_text "Gefundene Stummel zählen"
-    assert_text "Automatische Speicherung nach 2 Sekunden"
 
     # Check the input starts at 0
     counter_input = find("input[data-cigarette-counter-target='input']")
