@@ -1,15 +1,13 @@
 <div id="participation_content_<%= participation.id %>">
-  <% if participation.status == "registered" %>
+  <% if participation.clean_up.ended? || participation.status == "returned" %>
+    <%= render 'participations/status_returned', participation: participation %>
+  <% elsif participation.status == "registered" %>
     <% if participation.clean_up.started? %>
       <%= render 'participations/status_registered_ready', participation: participation %>
-    <% elsif participation.clean_up.ended? %>
-      <%= render 'participations/status_registered_missed', participation: participation %>
     <% else %>
       <%= render 'participations/status_registered_pending', participation: participation %>
     <% end %>
   <% elsif participation.status == "started" %>
     <%= render 'participations/status_started', participation: participation %>
-  <% elsif participation.status == "returned" %>
-    <%= render 'participations/status_returned', participation: participation %>
   <% end %>
 </div>
