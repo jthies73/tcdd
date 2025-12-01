@@ -88,4 +88,36 @@ class ParticipationTest < ActiveSupport::TestCase
     assert_not @participation.valid?
     assert_includes @participation.errors[:status], "is not included in the list"
   end
+
+  test "has broadcast callbacks defined for create" do
+    # Verify the after_create_commit callback is defined
+    callbacks = Participation._commit_callbacks.select { |cb| cb.filter == :broadcast_participation_created }
+    assert_not_empty callbacks, "Expected broadcast_participation_created callback to be defined"
+  end
+
+  test "has broadcast callbacks defined for status change" do
+    # Verify the after_update_commit callback for status change is defined
+    callbacks = Participation._commit_callbacks.select { |cb| cb.filter == :broadcast_participation_status_changed }
+    assert_not_empty callbacks, "Expected broadcast_participation_status_changed callback to be defined"
+  end
+
+  test "has broadcast callbacks defined for destroy" do
+    # Verify the after_destroy_commit callback is defined
+    callbacks = Participation._commit_callbacks.select { |cb| cb.filter == :broadcast_participation_destroyed }
+    assert_not_empty callbacks, "Expected broadcast_participation_destroyed callback to be defined"
+  end
+
+  test "broadcast methods are defined as private methods" do
+    # Verify the broadcast methods exist as private methods
+    assert Participation.private_method_defined?(:broadcast_participation_created),
+           "Expected broadcast_participation_created to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_participation_status_changed),
+           "Expected broadcast_participation_status_changed to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_participation_destroyed),
+           "Expected broadcast_participation_destroyed to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_admin_updates),
+           "Expected broadcast_admin_updates to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_public_participant_count),
+           "Expected broadcast_public_participant_count to be defined as a private method"
+  end
 end
