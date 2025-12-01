@@ -142,5 +142,7 @@ class ParticipationTest < ActiveSupport::TestCase
            "Expected broadcast_admin_updates to be defined as a private method"
     assert Participation.private_method_defined?(:broadcast_public_participant_count),
            "Expected broadcast_public_participant_count to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_user_participation_content),
+           "Expected broadcast_user_participation_content to be defined as a private method"
   end
 end

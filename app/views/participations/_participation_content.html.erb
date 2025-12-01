@@ -1,0 +1,215 @@
+<div id="participation_content_<%= participation.id %>">
+  <% if participation.status == "registered" %>
+    <% if participation.clean_up.started? %>
+      <%# Clean-up has started - show start prompt %>
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-green-600 px-6 py-4">
+          <div class="flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-200 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-lg font-semibold text-white">Es geht los!</span>
+          </div>
+        </div>
+        <div class="px-6 py-8 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Der Clean-Up hat begonnen!</h2>
+          <p class="text-gray-600 mb-6">
+            Klicke auf <strong>Starten</strong>, um deine Teilnahme zu beginnen. 
+            Vergiss nicht, am Ende wieder auf "Beenden" zu klicken, damit wir wissen, dass du sicher zurück bist.
+          </p>
+          <div class="bg-green-50 rounded-xl p-4 border border-green-100">
+            <p class="text-sm text-green-800">
+              <strong>Tipp:</strong> Du kannst während des Clean-Ups gefundene Kippen zählen!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <%= form_with url: participation_path(participation), method: :patch, local: true do |f| %>
+        <%= f.hidden_field :participation_action, value: "start" %>
+        <div class="fixed bottom-4 right-4">
+          <%= render 'shared/button', label: 'Starten', icon: 'play', color: 'green', type: 'submit' %>
+        </div>
+      <% end %>
+
+    <% elsif participation.clean_up.ended? %>
+      <%# Clean-up has ended - show sorry message %>
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-gray-600 px-6 py-4">
+          <div class="flex items-center justify-center">
+            <svg class="w-6 h-6 text-gray-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-lg font-semibold text-white">Clean-Up beendet</span>
+          </div>
+        </div>
+        <div class="px-6 py-8 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Schade, verpasst!</h2>
+          <p class="text-gray-600 mb-6">
+            Der Clean-Up ist leider bereits beendet. Vielen Dank für dein Interesse – 
+            wir freuen uns, dich beim nächsten Mal zu sehen!
+          </p>
+          <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
+            <p class="text-sm text-indigo-800">
+              <strong>Bleib dran!</strong> Es gibt regelmäßig neue Clean-Up Events.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    <% else %>
+      <%# Clean-up not started yet - show waiting state %>
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div class="bg-indigo-600 px-6 py-4">
+          <div class="flex items-center justify-center">
+            <svg class="w-6 h-6 text-indigo-200 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-lg font-semibold text-white">Anmeldung erfolgreich!</span>
+          </div>
+        </div>
+        <div class="px-6 py-8 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-6">
+            <svg class="w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900 mb-3">Danke für deine Anmeldung!</h2>
+          <p class="text-gray-600 mb-6">
+            Wir freuen uns, dass du dabei bist! Komm zurück auf diese Seite, sobald der Clean-Up 
+            gestartet wurde. Du erhältst hier dann einen Button zum Starten.
+          </p>
+          
+          <%# Clean-up details %>
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-left">
+            <h3 class="text-sm font-semibold text-gray-900 mb-3">Details zum Clean-Up</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center text-gray-700">
+                <svg class="w-4 h-4 text-indigo-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span><%= participation.clean_up.name %></span>
+              </div>
+              <div class="flex items-center text-gray-700">
+                <svg class="w-4 h-4 text-indigo-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span><%= participation.clean_up.starts_at.strftime("%d.%m.%Y um %H:%M") %> Uhr</span>
+              </div>
+              <div class="flex items-center text-gray-700">
+                <svg class="w-4 h-4 text-indigo-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span><%= participation.clean_up.address %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+        <div class="flex items-start">
+          <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm text-yellow-800">
+            <strong>Hinweis:</strong> Diese Seite aktualisiert sich automatisch, wenn der Clean-Up startet.
+          </p>
+        </div>
+      </div>
+    <% end %>
+
+  <% elsif participation.status == "started" %>
+    <%# Participation is active %>
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+      <div class="bg-green-600 px-6 py-4">
+        <div class="flex items-center justify-center">
+          <div class="w-3 h-3 bg-white rounded-full mr-3 animate-pulse"></div>
+          <span class="text-lg font-semibold text-white">Clean-Up läuft</span>
+        </div>
+      </div>
+      <div class="px-6 py-6 text-center">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">Du bist dabei! 🎉</h2>
+        
+        <%# Elapsed timer %>
+        <div class="my-4" data-controller="elapsed-timer" data-elapsed-timer-start-time-value="<%= participation.started_at || Time.current %>">
+          <div class="inline-flex items-center justify-center bg-gray-100 rounded-xl px-6 py-3">
+            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-2xl font-mono font-bold text-gray-900" data-elapsed-timer-target="display">00:00:00</span>
+          </div>
+        </div>
+        
+        <p class="text-gray-600 text-sm">
+          Klicke auf <strong>Beenden</strong>, wenn du wieder am Treffpunkt angekommen bist, 
+          damit wir wissen, dass du sicher zurück bist.
+        </p>
+      </div>
+    </div>
+    
+    <%# Cigarettes counter card %>
+    <div class="mb-20">
+      <%= render 'participations/cigarettes_counter', participation: participation %>
+    </div>
+
+    <%= form_with url: participation_path(participation), method: :patch, local: true do |f| %>
+      <%= f.hidden_field :participation_action, value: "return" %>
+      <div class="fixed bottom-4 right-4">
+        <%= render 'shared/button', label: 'Beenden', icon: 'stop', color: 'red', type: 'submit' %>
+      </div>
+    <% end %>
+
+  <% elsif participation.status == "returned" %>
+    <%# Participation completed %>
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div class="bg-indigo-600 px-6 py-4">
+        <div class="flex items-center justify-center">
+          <svg class="w-6 h-6 text-indigo-200 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-lg font-semibold text-white">Abgeschlossen</span>
+        </div>
+      </div>
+      <div class="px-6 py-8 text-center">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full mb-6">
+          <svg class="w-14 h-14 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">Vielen Dank!</h2>
+        <p class="text-gray-600 mb-6">
+          Danke, dass du dabei warst und einen Beitrag für eine saubere Stadt geleistet hast! 
+          Gemeinsam machen wir Dresden schöner. 💚
+        </p>
+        
+        <% if participation.cigarettes_count && participation.cigarettes_count > 0 %>
+          <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 mb-4">
+            <p class="text-lg font-semibold text-indigo-800">
+              🚬 <%= participation.cigarettes_count %> Kippen gesammelt
+            </p>
+            <p class="text-sm text-indigo-600 mt-1">Super! Jeder einzelne zählt!</p>
+          </div>
+        <% end %>
+
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+          <p class="text-sm text-gray-600">
+            Wir freuen uns, dich beim nächsten Clean-Up wiederzusehen!
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
