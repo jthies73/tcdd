@@ -90,13 +90,13 @@ class CleanUp < ApplicationRecord
 
   # Class methods for global statistics
   def self.total_cigarettes_collected
-    sum_from_participations = Participation.sum(:cigarettes_count) || 0
-    sum_from_manual = CleanUp.sum(:manual_cigarettes_count) || 0
+    sum_from_participations = Participation.sum(:cigarettes_count)
+    sum_from_manual = CleanUp.sum(:manual_cigarettes_count)
     sum_from_participations + sum_from_manual
   end
 
   def self.total_registered_participants
-    Participation.joins(:participant).sum("participants.people_count") || 0
+    Participation.joins(:participant).sum("participants.people_count")
   end
 
   private
