@@ -11,7 +11,7 @@
       <p><%= @latest_clean_up.description %></p>
       <p>Wann? <span class="font-bold text-lg"><%= @latest_clean_up.starts_at.strftime("%d.%m.%Y %H:%M") %> Uhr</span></p>
       <p>Wo? <span class="font-bold text-lg"><%= @latest_clean_up.address %></span></p>
-      <p>Registrierte Teilnehmer: <%= @latest_clean_up.participant_count %></p>
+      <p>Registrierte Teilnehmer: <%= render 'participations/participant_count', clean_up: @latest_clean_up %></p>
     </div>
   </div>
 
