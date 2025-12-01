@@ -1,0 +1,44 @@
+<%= turbo_frame_tag "cigarettes_counter_#{participation.id}" do %>
+  <div id="cigarettes_counter_<%= participation.id %>"
+       data-controller="cigarette-counter"
+       data-cigarette-counter-participation-id-value="<%= participation.id %>"
+       data-cigarette-counter-debounce-delay-value="2000"
+       class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+    <div class="text-center mb-4">
+      <h2 class="text-lg font-semibold text-gray-900">Zigarettenstummel</h2>
+      <p class="text-sm text-gray-500">Gefundene Stummel zählen</p>
+    </div>
+
+    <div class="flex items-center justify-center space-x-4">
+      <%# Decrement button %>
+      <button type="button"
+              data-action="click->cigarette-counter#decrement"
+              class="flex items-center justify-center w-14 h-14 rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4" />
+        </svg>
+      </button>
+
+      <%# Counter input - styled as card element %>
+      <div class="relative">
+        <input type="number"
+               data-cigarette-counter-target="input"
+               data-action="change->cigarette-counter#inputChanged"
+               value="<%= participation.cigarettes_count || 0 %>"
+               min="0"
+               class="w-28 h-20 text-center text-4xl font-bold text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+      </div>
+
+      <%# Increment button %>
+      <button type="button"
+              data-action="click->cigarette-counter#increment"
+              class="flex items-center justify-center w-14 h-14 rounded-full bg-green-100 text-green-600 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+    </div>
+
+    <p class="text-center text-xs text-gray-400 mt-4">Automatische Speicherung nach 2 Sekunden</p>
+  </div>
+<% end %>
