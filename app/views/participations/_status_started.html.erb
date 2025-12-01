@@ -1,0 +1,39 @@
+<%# Participation is active %>
+<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+  <div class="bg-green-600 px-6 py-4">
+    <div class="flex items-center justify-center">
+      <div class="w-3 h-3 bg-white rounded-full mr-3 animate-pulse"></div>
+      <span class="text-lg font-semibold text-white">Clean-Up läuft</span>
+    </div>
+  </div>
+  <div class="px-6 py-6 text-center">
+    <h2 class="text-lg font-semibold text-gray-900 mb-2">Du bist dabei! 🎉</h2>
+    
+    <%# Elapsed timer %>
+    <div class="my-4" data-controller="elapsed-timer" data-elapsed-timer-start-time-value="<%= participation.started_at || Time.current %>">
+      <div class="inline-flex items-center justify-center bg-gray-100 rounded-xl px-6 py-3">
+        <svg class="w-5 h-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-2xl font-mono font-bold text-gray-900" data-elapsed-timer-target="display">00:00:00</span>
+      </div>
+    </div>
+    
+    <p class="text-gray-600 text-sm">
+      Klicke auf <strong>Beenden</strong>, wenn du wieder am Treffpunkt angekommen bist, 
+      damit wir wissen, dass du sicher zurück bist.
+    </p>
+  </div>
+</div>
+
+<%# Cigarettes counter card %>
+<div class="mb-20">
+  <%= render 'participations/cigarettes_counter', participation: participation %>
+</div>
+
+<%= form_with url: participation_path(participation), method: :patch, local: true do |f| %>
+  <%= f.hidden_field :participation_action, value: "return" %>
+  <div class="fixed bottom-4 right-4">
+    <%= render 'shared/button', label: 'Beenden', icon: 'stop', color: 'red', type: 'submit' %>
+  </div>
+<% end %>
