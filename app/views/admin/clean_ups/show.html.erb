@@ -98,6 +98,14 @@
     </div>
   <% end %>
 
+  <%# TOTAL CIGARETTES SUMMARY %>
+  <div class="mt-10">
+    <div class="bg-gray-100 rounded-lg shadow-sm p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">Gesammelte Zigaretten gesamt</h2>
+      <p class="text-3xl font-bold text-indigo-600"><%= Participation.total_cigarettes_for_clean_up(@clean_up) %></p>
+    </div>
+  </div>
+
   <%# PARTICIPANTS TABLE %>
   <%= render "admin/participations/participants_table", clean_up: @clean_up %>
 

@@ -60,6 +60,40 @@ class ParticipationsController < ApplicationController
     redirect_to show_participation_path(participation)
   end
 
+  # PATCH /participations/:id/update_cigarettes
+  def update_cigarettes
+    participation = Participation.find_by(id: params[:id])
+
+    if participation.nil?
+      render json: { success: false, error: "Participation not found" }, status: :not_found
+      return
+    end
+
+    begin
+      cigarettes_count = Integer(params[:cigarettes_count])
+    rescue ArgumentError, TypeError
+      render json: { success: false, error: "Cigarettes count must be a valid integer" }, status: :unprocessable_entity
+      return
+    end
+
+    if cigarettes_count < 0
+      render json: { success: false, error: "Cigarettes count must be non-negative" }, status: :unprocessable_entity
+      return
+    end
+
+    if participation.update(cigarettes_count: cigarettes_count)
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "participation_#{participation.id}",
+        target: "cigarette_counter_#{participation.id}",
+        partial: "participations/cigarette_counter",
+        locals: { participation: participation }
+      )
+      render json: { success: true, cigarettes_count: participation.cigarettes_count }
+    else
+      render json: { success: false, error: participation.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def registration_params

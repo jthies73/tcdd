@@ -1,3 +1,5 @@
+<%= turbo_stream_from "participation_#{@participation.id}" %>
+
 <div class="pt-10 px-4 sm:px-6 lg:px-8">
   <% if @participation.status == "registered" %>
 
@@ -18,6 +20,11 @@
   <% elsif @participation.status == "started" %>
 
     <h1>Das CleanUp läuft. Klicke auf beenden, wenn du wieder am Treffpunkt angekommen bist.</h1>
+    
+    <div class="mt-6">
+      <%= render 'participations/cigarette_counter', participation: @participation %>
+    </div>
+    
     <%= form_with url: participation_path(@participation), method: :patch, local: true do |f| %>
       <%= f.hidden_field :participation_action, value: "return" %>
       <div class="fixed bottom-4 right-4">

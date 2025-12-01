@@ -3,6 +3,11 @@ class Participation < ApplicationRecord
   belongs_to :participant, inverse_of: :participations
 
   validates :status, inclusion: { in: %w[registered started returned] }
+  validates :cigarettes_count, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
+
+  def self.total_cigarettes_for_clean_up(clean_up)
+    where(clean_up: clean_up).sum(:cigarettes_count)
+  end
 
   def color_by_status
     case status
