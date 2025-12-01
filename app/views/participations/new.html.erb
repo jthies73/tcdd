@@ -84,7 +84,7 @@
               </div>
               <ul data-searchable-select-target="list"
                   class="hidden absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                <% Participant.all.each do |participant| %>
+                <% Participant.alphabetically.each do |participant| %>
                   <li data-searchable-select-target="item"
                       data-id="<%= participant.id %>"
                       data-name="<%= participant.name %>"

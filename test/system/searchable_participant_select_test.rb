@@ -48,8 +48,9 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     # Type a filter query
     search_input.fill_in with: "Ali"
 
-    # Wait a moment for filtering
-    sleep 0.1
+    # Wait for filtering to complete by checking that non-matching items are hidden
+    # Use Capybara's wait mechanism instead of sleep
+    assert_selector "li[data-searchable-select-target='item'][data-name='Alice']", visible: :all
 
     # Check that only Alice is visible (not hidden)
     all("li[data-searchable-select-target='item']", visible: :all).each do |item|
@@ -70,8 +71,9 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     # Type a filter query with no matches
     search_input.fill_in with: "xyz123"
 
-    # Wait a moment for filtering
-    sleep 0.1
+    # Wait for the no results element to become visible using Capybara's wait mechanism
+    # The no results element should not have the hidden class
+    assert_selector "li[data-searchable-select-target='noResults']", visible: :all
 
     # The no results message should be visible (not hidden)
     no_results = find("li[data-searchable-select-target='noResults']", visible: :all)
@@ -120,8 +122,8 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     # Type to filter
     search_input.fill_in with: "Char"
 
-    # Wait a moment for filtering
-    sleep 0.1
+    # Wait for filtering to complete using Capybara's wait mechanism
+    assert_selector "li[data-searchable-select-target='item'][data-name='Charlie']", visible: :all
 
     # Charlie should be the only visible one
     charlie_item = find("li[data-searchable-select-target='item'][data-name='Charlie']", visible: :all)

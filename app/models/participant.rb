@@ -3,5 +3,5 @@ class Participant < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
 
-  default_scope { order(name: :asc) }
+  scope :alphabetically, -> { order(name: :asc) }
 end
