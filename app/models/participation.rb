@@ -54,6 +54,7 @@ class Participation < ApplicationRecord
 
   def broadcast_participation_status_changed
     broadcast_admin_updates
+    broadcast_user_participation_content
   end
 
   def broadcast_participation_destroyed
@@ -86,6 +87,17 @@ class Participation < ApplicationRecord
       target: "participant_count_#{clean_up_id}",
       partial: "participations/participant_count",
       locals: { clean_up: clean_up }
+    )
+  end
+
+  def broadcast_user_participation_content
+    # Broadcast to user's participation show page when status changes -
+    # replaces the participation content section with updated UI based on new status
+    broadcast_replace_to(
+      "participation_#{id}",
+      target: "participation_content_#{id}",
+      partial: "participations/participation_content",
+      locals: { participation: self }
     )
   end
 
