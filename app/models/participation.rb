@@ -1,8 +1,12 @@
 class Participation < ApplicationRecord
+  include Turbo::Broadcastable
+
   belongs_to :clean_up, inverse_of: :participations
   belongs_to :participant, inverse_of: :participations
 
   validates :status, inclusion: { in: %w[registered started returned] }
+
+  after_update_commit :broadcast_cigarettes_count_update, if: :saved_change_to_cigarettes_count?
 
   def color_by_status
     case status
@@ -36,5 +40,32 @@ class Participation < ApplicationRecord
 
   def return!
     update!(status: "returned")
+  end
+
+  private
+
+  def broadcast_cigarettes_count_update
+    # Broadcast to all clients viewing the same participation (same group)
+    broadcast_replace_to(
+      "participation_#{id}",
+      target: "cigarettes_counter_#{id}",
+      partial: "participations/cigarettes_counter",
+      locals: { participation: self }
+    )
+
+    # Broadcast to admin clean_up show page
+    broadcast_replace_to(
+      "admin_clean_up_#{clean_up_id}",
+      target: "admin_cigarettes_summary_#{clean_up_id}",
+      partial: "admin/clean_ups/cigarettes_summary",
+      locals: { clean_up: clean_up }
+    )
+
+    broadcast_replace_to(
+      "admin_clean_up_#{clean_up_id}",
+      target: "admin_participants_table_#{clean_up_id}",
+      partial: "admin/participations/participants_table",
+      locals: { clean_up: clean_up }
+    )
   end
 end

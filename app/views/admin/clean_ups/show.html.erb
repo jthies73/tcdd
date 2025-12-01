@@ -1,3 +1,5 @@
+<%= turbo_stream_from "admin_clean_up_#{@clean_up.id}" %>
+
 <div class="pt-10 pb-30 px-4 sm:px-6 lg:px-8" data-controller="confirm-modal">
   <div class="flex justify-between items-center">
     <div class="flex justify-start items-center space-x-4">
@@ -64,8 +66,10 @@
     </div>
   </div>
 
-
-  <%# ADD PARTICIPANT FORM %>
+  <%# CIGARETTES COUNT SUMMARY %>
+  <% if @clean_up.started? || @clean_up.ended? %>
+    <%= render 'admin/clean_ups/cigarettes_summary', clean_up: @clean_up %>
+  <% end %>
   <% if @clean_up.registerable? %>
     <div class="mt-10">
       <h2 class="block text-sm/6 font-medium text-gray-900">Teilnehmer hinzufügen</h2>

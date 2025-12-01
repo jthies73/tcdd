@@ -60,6 +60,27 @@ class ParticipationsController < ApplicationController
     redirect_to show_participation_path(participation)
   end
 
+  # PATCH /participations/:id/update_cigarettes_count
+  def update_cigarettes_count
+    @participation = Participation.find(params[:id])
+
+    # Only allow updates when participation is started
+    unless @participation.status == "started"
+      head :unprocessable_entity
+      return
+    end
+
+    cigarettes_count = [ cigarettes_params[:cigarettes_count].to_i, 0 ].max
+
+    @participation.update!(cigarettes_count: cigarettes_count)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to show_participation_path(@participation) }
+      format.json { head :ok }
+    end
+  end
+
   private
 
   def registration_params
@@ -70,5 +91,9 @@ class ParticipationsController < ApplicationController
   def participation_params
     puts "participation params: #{params}"
     params.permit(:participation_action)
+  end
+
+  def cigarettes_params
+    params.permit(:cigarettes_count)
   end
 end
