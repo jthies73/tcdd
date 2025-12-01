@@ -29,7 +29,7 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     # Verify the cigarette counter is visible
     assert_selector "div[data-controller='cigarette-counter']"
     assert_text "Kippen"
-    assert_text "Gefundene Stummel zählen"
+    assert_text "Gefundene Kippen zählen"
 
     # Check the input starts at 0
     counter_input = find("input[data-cigarette-counter-target='input']")
