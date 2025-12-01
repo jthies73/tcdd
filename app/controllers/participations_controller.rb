@@ -10,7 +10,6 @@ class ParticipationsController < ApplicationController
   end
 
   def show
-    puts "params: #{params}"
     @participation = Participation.find(params[:id])
     render :show
   end
@@ -88,12 +87,10 @@ class ParticipationsController < ApplicationController
   private
 
   def registration_params
-    puts "registration params: #{params}"
     params.permit(:participant_id, :participant_name, :participant_people_count)
   end
 
   def participation_params
-    puts "participation params: #{params}"
     params.permit(:participation_action)
   end
 
