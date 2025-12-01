@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :admin do
+    root to: redirect("/admin/clean_ups")
+
     resources :clean_ups, only: %i[index new create show destroy] do
       member do
         post "change_status", to: "clean_ups#change_status"
