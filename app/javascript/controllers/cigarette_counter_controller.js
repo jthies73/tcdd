@@ -11,12 +11,15 @@ export default class extends Controller {
   connect() {
     this.timeout = null
     this.updateDisplay()
+    this.boundHandleTurboStream = this.handleTurboStream.bind(this)
+    document.addEventListener("turbo:before-stream-render", this.boundHandleTurboStream)
   }
 
   disconnect() {
     if (this.timeout) {
       clearTimeout(this.timeout)
     }
+    document.removeEventListener("turbo:before-stream-render", this.boundHandleTurboStream)
   }
 
   increment() {
@@ -90,14 +93,19 @@ export default class extends Controller {
 
   handleTurboStream(event) {
     // This method handles Turbo Stream updates from other clients
-    // The actual update is handled by Turbo automatically
-    // We just need to sync our local state
-    if (this.hasInputTarget) {
-      const newValue = parseInt(this.inputTarget.value, 10)
-      if (!isNaN(newValue) && newValue !== this.currentCountValue) {
-        this.currentCountValue = newValue
-        this.updateDisplay()
-      }
+    // Check if the stream target is for our counter
+    const stream = event.target
+    if (stream.target && stream.target.includes("cigarette_counter")) {
+      // Let Turbo render first, then sync our state
+      setTimeout(() => {
+        if (this.hasInputTarget) {
+          const newValue = parseInt(this.inputTarget.value, 10)
+          if (!isNaN(newValue) && newValue !== this.currentCountValue) {
+            this.currentCountValue = newValue
+            this.updateDisplay()
+          }
+        }
+      }, 0)
     }
   }
 }
