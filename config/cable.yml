@@ -1,3 +1,7 @@
+# Async adapter only works within the same process, so for manually triggering cable updates from a console,
+# and seeing results in the browser, you must do so from the web console (running inside the dev process),
+# not a terminal started via bin/rails console! Add "console" to any action or any ERB template view
+# to make the web console appear.
 development:
   adapter: async
 
@@ -9,4 +13,5 @@ production:
   connects_to:
     database:
       writing: cable
-  channel_prefix: tcdd_app_production
+  polling_interval: 0.1.seconds
+  message_retention: 1.day
