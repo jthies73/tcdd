@@ -199,7 +199,7 @@ class CleanUpTest < ActiveSupport::TestCase
     clean_up2.participations.create!(participant: participant1, status: "returned")
     clean_up2.participations.create!(participant: participant2, status: "returned")
 
-    # Total should be: 2 + 2 + 4 = 8 (counting each participation separately)
-    assert_equal 8, CleanUp.total_registered_participants
+    # Total should be: 2 + 4 = 6
+    assert_equal 6, CleanUp.total_registered_participants
   end
 end

@@ -96,7 +96,7 @@ class CleanUp < ApplicationRecord
   end
 
   def self.total_registered_participants
-    Participant.all.distinct.count
+    Participant.all.distinct.sum(:people_count)
   end
 
   private
