@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       member do
         post "change_status", to: "clean_ups#change_status"
         post "add_cigarettes", to: "clean_ups#add_cigarettes"
+        post "revert_cigarettes", to: "clean_ups#revert_cigarettes"
       end
 
       resources :participations, only: %i[create destroy] do

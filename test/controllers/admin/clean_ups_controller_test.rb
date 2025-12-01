@@ -82,5 +82,43 @@ module Admin
       assert_response :success
       assert_match "turbo-stream", response.body
     end
+
+    test "add_cigarettes stores the last amount for revert" do
+      @clean_up.update!(status: "started")
+
+      post add_cigarettes_admin_clean_up_path(@clean_up), params: { amount: 15 }
+
+      @clean_up.reload
+      assert_equal 15, @clean_up.last_manual_cigarettes_amount
+    end
+
+    test "revert_cigarettes reverts the last added amount" do
+      @clean_up.update!(status: "started", manual_cigarettes_count: 25, last_manual_cigarettes_amount: 10)
+
+      post revert_cigarettes_admin_clean_up_path(@clean_up)
+
+      @clean_up.reload
+      assert_equal 15, @clean_up.manual_cigarettes_count
+      assert_equal 0, @clean_up.last_manual_cigarettes_amount
+    end
+
+    test "revert_cigarettes does nothing when no previous addition" do
+      @clean_up.update!(status: "started", manual_cigarettes_count: 25, last_manual_cigarettes_amount: 0)
+
+      post revert_cigarettes_admin_clean_up_path(@clean_up)
+
+      @clean_up.reload
+      assert_equal 25, @clean_up.manual_cigarettes_count
+    end
+
+    test "revert_cigarettes responds with turbo_stream" do
+      @clean_up.update!(status: "started", manual_cigarettes_count: 15, last_manual_cigarettes_amount: 5)
+
+      post revert_cigarettes_admin_clean_up_path(@clean_up),
+           headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      assert_response :success
+      assert_match "turbo-stream", response.body
+    end
   end
 end
