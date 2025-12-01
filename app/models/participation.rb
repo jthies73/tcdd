@@ -35,14 +35,14 @@ class Participation < ApplicationRecord
 
   def start!
     if clean_up.started?
-      update!(status: "started")
+      update!(status: "started", started_at: Time.current)
     else
       Rails.logger.error("Cannot start participation for clean up that is not started")
     end
   end
 
   def return!
-    update!(status: "returned")
+    update!(status: "returned", returned_at: Time.current)
   end
 
   private

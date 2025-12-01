@@ -71,6 +71,14 @@ class ParticipationTest < ActiveSupport::TestCase
     assert_equal "started", @participation.reload.status
   end
 
+  test "start! sets started_at when clean up is started" do
+    @participation.update!(status: "registered", started_at: nil)
+    freeze_time do
+      @participation.start!
+      assert_equal Time.current, @participation.reload.started_at
+    end
+  end
+
   test "start! does not update status when clean up is not started" do
     @clean_up.update!(status: "registration_enabled")
     @participation.update!(status: "registered")
@@ -78,9 +86,24 @@ class ParticipationTest < ActiveSupport::TestCase
     assert_equal "registered", @participation.reload.status
   end
 
+  test "start! does not set started_at when clean up is not started" do
+    @clean_up.update!(status: "registration_enabled")
+    @participation.update!(status: "registered", started_at: nil)
+    @participation.start!
+    assert_nil @participation.reload.started_at
+  end
+
   test "return! updates status to returned" do
     @participation.return!
     assert_equal "returned", @participation.reload.status
+  end
+
+  test "return! sets returned_at" do
+    @participation.update!(returned_at: nil)
+    freeze_time do
+      @participation.return!
+      assert_equal Time.current, @participation.reload.returned_at
+    end
   end
 
   test "validates status inclusion" do
