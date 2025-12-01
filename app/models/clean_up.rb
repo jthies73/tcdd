@@ -8,6 +8,8 @@ class CleanUp < ApplicationRecord
   validates :status, inclusion: { in: %w[created registration_enabled started ended] }
 
   def participant_count
+    return final_participant_count if status == "ended" && final_participant_count.present?
+
     # sum of all people counts (participant.count)
     sum = 0
     participations.each do |participation|

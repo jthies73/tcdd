@@ -4,64 +4,127 @@
   <div class="flex justify-between items-center">
     <div class="flex justify-start items-center space-x-4">
       <%= link_to admin_clean_ups_path do %>
-        <%= icon('arrow-left')%>
+        <%= icon('arrow-left') %>
       <% end %>
+
       <h1 class="text-2xl font-semibold text-gray-900">Clean-Up Details</h1>
     </div>
 
     <div class="flex items-center space-x-4">
       <% label = @clean_up.label_by_status %>
       <% color = @clean_up.color_by_status %>
-      <%= render 'shared/badge', label: label, color: color %>
 
-      <%# DELETE BUTTON %>
-      <%= form_with url: admin_clean_up_path(@clean_up), method: :delete do %>
-        <button type="button"
-                data-action="click->confirm-modal#open"
-                data-confirm-message="Möchten Sie das Clean-Up '<%= h(@clean_up.name) %>' wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
-                class="inline-flex items-center gap-x-1 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 cursor-pointer">
-          Löschen
-        </button>
-      <% end %>
+      <%= render 'shared/badge', label: label, color: color %>
     </div>
   </div>
 
   <div class="fixed bottom-4 right-4">
     <%# ACTIONS %>
     <% case @clean_up.status %>
-      <% when 'created' %>
-        <%= render 'shared/button', label: 'Zur Registrierung Freigeben', icon: 'person', color: 'indigo', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'enable_registration'), method: :post %>
-      <% when 'registration_enabled' %>
-        <%= render 'shared/button', label: 'Clean-Up Starten', icon: 'play', color: 'green', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'start'), method: :post %>
-      <% when 'started' %>
-        <%= render 'shared/button', label: 'Clean-Up Beenden', icon: 'stop', color: 'red', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'end'), method: :post %>
+    <% when 'created' %>
+      <%= render 'shared/button', label: 'Zur Registrierung Freigeben', icon: 'person', color: 'indigo', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'enable_registration'), method: :post %>
+    <% when 'registration_enabled' %>
+      <%= render 'shared/button', label: 'Clean-Up Starten', icon: 'play', color: 'green', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'start'), method: :post %>
+    <% when 'started' %>
+      <%= render 'shared/button', label: 'Clean-Up Beenden', icon: 'stop', color: 'red', path: change_status_admin_clean_up_path(clean_up_id: @clean_up.id, change_action: 'end'), method: :post %>
     <% end %>
   </div>
 
   <%# CLEAN-UP DETAILS %>
   <div class="gap-5 grid grid-cols-1 mt-6">
     <div>
-      <label for="name" class="block text-sm/6 font-medium text-gray-900">Name</label>
+      <label for="name" class="block text-sm/6 font-medium text-gray-900">
+        Name
+      </label>
+
       <div class="mt-2">
-        <input type="name" name="name" id="name" value="<%= @clean_up.name %>" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6">
+        <input
+          type="name"
+          name="name"
+          value="<%= @clean_up.name %>"
+          disabled
+          class="
+            block w-full rounded-md bg-white px-3 py-1.5 text-base
+            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+            placeholder:text-gray-400 focus:outline-2
+            focus:-outline-offset-2 focus:outline-indigo-600
+            disabled:cursor-not-allowed disabled:bg-gray-50
+            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
+          "
+        >
       </div>
     </div>
+
     <div>
-      <label for="description" class="block text-sm/6 font-medium text-gray-900">Beschreibung</label>
+      <label
+        for="description"
+        class="block text-sm/6 font-medium text-gray-900"
+      >
+        Beschreibung
+      </label>
+
       <div class="mt-2">
-        <textarea type="description" name="description" id="description" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6"><%= @clean_up.description %></textarea>
+        <textarea
+          type="description"
+          name="description"
+          disabled
+          class="
+            block w-full rounded-md bg-white px-3 py-1.5 text-base
+            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+            placeholder:text-gray-400 focus:outline-2
+            focus:-outline-offset-2 focus:outline-indigo-600
+            disabled:cursor-not-allowed disabled:bg-gray-50
+            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
+          "
+        ><%= @clean_up.description %></textarea>
       </div>
     </div>
+
     <div>
-      <label for="name" class="block text-sm/6 font-medium text-gray-900">Datum</label>
+      <label for="name" class="block text-sm/6 font-medium text-gray-900">
+        Datum
+      </label>
+
       <div class="mt-2">
-        <input type="name" name="name" id="name" value="<%= @clean_up.starts_at.strftime("%d.%m.%Y %H:%M") %>" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6">
+        <input
+          type="name"
+          name="name"
+          value="<%= @clean_up.starts_at.strftime("%d.%m.%Y %H:%M") %>"
+          disabled
+          class="
+            block w-full rounded-md bg-white px-3 py-1.5 text-base
+            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+            placeholder:text-gray-400 focus:outline-2
+            focus:-outline-offset-2 focus:outline-indigo-600
+            disabled:cursor-not-allowed disabled:bg-gray-50
+            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
+          "
+        >
       </div>
     </div>
+
     <div>
-      <label for="description" class="block text-sm/6 font-medium text-gray-900">Adresse</label>
+      <label
+        for="description"
+        class="block text-sm/6 font-medium text-gray-900"
+      >
+        Adresse
+      </label>
+
       <div class="mt-2">
-        <textarea type="description" name="description" id="description" disabled class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6"><%= @clean_up.address %></textarea>
+        <textarea
+          type="description"
+          name="description"
+          disabled
+          class="
+            block w-full rounded-md bg-white px-3 py-1.5 text-base
+            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
+            placeholder:text-gray-400 focus:outline-2
+            focus:-outline-offset-2 focus:outline-indigo-600
+            disabled:cursor-not-allowed disabled:bg-gray-50
+            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
+          "
+        ><%= @clean_up.address %></textarea>
       </div>
     </div>
   </div>
@@ -70,30 +133,104 @@
   <% if @clean_up.started? || @clean_up.ended? %>
     <%= render 'admin/clean_ups/cigarettes_summary', clean_up: @clean_up %>
   <% end %>
+
   <% if @clean_up.registerable? %>
     <div class="mt-10">
-      <h2 class="block text-sm/6 font-medium text-gray-900">Teilnehmer hinzufügen</h2>
+      <h2 class="block text-sm/6 font-medium text-gray-900">
+        Teilnehmer hinzufügen
+      </h2>
+
       <%= form_with url: admin_clean_up_participations_path(@clean_up), method: :post, local: true, class: "mt-2" do |f| %>
         <div class="flex gap-4 items-end">
           <div class="flex-1">
-            <label for="participant_id" class="block text-sm/6 font-medium text-gray-900">Bestehender Teilnehmer</label>
-            <select name="participant_id" id="participant_id" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label
+              for="participant_id"
+              class="block text-sm/6 font-medium text-gray-900"
+            >
+              Bestehender Teilnehmer
+            </label>
+
+            <select
+              name="participant_id"
+              id="participant_id"
+              class="
+                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
+                text-base text-gray-900 outline-1 -outline-offset-1
+                outline-gray-300 focus:outline-2 focus:-outline-offset-2
+                focus:outline-indigo-600 sm:text-sm/6
+              "
+            >
               <option value="">-- Oder neuen Namen eingeben --</option>
+
               <% @participants.each do |participant| %>
-                <option value="<%= participant.id %>"><%= participant.name %> (<%= participant.people_count %> Personen)</option>
+                <option value="<%= participant.id %>">
+                  <%= participant.name %> (<%= participant.people_count %>
+                  Personen)
+                </option>
               <% end %>
             </select>
           </div>
+
           <div class="flex-1">
-            <label for="participant_name" class="block text-sm/6 font-medium text-gray-900">Neuer Name</label>
-            <input type="text" name="participant_name" id="participant_name" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label
+              for="participant_name"
+              class="block text-sm/6 font-medium text-gray-900"
+            >
+              Neuer Name
+            </label>
+
+            <input
+              type="text"
+              autocomplete="off"
+              name="participant_name"
+              id="participant_name"
+              class="
+                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
+                text-base text-gray-900 outline-1 -outline-offset-1
+                outline-gray-300 placeholder:text-gray-400 focus:outline-2
+                focus:-outline-offset-2 focus:outline-indigo-600
+                sm:text-sm/6
+              "
+            >
           </div>
+
           <div class="w-32">
-            <label for="participant_people_count" class="block text-sm/6 font-medium text-gray-900">Gruppengröße</label>
-            <input type="number" name="participant_people_count" id="participant_people_count" value="1" min="1" class="mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <label
+              for="participant_people_count"
+              class="block text-sm/6 font-medium text-gray-900"
+            >
+              Gruppengröße
+            </label>
+
+            <input
+              type="number"
+              autocomplete="off"
+              name="participant_people_count"
+              id="participant_people_count"
+              value="1"
+              min="1"
+              class="
+                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
+                text-base text-gray-900 outline-1 -outline-offset-1
+                outline-gray-300 placeholder:text-gray-400 focus:outline-2
+                focus:-outline-offset-2 focus:outline-indigo-600
+                sm:text-sm/6
+              "
+            >
           </div>
+
           <div>
-            <button type="submit" class="mt-2 inline-flex items-center justify-center gap-x-2 h-[38px] rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer">
+            <button
+              type="submit"
+              class="
+                mt-2 inline-flex items-center justify-center gap-x-2
+                h-[38px] rounded-md bg-indigo-600 px-4 py-1.5 text-sm
+                font-semibold text-white shadow-sm hover:bg-indigo-500
+                focus-visible:outline focus-visible:outline-2
+                focus-visible:outline-offset-2
+                focus-visible:outline-indigo-600 cursor-pointer
+              "
+            >
               Hinzufügen
             </button>
           </div>
@@ -104,6 +241,23 @@
 
   <%# PARTICIPANTS TABLE %>
   <%= render "admin/participations/participants_table", clean_up: @clean_up %>
+
+  <%# DELETE LINK %>
+  <div class="mt-10">
+    <%= form_with url: admin_clean_up_path(@clean_up), method: :delete do %>
+      <button
+        type="button"
+        data-action="click->confirm-modal#open"
+        data-confirm-message="Möchten Sie das Clean-Up '<%= h(@clean_up.name) %>' wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+        class="
+          text-sm text-red-600 hover:text-red-500 hover:underline
+          cursor-pointer
+        "
+      >
+        Clean-Up löschen
+      </button>
+    <% end %>
+  </div>
 
   <%# CONFIRMATION MODAL %>
   <%= render 'shared/confirmation_modal', 
