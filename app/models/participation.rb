@@ -6,7 +6,10 @@ class Participation < ApplicationRecord
 
   validates :status, inclusion: { in: %w[registered started returned] }
 
+  after_create_commit :broadcast_participation_created
   after_update_commit :broadcast_cigarettes_count_update, if: :saved_change_to_cigarettes_count?
+  after_update_commit :broadcast_participation_status_changed, if: :saved_change_to_status?
+  after_destroy_commit :broadcast_participation_destroyed
 
   def color_by_status
     case status
@@ -43,6 +46,48 @@ class Participation < ApplicationRecord
   end
 
   private
+
+  def broadcast_participation_created
+    broadcast_admin_updates
+    broadcast_public_participant_count
+  end
+
+  def broadcast_participation_status_changed
+    broadcast_admin_updates
+  end
+
+  def broadcast_participation_destroyed
+    broadcast_admin_updates
+    broadcast_public_participant_count
+  end
+
+  def broadcast_admin_updates
+    # Broadcast to admin clean_up show page - update the participants table
+    broadcast_replace_to(
+      "admin_clean_up_#{clean_up_id}",
+      target: "admin_participants_table_#{clean_up_id}",
+      partial: "admin/participations/participants_table",
+      locals: { clean_up: clean_up }
+    )
+
+    # Broadcast to admin clean_ups index page - update the clean-up row
+    broadcast_replace_to(
+      :admin_clean_ups,
+      target: "admin_clean_up_row_#{clean_up_id}",
+      partial: "admin/clean_ups/clean_up_row",
+      locals: { clean_up: clean_up }
+    )
+  end
+
+  def broadcast_public_participant_count
+    # Broadcast to public registration page - update the participant count
+    broadcast_replace_to(
+      clean_up,
+      target: "participant_count_#{clean_up_id}",
+      partial: "participations/participant_count",
+      locals: { clean_up: clean_up }
+    )
+  end
 
   def broadcast_cigarettes_count_update
     # Broadcast to all clients viewing the same participation (same group)
