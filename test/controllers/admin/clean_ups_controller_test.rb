@@ -150,5 +150,89 @@ module Admin
       assert_equal "started", @clean_up.status
       assert_redirected_to admin_clean_up_path(@clean_up)
     end
+
+    test "update updates clean up name and redirects to show" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { name: "Updated Name" }
+      }
+
+      @clean_up.reload
+      assert_equal "Updated Name", @clean_up.name
+      assert_redirected_to admin_clean_up_path(@clean_up)
+      assert_equal "Clean-Up wurde erfolgreich aktualisiert.", flash[:notice]
+    end
+
+    test "update updates clean up description" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { description: "Updated description" }
+      }
+
+      @clean_up.reload
+      assert_equal "Updated description", @clean_up.description
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "update updates clean up address" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { address: "New Address 123" }
+      }
+
+      @clean_up.reload
+      assert_equal "New Address 123", @clean_up.address
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "update updates clean up date and time" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { date: "2025-06-15", time: "14:30" }
+      }
+
+      @clean_up.reload
+      berlin_time = @clean_up.starts_at.in_time_zone("Europe/Berlin")
+      assert_equal 2025, berlin_time.year
+      assert_equal 6, berlin_time.month
+      assert_equal 15, berlin_time.day
+      assert_equal 14, berlin_time.hour
+      assert_equal 30, berlin_time.min
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "update updates multiple fields at once" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: {
+          name: "Multi Update",
+          description: "Multi description",
+          address: "Multi address",
+          date: "2025-07-20",
+          time: "10:00"
+        }
+      }
+
+      @clean_up.reload
+      assert_equal "Multi Update", @clean_up.name
+      assert_equal "Multi description", @clean_up.description
+      assert_equal "Multi address", @clean_up.address
+      berlin_time = @clean_up.starts_at.in_time_zone("Europe/Berlin")
+      assert_equal 2025, berlin_time.year
+      assert_equal 7, berlin_time.month
+      assert_equal 20, berlin_time.day
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "update with invalid name renders show with unprocessable entity status" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { name: "" }
+      }
+
+      assert_response :unprocessable_entity
+    end
+
+    test "update with invalid date format renders show with unprocessable entity status" do
+      patch admin_clean_up_path(@clean_up), params: {
+        clean_up: { date: "invalid-date" }
+      }
+
+      assert_response :unprocessable_entity
+    end
   end
 end

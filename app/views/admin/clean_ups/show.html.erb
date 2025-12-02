@@ -31,103 +31,51 @@
   </div>
 
   <%# CLEAN-UP DETAILS %>
-  <div class="gap-5 grid grid-cols-1 mt-6">
-    <div>
-      <label for="name" class="block text-sm/6 font-medium text-gray-900">
-        Name
-      </label>
+  <%= form_with model: [:admin, @clean_up], local: true do |form| %>
+    <div class="gap-5 grid grid-cols-1 mt-6">
+      <div>
+        <%= form.label :name, class: "block text-sm/6 font-medium text-gray-900" %>
+        <%= form.text_field :name, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
 
-      <div class="mt-2">
-        <input
-          type="name"
-          name="name"
-          value="<%= @clean_up.name %>"
-          disabled
+      <div>
+        <%= form.label :description, "Beschreibung", class: "block text-sm/6 font-medium text-gray-900" %>
+        <%= form.text_area :description, rows: "2", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
+
+      <div>
+        <%= form.label "Datum", class: "block text-sm/6 font-medium text-gray-900" %>
+
+        <% berlin_time = @clean_up.starts_at&.in_time_zone("Europe/Berlin") %>
+        <div class="flex items-center space-x-2">
+          <%= form.date_field :date, value: berlin_time&.strftime("%Y-%m-%d"), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+          <%= form.time_field :time, value: berlin_time&.strftime("%H:%M"), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :address, "Adresse", class: "block text-sm/6 font-medium text-gray-900" %>
+        <%= form.text_area :address, rows: "2", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
+      </div>
+
+      <div>
+        <button
+          type="submit"
           class="
-            block w-full rounded-md bg-white px-3 py-1.5 text-base
-            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
-            placeholder:text-gray-400 focus:outline-2
-            focus:-outline-offset-2 focus:outline-indigo-600
-            disabled:cursor-not-allowed disabled:bg-gray-50
-            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
+            inline-flex items-center justify-center gap-x-2
+            rounded-md bg-indigo-600 px-4 py-2 text-sm
+            font-semibold text-white shadow-sm hover:bg-indigo-500
+            focus-visible:outline focus-visible:outline-2
+            focus-visible:outline-offset-2
+            focus-visible:outline-indigo-600 cursor-pointer
           "
         >
+          <%= icon('save') %>
+          Speichern
+        </button>
       </div>
     </div>
-
-    <div>
-      <label
-        for="description"
-        class="block text-sm/6 font-medium text-gray-900"
-      >
-        Beschreibung
-      </label>
-
-      <div class="mt-2">
-        <textarea
-          type="description"
-          name="description"
-          disabled
-          class="
-            block w-full rounded-md bg-white px-3 py-1.5 text-base
-            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
-            placeholder:text-gray-400 focus:outline-2
-            focus:-outline-offset-2 focus:outline-indigo-600
-            disabled:cursor-not-allowed disabled:bg-gray-50
-            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
-          "
-        ><%= @clean_up.description %></textarea>
-      </div>
-    </div>
-
-    <div>
-      <label for="name" class="block text-sm/6 font-medium text-gray-900">
-        Datum
-      </label>
-
-      <div class="mt-2">
-        <input
-          type="name"
-          name="name"
-          value="<%= @clean_up.starts_at.hour == 0 && @clean_up.starts_at.min == 0 ? @clean_up.starts_at.strftime('%d.%m.%Y') : @clean_up.starts_at.in_time_zone('Europe/Berlin').strftime('%d.%m.%Y, %H:%M Uhr') %>"
-          disabled
-          class="
-            block w-full rounded-md bg-white px-3 py-1.5 text-base
-            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
-            placeholder:text-gray-400 focus:outline-2
-            focus:-outline-offset-2 focus:outline-indigo-600
-            disabled:cursor-not-allowed disabled:bg-gray-50
-            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
-          "
-        >
-      </div>
-    </div>
-
-    <div>
-      <label
-        for="description"
-        class="block text-sm/6 font-medium text-gray-900"
-      >
-        Adresse
-      </label>
-
-      <div class="mt-2">
-        <textarea
-          type="description"
-          name="description"
-          disabled
-          class="
-            block w-full rounded-md bg-white px-3 py-1.5 text-base
-            text-gray-900 outline-1 -outline-offset-1 outline-gray-300
-            placeholder:text-gray-400 focus:outline-2
-            focus:-outline-offset-2 focus:outline-indigo-600
-            disabled:cursor-not-allowed disabled:bg-gray-50
-            disabled:text-gray-500 disabled:outline-gray-200 sm:text-sm/6
-          "
-        ><%= @clean_up.address %></textarea>
-      </div>
-    </div>
-  </div>
+  <% end %>
 
   <%# CIGARETTES COUNT SUMMARY %>
   <% if @clean_up.started? || @clean_up.ended? %>
