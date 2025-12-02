@@ -144,5 +144,15 @@ class ParticipationTest < ActiveSupport::TestCase
            "Expected broadcast_public_participant_count to be defined as a private method"
     assert Participation.private_method_defined?(:broadcast_user_participation_content),
            "Expected broadcast_user_participation_content to be defined as a private method"
+    assert Participation.private_method_defined?(:broadcast_scoreboard_update),
+           "Expected broadcast_scoreboard_update to be defined as a private method"
+    assert Participation.private_method_defined?(:should_broadcast_scoreboard_update?),
+           "Expected should_broadcast_scoreboard_update? to be defined as a private method"
+  end
+
+  test "has broadcast_scoreboard_update callback registered" do
+    # Verify the after_update_commit callback for scoreboard update is defined
+    callbacks = Participation._commit_callbacks.select { |cb| cb.filter == :broadcast_scoreboard_update }
+    assert_not_empty callbacks, "Expected broadcast_scoreboard_update callback to be defined"
   end
 end
