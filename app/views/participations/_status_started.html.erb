@@ -27,8 +27,16 @@
 </div>
 
 <%# Cigarettes counter card %>
-<div class="mb-20">
+<div class="mb-6">
   <%= render 'participations/cigarettes_counter', participation: participation %>
+</div>
+
+<%# Group sharing info box %>
+<div class="mb-20">
+  <%= render 'shared/share_link_box', 
+      message: raw("<strong>Gruppenfunktion:</strong> Teile diesen Link mit deiner Gruppe – alle können gemeinsam Kippen zählen!"),
+      url: show_participation_url(participation),
+      icon_path: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" %>
 </div>
 
 <%= form_with url: participation_path(participation), method: :patch, local: true do |f| %>
