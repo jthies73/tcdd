@@ -259,6 +259,33 @@
     <% end %>
   </div>
 
+  <%# REVERT STATUS LINK %>
+  <% if @clean_up.status != 'created' %>
+    <div class="mt-4">
+      <%= form_with url: revert_status_admin_clean_up_path(@clean_up), method: :post do %>
+        <%
+          revert_label = case @clean_up.status
+                         when 'registration_enabled'
+                           'Registrierung Schließen'
+                         when 'started'
+                           'Öffnung Rückgängig Machen'
+                         when 'ended'
+                           'Fortsetzen'
+                         end
+        %>
+        <button
+          type="submit"
+          class="
+            text-sm text-gray-600 hover:text-blue-500 hover:underline
+            cursor-pointer
+          "
+        >
+          <%= revert_label %>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
+
   <%# CONFIRMATION MODAL %>
   <%= render 'shared/confirmation_modal', 
       title: 'Löschen bestätigen',
