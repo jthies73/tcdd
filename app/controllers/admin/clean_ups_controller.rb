@@ -9,13 +9,8 @@ module Admin
     end
 
     def create
-      date = Date.parse(clean_up_params[:date])
-      time = Time.parse(clean_up_params[:time])
-      # Interpret as Europe/Berlin and convert to UTC
-      berlin_tz = ActiveSupport::TimeZone["Europe/Berlin"]
-      local_datetime = berlin_tz.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
-      utc_datetime = local_datetime.utc
-      modified_params = clean_up_params.except(:date, :time).merge(starts_at: utc_datetime)
+      modified_params = build_params_with_starts_at
+      return render :new, status: :unprocessable_entity if modified_params.nil?
 
       @clean_up = CleanUp.new(modified_params)
       @clean_up.status = "created"
@@ -30,6 +25,23 @@ module Admin
     def show
       @clean_up = CleanUp.find(params[:id])
       @participants = Participant.all
+    end
+
+    def update
+      @clean_up = CleanUp.find(params[:id])
+      modified_params = build_params_with_starts_at
+
+      if modified_params.nil?
+        @participants = Participant.all
+        return render :show, status: :unprocessable_entity
+      end
+
+      if @clean_up.update(modified_params)
+        redirect_to admin_clean_up_path(@clean_up), notice: "Clean-Up wurde erfolgreich aktualisiert."
+      else
+        @participants = Participant.all
+        render :show, status: :unprocessable_entity
+      end
     end
 
     # POST /admin/clean_ups/:id/change_status
@@ -116,6 +128,30 @@ module Admin
 
     def add_cigarettes_params
       params.permit(:amount)
+    end
+
+    def build_params_with_starts_at
+      date_str = clean_up_params[:date]
+      time_str = clean_up_params[:time]
+      base_params = clean_up_params.except(:date, :time)
+
+      return base_params if date_str.blank?
+
+      begin
+        date = Date.parse(date_str)
+        berlin_tz = ActiveSupport::TimeZone["Europe/Berlin"]
+
+        if time_str.present?
+          time = Time.parse(time_str)
+          local_datetime = berlin_tz.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
+        else
+          local_datetime = berlin_tz.local(date.year, date.month, date.day, 0, 0, 0)
+        end
+
+        base_params.merge(starts_at: local_datetime.utc)
+      rescue ArgumentError
+        nil
+      end
     end
   end
 end
