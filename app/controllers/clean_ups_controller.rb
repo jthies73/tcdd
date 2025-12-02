@@ -45,7 +45,9 @@ class CleanUpsController < ApplicationController
   def build_calendar_description(clean_up, participation)
     parts = []
     parts << clean_up.description.to_s if clean_up.description.present?
-    parts << "Dein Teilnahme-Link: #{show_participation_url(participation)}" if participation
+    if participation && participation.clean_up_id == clean_up.id
+      parts << "Dein Teilnahme-Link: #{show_participation_url(participation)}"
+    end
     parts.join("\n\n")
   end
 

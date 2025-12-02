@@ -139,4 +139,27 @@ class CleanUpsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_not_includes response.body, "Dein Teilnahme-Link:"
   end
+
+  test "calendar does not include participation link when participation belongs to different clean_up" do
+    other_clean_up = CleanUp.create!(
+      name: "Other Clean-Up",
+      description: "Other description",
+      status: "started",
+      starts_at: Time.zone.parse("2024-06-20 14:00:00"),
+      address: "Other location"
+    )
+
+    participant = Participant.create!(name: "Test Participant", people_count: 1)
+    participation = Participation.create!(
+      clean_up: other_clean_up,
+      participant: participant,
+      status: "registered"
+    )
+
+    # Request calendar for @clean_up but pass participation from other_clean_up
+    get calendar_clean_up_path(@clean_up, participation_id: participation.id)
+
+    assert_response :success
+    assert_not_includes response.body, "Dein Teilnahme-Link:"
+  end
 end
