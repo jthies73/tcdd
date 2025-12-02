@@ -1,5 +1,6 @@
 class ParticipationsController < ApplicationController
   def new
+    PageVisit.track_visit!
     @latest_clean_up = CleanUp.last
 
     # Set statistics for display
