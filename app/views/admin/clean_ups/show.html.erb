@@ -47,6 +47,7 @@
         <%= form.label "Datum", class: "block text-sm/6 font-medium text-gray-900" %>
 
         <% berlin_time = @clean_up.starts_at&.in_time_zone("Europe/Berlin") %>
+
         <div class="flex items-center space-x-2">
           <%= form.date_field :date, value: berlin_time&.strftime("%Y-%m-%d"), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
           <%= form.time_field :time, value: berlin_time&.strftime("%H:%M"), class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" %>
@@ -70,8 +71,7 @@
             focus-visible:outline-indigo-600 cursor-pointer
           "
         >
-          <%= icon('save') %>
-          Speichern
+          <%= icon('save') %> Speichern
         </button>
       </div>
     </div>
@@ -89,8 +89,8 @@
       </h2>
 
       <%= form_with url: admin_clean_up_participations_path(@clean_up), method: :post, local: true, class: "mt-2" do |f| %>
-        <div class="flex gap-4 items-end">
-          <div class="flex-1">
+        <div class="flex flex-col gap-4 sm:flex-row sm:gap-4 sm:items-end">
+          <div class="w-full flex-1">
             <label
               for="participant_id"
               class="block text-sm/6 font-medium text-gray-900"
@@ -119,55 +119,57 @@
             </select>
           </div>
 
-          <div class="flex-1">
-            <label
-              for="participant_name"
-              class="block text-sm/6 font-medium text-gray-900"
-            >
-              Neuer Name
-            </label>
+          <div class="flex sm:flex-row sm:items-end gap-4">
+            <div class="w-full flex-1">
+              <label
+                for="participant_name"
+                class="block text-sm/6 font-medium text-gray-900"
+              >
+                Neuer Name
+              </label>
 
-            <input
-              type="text"
-              autocomplete="off"
-              name="participant_name"
-              id="participant_name"
-              class="
-                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
-                text-base text-gray-900 outline-1 -outline-offset-1
-                outline-gray-300 placeholder:text-gray-400 focus:outline-2
-                focus:-outline-offset-2 focus:outline-indigo-600
-                sm:text-sm/6
-              "
-            >
+              <input
+                type="text"
+                autocomplete="off"
+                name="participant_name"
+                id="participant_name"
+                class="
+                  mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
+                  text-base text-gray-900 outline-1 -outline-offset-1
+                  outline-gray-300 placeholder:text-gray-400 focus:outline-2
+                  focus:-outline-offset-2 focus:outline-indigo-600
+                  sm:text-sm/6
+                "
+              >
+            </div>
+
+            <div class="w-full flex-1">
+              <label
+                for="participant_people_count"
+                class="block text-sm/6 font-medium text-gray-900"
+              >
+                Gruppengröße
+              </label>
+
+              <input
+                type="number"
+                autocomplete="off"
+                name="participant_people_count"
+                id="participant_people_count"
+                value="1"
+                min="1"
+                class="
+                  mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
+                  text-base text-gray-900 outline-1 -outline-offset-1
+                  outline-gray-300 placeholder:text-gray-400 focus:outline-2
+                  focus:-outline-offset-2 focus:outline-indigo-600
+                  sm:text-sm/6
+                "
+              >
+            </div>
           </div>
 
-          <div class="w-32">
-            <label
-              for="participant_people_count"
-              class="block text-sm/6 font-medium text-gray-900"
-            >
-              Gruppengröße
-            </label>
-
-            <input
-              type="number"
-              autocomplete="off"
-              name="participant_people_count"
-              id="participant_people_count"
-              value="1"
-              min="1"
-              class="
-                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
-                text-base text-gray-900 outline-1 -outline-offset-1
-                outline-gray-300 placeholder:text-gray-400 focus:outline-2
-                focus:-outline-offset-2 focus:outline-indigo-600
-                sm:text-sm/6
-              "
-            >
-          </div>
-
-          <div>
+          <div class="w-full sm:w-auto">
             <button
               type="submit"
               class="
