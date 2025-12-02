@@ -47,9 +47,16 @@ export default class extends Controller {
   }
 
   getParticipationIdFromUrl() {
-    // Extract participation ID from URL - assumes ID is the last segment
-    // e.g., /participations/123 -> "123"
+    // Extract participation ID from URL - the ID is the last numeric segment
+    // Handles /participations/123 and /go/123 URLs
     const pathSegments = window.location.pathname.split("/").filter(Boolean)
-    return pathSegments[pathSegments.length - 1]
+    const lastSegment = pathSegments[pathSegments.length - 1]
+
+    // Only return if the last segment is numeric (a valid ID)
+    if (lastSegment && /^\d+$/.test(lastSegment)) {
+      return lastSegment
+    }
+
+    return null
   }
 }
