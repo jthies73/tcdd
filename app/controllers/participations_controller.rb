@@ -44,9 +44,24 @@ class ParticipationsController < ApplicationController
       end
     else
       # if only a participant name is provided, create a new participant
+      participant_name = registration_params[:participant_name]
+      participant_people_count = registration_params[:participant_people_count] || 1
+
+      # Check if a participant with this name already exists
+      if Participant.exists?(name: participant_name)
+        @error_message = "Dieser Name ist bereits vergeben. Bitte wähle deinen Namen aus der Liste oder gib einen anderen Namen ein."
+        @participant_data = { name: participant_name, people_count: participant_people_count }
+
+        respond_to do |format|
+          format.turbo_stream
+          format.html { redirect_to new_participation_path }
+        end
+        return
+      end
+
       participant = Participant.new
-      participant.name = registration_params[:participant_name]
-      participant.people_count = registration_params[:participant_people_count] || 1
+      participant.name = participant_name
+      participant.people_count = participant_people_count
       participant.save
       participation.participant_id = participant.id
     end

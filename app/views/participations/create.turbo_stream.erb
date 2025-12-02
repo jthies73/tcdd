@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "new_participant_section" do %>
+  <%= render "participations/new_participant_form", 
+      participant: @participant_data, 
+      error_message: @error_message %>
+<% end %>

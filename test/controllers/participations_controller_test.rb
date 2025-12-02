@@ -121,4 +121,49 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h3", text: "Unsere bisherigen Erfolge"
   end
+
+  test "create with duplicate participant name returns turbo_stream response" do
+    post participations_path,
+      params: { participant_name: "Test Participant", participant_people_count: 3 },
+      headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+  end
+
+  test "create with duplicate participant name contains error message" do
+    post participations_path,
+      params: { participant_name: "Test Participant", participant_people_count: 3 },
+      headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    assert_includes response.body, "Dieser Name ist bereits vergeben"
+  end
+
+  test "create with duplicate participant name repopulates form with submitted values" do
+    post participations_path,
+      params: { participant_name: "Test Participant", participant_people_count: 5 },
+      headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    assert_includes response.body, "Test Participant"
+    assert_includes response.body, "5"
+  end
+
+  test "create with duplicate participant name does not create new participant" do
+    assert_no_difference "Participant.count" do
+      post participations_path,
+        params: { participant_name: "Test Participant", participant_people_count: 3 },
+        headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+    end
+  end
+
+  test "create with unique participant name creates participant and redirects" do
+    assert_difference "Participant.count", 1 do
+      post participations_path,
+        params: { participant_name: "New Unique Participant", participant_people_count: 2 }
+    end
+
+    assert_redirected_to show_participation_path(Participation.last)
+  end
 end
