@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ["input", "display"]
   static values = {
     participationId: Number,
-    debounceDelay: { type: Number, default: 2000 }
+    debounceDelay: { type: Number, default: 200 }
   }
 
   connect() {
