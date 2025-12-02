@@ -89,7 +89,7 @@
         <input
           type="name"
           name="name"
-          value="<%= @clean_up.starts_at.hour == 0 && @clean_up.starts_at.min == 0 ? @clean_up.starts_at.strftime('%d.%m.%Y') : @clean_up.starts_at.in_time_zone('Europe/Berlin').strftime('%d.%m.%Y %H:%M Uhr') %>"
+          value="<%= @clean_up.starts_at.hour == 0 && @clean_up.starts_at.min == 0 ? @clean_up.starts_at.strftime('%d.%m.%Y') : @clean_up.starts_at.in_time_zone('Europe/Berlin').strftime('%d.%m.%Y, %H:%M Uhr') %>"
           disabled
           class="
             block w-full rounded-md bg-white px-3 py-1.5 text-base
