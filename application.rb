@@ -21,7 +21,12 @@ module TcddApp
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+
+    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
+    # Run "rake -D time" for a list of tasks for finding time zone
+    config.time_zone = 'Europe/Berlin'      # For presentation in Berlin time
+    config.active_record.default_timezone = :utc  # Always store in UTC!
+
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

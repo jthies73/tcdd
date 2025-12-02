@@ -11,8 +11,11 @@ module Admin
     def create
       date = Date.parse(clean_up_params[:date])
       time = Time.parse(clean_up_params[:time])
-      datetime = DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec)
-      modified_params = clean_up_params.except(:date, :time).merge(starts_at: datetime)
+      # Interpret as Europe/Berlin and convert to UTC
+      berlin_tz = ActiveSupport::TimeZone["Europe/Berlin"]
+      local_datetime = berlin_tz.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
+      utc_datetime = local_datetime.utc
+      modified_params = clean_up_params.except(:date, :time).merge(starts_at: utc_datetime)
 
       @clean_up = CleanUp.new(modified_params)
       @clean_up.status = "created"

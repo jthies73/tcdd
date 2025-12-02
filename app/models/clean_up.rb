@@ -67,6 +67,7 @@ class CleanUp < ApplicationRecord
     end
 
     update!(status: "registration_enabled")
+    schedule_auto_start
   end
 
   def registerable?
@@ -111,6 +112,14 @@ class CleanUp < ApplicationRecord
     return unless starts_at.present?
 
     end_time = starts_at + 24.hours
+    Rails.logger.info("Scheduling auto end for CleanUp ##{id} at #{end_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
     EndCleanUpJob.set(wait_until: end_time).perform_later(id)
+  end
+
+  def schedule_auto_start
+    return unless starts_at.present?
+
+    Rails.logger.info("Scheduling auto start for CleanUp ##{id} at #{starts_at.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    StartCleanUpJob.set(wait_until: starts_at).perform_later(id)
   end
 end
