@@ -137,7 +137,7 @@ class Participation < ApplicationRecord
       "scoreboard_#{clean_up_id}",
       target: "scoreboard_#{clean_up_id}",
       partial: "participations/scoreboard",
-      locals: { clean_up: clean_up, participation: self }
+      locals: { clean_up: clean_up }
     )
   end
 end
