@@ -10,6 +10,8 @@ export default class extends Controller {
     const text = this.sourceTarget.value || this.sourceTarget.textContent
     navigator.clipboard.writeText(text).then(() => {
       this.showSuccess()
+    }).catch((error) => {
+      console.error("Failed to copy to clipboard:", error)
     })
   }
 
