@@ -41,4 +41,10 @@ Rails.application.routes.draw do
   end
 
   get "/qr" => "qr_codes#show", as: :qr_code
+
+  resources :clean_ups, only: [] do
+    member do
+      get "calendar"
+    end
+  end
 end
