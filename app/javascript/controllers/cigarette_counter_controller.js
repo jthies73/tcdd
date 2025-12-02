@@ -17,6 +17,10 @@ export default class extends Controller {
     }
   }
 
+  increment1() {
+    this.updateValue(this.getCurrentValue() + 1)
+  }
+
   increment10() {
     this.updateValue(this.getCurrentValue() + 10)
   }

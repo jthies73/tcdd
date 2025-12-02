@@ -24,18 +24,23 @@
     <%# Batch increment buttons %>
     <div class="flex items-center justify-center space-x-3">
       <button type="button"
+              data-action="click->cigarette-counter#increment1"
+              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-50 text-green-700 font-semibold hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
+        +1
+      </button>
+      <button type="button"
               data-action="click->cigarette-counter#increment10"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
         +10
       </button>
       <button type="button"
               data-action="click->cigarette-counter#increment20"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-200 text-green-800 font-semibold hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-200 text-green-800 font-semibold hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
         +20
       </button>
       <button type="button"
               data-action="click->cigarette-counter#increment50"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-300 text-green-900 font-semibold hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-300 text-green-900 font-semibold hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
         +50
       </button>
     </div>
