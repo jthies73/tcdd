@@ -35,7 +35,7 @@ export default class extends Controller {
 
     try {
       // Generate QR code using our ES module library
-      const qr = new QRCode(url, { errorCorrectionLevel: 'M' })
+      const qr = new QRCode(url)
       
       // Create the QR code SVG
       const svgElement = qr.toSVGElement({ size: QR_SIZE })

@@ -1,8 +1,10 @@
 /**
- * Simple QR Code Generator using Canvas API
+ * QRCode Generator - Pure JavaScript ES Module
  * 
- * This implementation uses a simplified QR code algorithm suitable for short URLs.
- * For production use, consider using a well-tested library like qrcode-generator.
+ * Generates QR codes as SVG elements for clean, scalable rendering.
+ * Based on QR Code specification ISO/IEC 18004:2015.
+ * 
+ * This is a minimal ES module implementation for use via importmap.
  */
 
 // QR Code generator using a simple implementation
