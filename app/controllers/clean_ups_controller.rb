@@ -13,9 +13,9 @@ class CleanUpsController < ApplicationController
   private
 
   def generate_icalendar(clean_up)
-    start_time = clean_up.starts_at.utc.strftime("%Y%m%dT%H%M%SZ")
-    end_time = (clean_up.starts_at + 2.hours).utc.strftime("%Y%m%dT%H%M%SZ")
-    timestamp = Time.now.utc.strftime("%Y%m%dT%H%M%SZ")
+    start_time = clean_up.starts_at.strftime("%Y%m%dT%H%M%SZ")
+    end_time = (clean_up.starts_at + 2.hours).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = Time.now.strftime("%Y%m%dT%H%M%SZ")
     uid = "#{clean_up.id}-#{clean_up.created_at.to_i}@trashcan-dresden"
 
     <<~ICAL
