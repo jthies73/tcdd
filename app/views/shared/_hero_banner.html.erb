@@ -10,18 +10,26 @@
 
 <div class="relative h-100 overflow-hidden">
   <!-- Blurred background layer -->
-  <div class="absolute inset-0 bg-cover bg-no-repeat" style="background-image: url('/thumbnail_1000124857.jpg'); background-position: center 80%; filter: blur(1px); transform: scale(1.1);"></div>
-  
+  <div
+    class="absolute inset-0 bg-cover bg-no-repeat"
+    style="background-image: url('/thumbnail_1000124857.jpg'); background-position: center 80%; filter: blur(1px); transform: scale(1.1);"
+  ></div>
+
   <!-- Overlay -->
   <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50"></div>
-  
+
   <!-- Content layer (no blur) -->
   <div class="absolute inset-0 flex items-center justify-center">
     <div class="text-center">
-      <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6 drop-shadow-lg">
-        <%= title %>
+      <h1 class="text-3xl sm:text-5xl font-extrabold mb-6 animate-fade-in">
+        <span
+          class="bg-clip-text text-white drop-shadow-lg"
+          style="font-family: 'Inter', 'system-ui', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.01em;"
+        >
+          <%= title %>
+        </span>
       </h1>
-      
+
       <p class="text-lg sm:text-xl text-white text-opacity-95 drop-shadow-md">
         <%= subtitle %>
       </p>
