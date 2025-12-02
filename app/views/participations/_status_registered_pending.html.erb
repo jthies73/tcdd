@@ -1,22 +1,117 @@
 <%# Clean-up not started yet - show waiting state %>
-<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-  <div class="bg-indigo-600 px-6 py-4">
-    <div class="flex items-center justify-center">
-      <span class="text-lg font-semibold text-white">
-        Anmeldung erfolgreich!
-      </span>
+<div data-controller="confirm-modal">
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div class="bg-indigo-600 px-6 py-4">
+      <div class="flex items-center justify-center">
+        <span class="text-lg font-semibold text-white">
+          Anmeldung erfolgreich!
+        </span>
+      </div>
+    </div>
+
+    <div class="px-6 py-8 text-center">
+      <div
+        class="
+          inline-flex items-center justify-center w-20 h-20 bg-indigo-100
+          rounded-full mb-6
+        "
+      >
+        <svg
+          class="w-10 h-10 text-indigo-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </div>
+
+      <h2 class="text-xl font-bold text-gray-900 mb-3">
+        Danke für deine Anmeldung!
+      </h2>
+
+      <p class="text-gray-600 mb-6">
+        Wir freuen uns, dass du dabei bist! Komm zurück auf diese Seite, sobald
+        der Clean-Up gestartet wurde. Du erhältst hier dann einen Button zum
+        Starten.
+      </p>
+
+      <%# Clean-up details %>
+      <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-left">
+        <h3 class="text-sm font-semibold text-gray-900 mb-3">
+          Details zum Clean-Up
+        </h3>
+
+        <div class="space-y-3">
+          <%# Clean-up name %>
+          <div class="flex items-center text-gray-700">
+            <svg
+              class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+
+            <span><%= participation.clean_up.name %></span>
+          </div>
+
+          <%# Datetime information %>
+          <div class="flex items-center text-gray-700">
+            <svg
+              class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <span class="font-medium">
+              <%= participation.clean_up.starts_at.in_time_zone("Europe/Berlin").strftime("%d.%m.%Y um %H:%M") %>
+              Uhr
+            </span>
+          </div>
+
+          <%# Location with maps link %>
+          <%= render 'shared/maps_link', clean_up: participation.clean_up %>
+        </div>
+
+        <%# Calendar button %>
+        <div class="mt-5 pt-5 border-t border-gray-100">
+          <%= render 'shared/calendar_button', clean_up: participation.clean_up, participation: participation %>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="px-6 py-8 text-center">
-    <div
-      class="
-        inline-flex items-center justify-center w-20 h-20 bg-indigo-100
-        rounded-full mb-6
-      "
-    >
+  <%# Share link info box %>
+  <div class="mt-6">
+    <%= render 'shared/share_link_box', 
+        message: raw("<strong>Tipp:</strong> Speichere diesen Link, um später wieder auf diese Seite zu gelangen."),
+        url: show_participation_url(participation) %>
+  </div>
+
+  <div class="mt-6 bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+    <div class="flex items-start">
       <svg
-        class="w-10 h-10 text-indigo-600"
+        class="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -25,107 +120,39 @@
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
-          d="M5 13l4 4L19 7"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-    </div>
 
-    <h2 class="text-xl font-bold text-gray-900 mb-3">
-      Danke für deine Anmeldung!
-    </h2>
-
-    <p class="text-gray-600 mb-6">
-      Wir freuen uns, dass du dabei bist! Komm zurück auf diese Seite, sobald
-      der Clean-Up gestartet wurde. Du erhältst hier dann einen Button zum
-      Starten.
-    </p>
-
-    <%# Clean-up details %>
-    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-left">
-      <h3 class="text-sm font-semibold text-gray-900 mb-3">
-        Details zum Clean-Up
-      </h3>
-
-      <div class="space-y-3">
-        <%# Clean-up name %>
-        <div class="flex items-center text-gray-700">
-          <svg
-            class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-
-          <span><%= participation.clean_up.name %></span>
-        </div>
-
-        <%# Datetime information %>
-        <div class="flex items-center text-gray-700">
-          <svg
-            class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-
-          <span class="font-medium">
-            <%= participation.clean_up.starts_at.in_time_zone("Europe/Berlin").strftime("%d.%m.%Y um %H:%M") %>
-            Uhr
-          </span>
-        </div>
-
-        <%# Location with maps link %>
-        <%= render 'shared/maps_link', clean_up: participation.clean_up %>
-      </div>
-
-      <%# Calendar button %>
-      <div class="mt-5 pt-5 border-t border-gray-100">
-        <%= render 'shared/calendar_button', clean_up: participation.clean_up, participation: participation %>
-      </div>
+      <p class="text-sm text-yellow-800">
+        <strong>Hinweis:</strong> Diese Seite aktualisiert sich automatisch, wenn
+        der Clean-Up startet.
+      </p>
     </div>
   </div>
-</div>
 
-<%# Share link info box %>
-<div class="mt-6">
-  <%= render 'shared/share_link_box', 
-      message: raw("<strong>Tipp:</strong> Speichere diesen Link, um später wieder auf diese Seite zu gelangen."),
-      url: show_participation_url(participation) %>
-</div>
-
-<div class="mt-6 bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-  <div class="flex items-start">
-    <svg
-      class="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-
-    <p class="text-sm text-yellow-800">
-      <strong>Hinweis:</strong> Diese Seite aktualisiert sich automatisch, wenn
-      der Clean-Up startet.
-    </p>
+  <%# Revoke participation link %>
+  <div class="mt-6 text-center">
+    <%= form_with url: participation_path(participation), method: :delete do %>
+      <button
+        type="button"
+        data-action="click->confirm-modal#open"
+        data-confirm-message="Bist du sicher, dass du deine Teilnahme stornieren möchtest?"
+        class="
+          text-sm text-red-600 hover:text-red-500 hover:underline
+          cursor-pointer
+        "
+      >
+        Teilnahme stornieren
+      </button>
+    <% end %>
   </div>
+
+  <%# Confirmation modal %>
+  <%= render 'shared/confirmation_modal', 
+      title: 'Teilnahme stornieren',
+      message: 'Bist du sicher, dass du deine Teilnahme stornieren möchtest?',
+      confirm_text: 'Ja, stornieren',
+      cancel_text: 'Nein, zurück',
+      danger: true %>
 </div>

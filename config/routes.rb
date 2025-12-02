@@ -35,11 +35,13 @@ Rails.application.routes.draw do
   root to: redirect("/go")
   get "go" => "participations#new", as: :new_participation
   get "go/:id" => "participations#show", as: :show_participation
-  resources :participations, only: %i[create update] do
+  resources :participations, only: %i[create update destroy] do
     member do
       patch "update_cigarettes_count", to: "participations#update_cigarettes_count"
     end
   end
+
+  get "farewell" => "pages#farewell", as: :farewell
 
   get "/qr" => "qr_codes#show", as: :qr_code
 

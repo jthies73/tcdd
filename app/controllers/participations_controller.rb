@@ -104,6 +104,20 @@ class ParticipationsController < ApplicationController
     end
   end
 
+  # DELETE /participations/:id
+  def destroy
+    participation = Participation.find(params[:id])
+
+    # Only allow cancellation for participations in "registered" status
+    # and when the clean-up has not started yet
+    if participation.status == "registered" && !participation.clean_up.started? && !participation.clean_up.ended?
+      participation.destroy
+      redirect_to farewell_path
+    else
+      redirect_to show_participation_path(participation)
+    end
+  end
+
   private
 
   def registration_params

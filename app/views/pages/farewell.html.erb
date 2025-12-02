@@ -1,0 +1,66 @@
+<div class="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+  <%# Hero banner %>
+  <%= render "shared/hero_banner", 
+      title: "Auf Wiedersehen!", 
+      subtitle: "Bis zum nächsten Mal",
+      icon_container_size: "w-24 h-24",
+      icon_size: "w-14 h-14", 
+      icon_margin: "mb-6" %>
+
+  <div class="px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto -mt-8 pb-16">
+    <%# Farewell card %>
+    <div
+      class="
+        mb-6 bg-white rounded-2xl shadow-lg p-8 border border-gray-100
+        relative z-10 text-center
+      "
+    >
+      <div
+        class="
+          flex items-center justify-center w-16 h-16 bg-blue-100
+          rounded-full mx-auto mb-6
+        "
+      >
+        <svg
+          class="w-8 h-8 text-blue-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">
+        Schade, dass du nicht dabei sein kannst!
+      </h2>
+
+      <p class="text-gray-600 mb-6">
+        Deine Anmeldung wurde erfolgreich storniert. Wir hoffen, dich beim nächsten Clean-Up wieder zu sehen!
+      </p>
+
+      <div class="border-t border-gray-100 pt-6 mt-6">
+        <h3 class="text-sm font-medium text-gray-900 mb-4">
+          Bleib in Kontakt
+        </h3>
+
+        <p class="text-sm text-gray-500">
+          Folge uns auf Instagram, um keine Termine zu verpassen und über neue Aktionen informiert zu bleiben.
+        </p>
+      </div>
+    </div>
+
+    <%# Instagram link %>
+    <%= render "shared/instagram_link" %>
+    
+    <%# Link back to home %>
+    <div class="mt-6 text-center">
+      <%= link_to "Zurück zur Startseite", root_path, class: "text-indigo-600 hover:text-indigo-800 font-medium" %>
+    </div>
+  </div>
+</div>
