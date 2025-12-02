@@ -1,9 +1,11 @@
 <%= turbo_frame_tag "cigarettes_counter_#{participation.id}" do %>
-  <div id="cigarettes_counter_<%= participation.id %>"
-       data-controller="cigarette-counter"
-       data-cigarette-counter-participation-id-value="<%= participation.id %>"
-       data-cigarette-counter-debounce-delay-value="2000"
-       class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+  <div
+    id="cigarettes_counter_<%= participation.id %>"
+    data-controller="cigarette-counter"
+    data-cigarette-counter-participation-id-value="<%= participation.id %>"
+    data-cigarette-counter-debounce-delay-value="200"
+    class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200"
+  >
     <div class="text-center mb-4">
       <h2 class="text-lg font-semibold text-gray-900">Kippen</h2>
       <p class="text-sm text-gray-500">Gefundene Kippen zählen</p>
@@ -12,35 +14,72 @@
     <%# Counter input - styled as card element %>
     <div class="flex items-center justify-center mb-4">
       <div class="relative">
-        <input type="number"
-               data-cigarette-counter-target="input"
-               data-action="change->cigarette-counter#inputChanged"
-               value="<%= participation.cigarettes_count || 0 %>"
-               min="0"
-               class="w-28 h-20 text-center text-4xl font-bold text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+        <input
+          type="number"
+          autoComplete="off"
+          data-cigarette-counter-target="input"
+          data-action="change->cigarette-counter#inputChanged"
+          value="<%= participation.cigarettes_count || 0 %>"
+          min="0"
+          class="
+            w-28 h-20 text-center text-4xl font-bold text-gray-900
+            bg-gray-50 border-2 border-gray-200 rounded-xl
+            focus:outline-none focus:border-indigo-500 focus:ring-2
+            focus:ring-indigo-200 transition-all [appearance:textfield]
+            [&::-webkit-outer-spin-button]:appearance-none
+            [&::-webkit-inner-spin-button]:appearance-none
+          "
+        >
       </div>
     </div>
 
     <%# Batch increment buttons %>
     <div class="flex items-center justify-center space-x-3">
-      <button type="button"
-              data-action="click->cigarette-counter#increment1"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-50 text-green-700 font-semibold hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
+      <button
+        type="button"
+        data-action="click->cigarette-counter#increment1"
+        class="
+          flex items-center justify-center px-4 py-2 rounded-lg bg-green-50
+          text-green-700 font-semibold hover:bg-green-200 focus:outline-none
+          focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer
+        "
+      >
         +1
       </button>
-      <button type="button"
-              data-action="click->cigarette-counter#increment10"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
+
+      <button
+        type="button"
+        data-action="click->cigarette-counter#increment10"
+        class="
+          flex items-center justify-center px-4 py-2 rounded-lg bg-green-100
+          text-green-700 font-semibold hover:bg-green-200 focus:outline-none
+          focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer
+        "
+      >
         +10
       </button>
-      <button type="button"
-              data-action="click->cigarette-counter#increment20"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-200 text-green-800 font-semibold hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
+
+      <button
+        type="button"
+        data-action="click->cigarette-counter#increment20"
+        class="
+          flex items-center justify-center px-4 py-2 rounded-lg bg-green-200
+          text-green-800 font-semibold hover:bg-green-300 focus:outline-none
+          focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer
+        "
+      >
         +20
       </button>
-      <button type="button"
-              data-action="click->cigarette-counter#increment50"
-              class="flex items-center justify-center px-4 py-2 rounded-lg bg-green-300 text-green-900 font-semibold hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer">
+
+      <button
+        type="button"
+        data-action="click->cigarette-counter#increment50"
+        class="
+          flex items-center justify-center px-4 py-2 rounded-lg bg-green-300
+          text-green-900 font-semibold hover:bg-green-400 focus:outline-none
+          focus:ring-2 focus:ring-green-500 transition-colors cursor-pointer
+        "
+      >
         +50
       </button>
     </div>

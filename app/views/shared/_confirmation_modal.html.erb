@@ -1,18 +1,17 @@
-<%# 
+<%#
   Reusable confirmation modal component
-  
+
   Required local variables:
   - title: Modal title text
   - message: Modal message text
-  
+
   Optional local variables:
   - confirm_text: Text for confirm button (default: "Bestätigen")
   - cancel_text: Text for cancel button (default: "Abbrechen")
   - danger: Boolean to style as danger modal (default: false)
 %>
 
-<%
-  title = local_assigns[:title] || "Bestätigung"
+<% title = local_assigns[:title] || "Bestätigung"
   message = local_assigns[:message] || "Sind Sie sicher?"
   confirm_text = local_assigns[:confirm_text] || "Bestätigen"
   cancel_text = local_assigns[:cancel_text] || "Abbrechen"
@@ -21,54 +20,100 @@
   icon_color = danger ? "text-red-600" : "text-yellow-600"
   icon_bg = danger ? "bg-red-100" : "bg-yellow-100"
   confirm_bg = danger ? "bg-red-600 hover:bg-red-700" : "bg-indigo-600 hover:bg-indigo-700"
-  confirm_focus = danger ? "focus:ring-red-500" : "focus:ring-indigo-500"
-%>
+  confirm_focus = danger ? "focus:ring-red-500" : "focus:ring-indigo-500" %>
 
-<div data-confirm-modal-target="modal"
-     data-action="keydown@window->confirm-modal#closeOnEscape click->confirm-modal#closeOnOutsideClick"
-     class="hidden fixed inset-0 z-50 overflow-y-auto"
-     aria-labelledby="modal-title"
-     role="dialog"
-     aria-modal="true">
+<div
+  data-confirm-modal-target="modal"
+  data-action="keydown@window->confirm-modal#closeOnEscape click->confirm-modal#closeOnOutsideClick"
+  class="hidden fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
   <%# Centered modal container %>
   <div class="fixed inset-0 flex items-center justify-center p-4">
     <%# Background overlay %>
-    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+    <div
+      class="fixed inset-0 bg-gray-500/75 transition-opacity"
+      aria-hidden="true"
+    ></div>
 
     <%# Modal panel - centered %>
     <div class="relative bg-white rounded-lg p-6 shadow-xl max-w-lg w-full">
       <div class="sm:flex sm:items-start">
         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full <%= icon_bg %> sm:mx-0 sm:h-10 sm:w-10">
           <% if danger %>
-            <svg class="h-6 w-6 <%= icon_color %>" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            <svg
+              class="h-6 w-6 <%= icon_color %>"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+              />
             </svg>
           <% else %>
-            <svg class="h-6 w-6 <%= icon_color %>" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+            <svg
+              class="h-6 w-6 <%= icon_color %>"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+              />
             </svg>
           <% end %>
         </div>
+
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-          <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+          <h3
+            class="text-lg leading-6 font-medium text-gray-900"
+            id="modal-title"
+          >
             <%= title %>
           </h3>
+
           <div class="mt-2">
-            <p class="text-sm text-gray-500" data-confirm-modal-target="message">
+            <p
+              class="text-sm text-gray-500"
+              data-confirm-modal-target="message"
+            >
               <%= message %>
             </p>
           </div>
         </div>
       </div>
+
       <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-        <button type="button"
-                data-action="click->confirm-modal#confirm"
-                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 <%= confirm_bg %> text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 <%= confirm_focus %> sm:ml-3 sm:w-auto sm:text-sm cursor-pointer">
+        <button
+          type="button"
+          data-action="click->confirm-modal#confirm"
+          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 <%= confirm_bg %> text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 <%= confirm_focus %> sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
+        >
           <%= confirm_text %>
         </button>
-        <button type="button"
-                data-action="click->confirm-modal#close"
-                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm cursor-pointer">
+
+        <button
+          type="button"
+          data-action="click->confirm-modal#close"
+          class="
+            mt-3 w-full inline-flex justify-center rounded-md border
+            border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+            font-medium text-gray-700 hover:bg-gray-50 focus:outline-none
+            focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0
+            sm:w-auto sm:text-sm cursor-pointer
+          "
+        >
           <%= cancel_text %>
         </button>
       </div>
