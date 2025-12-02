@@ -95,4 +95,48 @@ class CleanUpsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "SUMMARY:Clean-Up\\, with\\; special\\\\chars"
     assert_includes response.body, "DESCRIPTION:Line one\\nLine two"
   end
+
+  test "calendar includes participation link when participation_id is provided" do
+    participant = Participant.create!(name: "Test Participant", people_count: 1)
+    participation = Participation.create!(
+      clean_up: @clean_up,
+      participant: participant,
+      status: "registered"
+    )
+
+    get calendar_clean_up_path(@clean_up, participation_id: participation.id)
+
+    assert_response :success
+    assert_includes response.body, "Dein Teilnahme-Link:"
+    assert_includes response.body, "/go/#{participation.id}"
+  end
+
+  test "calendar includes both description and participation link when both are present" do
+    participant = Participant.create!(name: "Test Participant", people_count: 1)
+    participation = Participation.create!(
+      clean_up: @clean_up,
+      participant: participant,
+      status: "registered"
+    )
+
+    get calendar_clean_up_path(@clean_up, participation_id: participation.id)
+
+    assert_response :success
+    assert_includes response.body, "Test description for the cleanup event"
+    assert_includes response.body, "Dein Teilnahme-Link:"
+  end
+
+  test "calendar does not include participation link when participation_id is not provided" do
+    get calendar_clean_up_path(@clean_up)
+
+    assert_response :success
+    assert_not_includes response.body, "Dein Teilnahme-Link:"
+  end
+
+  test "calendar handles invalid participation_id gracefully" do
+    get calendar_clean_up_path(@clean_up, participation_id: 99999)
+
+    assert_response :success
+    assert_not_includes response.body, "Dein Teilnahme-Link:"
+  end
 end
