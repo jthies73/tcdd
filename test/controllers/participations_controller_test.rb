@@ -166,4 +166,66 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to show_participation_path(Participation.last)
   end
+
+  # Destroy action tests
+  test "destroy deletes participation and redirects to farewell when registered and clean-up not started" do
+    @clean_up.update!(status: "registration_enabled")
+    @participation.update!(status: "registered")
+
+    assert_difference "Participation.count", -1 do
+      delete participation_path(@participation)
+    end
+
+    assert_redirected_to farewell_path
+  end
+
+  test "destroy does not delete participation when clean-up has started" do
+    @clean_up.update!(status: "started")
+    @participation.update!(status: "registered")
+
+    assert_no_difference "Participation.count" do
+      delete participation_path(@participation)
+    end
+
+    assert_redirected_to show_participation_path(@participation)
+  end
+
+  test "destroy does not delete participation when clean-up has ended" do
+    @clean_up.update!(status: "ended")
+    @participation.update!(status: "registered")
+
+    assert_no_difference "Participation.count" do
+      delete participation_path(@participation)
+    end
+
+    assert_redirected_to show_participation_path(@participation)
+  end
+
+  test "destroy does not delete participation when status is started" do
+    @clean_up.update!(status: "registration_enabled")
+    @participation.update!(status: "started")
+
+    assert_no_difference "Participation.count" do
+      delete participation_path(@participation)
+    end
+
+    assert_redirected_to show_participation_path(@participation)
+  end
+
+  test "destroy does not delete participation when status is returned" do
+    @clean_up.update!(status: "registration_enabled")
+    @participation.update!(status: "returned")
+
+    assert_no_difference "Participation.count" do
+      delete participation_path(@participation)
+    end
+
+    assert_redirected_to show_participation_path(@participation)
+  end
+
+  test "farewell page renders successfully" do
+    get farewell_path
+    assert_response :success
+    assert_select "h2", text: "Schade, dass du nicht dabei sein kannst!"
+  end
 end
