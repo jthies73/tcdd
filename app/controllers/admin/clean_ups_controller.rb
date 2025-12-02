@@ -24,7 +24,7 @@ module Admin
 
     def show
       @clean_up = CleanUp.find(params[:id])
-      @participants = Participant.all
+      @participants = Participant.alphabetically
     end
 
     def update
@@ -32,14 +32,14 @@ module Admin
       modified_params = build_params_with_starts_at
 
       if modified_params.nil?
-        @participants = Participant.all
+        @participants = Participant.alphabetically
         return render :show, status: :unprocessable_entity
       end
 
       if @clean_up.update(modified_params)
         redirect_to admin_clean_up_path(@clean_up), notice: "Clean-Up wurde erfolgreich aktualisiert."
       else
-        @participants = Participant.all
+        @participants = Participant.alphabetically
         render :show, status: :unprocessable_entity
       end
     end

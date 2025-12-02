@@ -146,4 +146,95 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     # The show page shows "Es geht los!" when clean_up is started
     assert_text "Es geht los!", wait: 5
   end
+
+  # Admin page tests
+
+  test "admin page shows searchable participant selector with alphabetically sorted entries" do
+    # Need registration_enabled status to show the "add participant" section
+    @clean_up.update!(status: "registration_enabled")
+
+    visit admin_clean_up_path(@clean_up)
+
+    # Verify the search input is visible in the admin form
+    assert_selector "input[data-searchable-select-target='input']"
+
+    # Click the search input to show the list
+    search_input = find("input[data-searchable-select-target='input']")
+    search_input.click
+
+    # Wait for the list to appear (not hidden)
+    assert_selector "ul[data-searchable-select-target='list']"
+    list = find("ul[data-searchable-select-target='list']")
+    assert_not list[:class].include?("hidden"), "List should be visible"
+
+    # Verify participants are in the list and sorted alphabetically
+    items = all("li[data-searchable-select-target='item']", visible: :all)
+    names = items.map { |item| item["data-name"] }
+
+    assert_equal [ "Alice", "Bob", "Charlie" ], names
+  end
+
+  test "admin page participant selector filters entries as user types" do
+    @clean_up.update!(status: "registration_enabled")
+
+    visit admin_clean_up_path(@clean_up)
+
+    search_input = find("input[data-searchable-select-target='input']")
+    search_input.click
+
+    # Type a filter query
+    search_input.fill_in with: "Bob"
+
+    # Wait for filtering to complete
+    assert_selector "li[data-searchable-select-target='item'][data-name='Bob']", visible: :all
+
+    # Check that only Bob is visible (not hidden)
+    all("li[data-searchable-select-target='item']", visible: :all).each do |item|
+      if item["data-name"] == "Bob"
+        assert_not item[:class].include?("hidden"), "Bob should be visible"
+      else
+        assert item[:class].include?("hidden"), "#{item['data-name']} should be hidden"
+      end
+    end
+  end
+
+  test "admin page participant selector shows no results message when filter has no matches" do
+    @clean_up.update!(status: "registration_enabled")
+
+    visit admin_clean_up_path(@clean_up)
+
+    search_input = find("input[data-searchable-select-target='input']")
+    search_input.click
+
+    # Type a filter query with no matches
+    search_input.fill_in with: "nonexistent"
+
+    # The no results message should be visible (not hidden)
+    assert_selector "li[data-searchable-select-target='noResults']", visible: :all
+    no_results = find("li[data-searchable-select-target='noResults']", visible: :all)
+    assert_not no_results[:class].include?("hidden"), "No results message should be visible"
+    assert_equal "Kein Eintrag gefunden", no_results.text
+  end
+
+  test "admin can select a participant from the searchable list" do
+    @clean_up.update!(status: "registration_enabled")
+
+    visit admin_clean_up_path(@clean_up)
+
+    search_input = find("input[data-searchable-select-target='input']")
+    search_input.click
+
+    # Wait for the list to appear
+    assert_selector "ul[data-searchable-select-target='list']"
+
+    # Click on Alice to select her
+    find("li[data-searchable-select-target='item'][data-name='Alice']").click
+
+    # Verify the input now shows Alice's name
+    assert_equal "Alice", search_input.value
+
+    # Verify the hidden field has Alice's ID
+    hidden_field = find("input[data-searchable-select-target='hiddenField']", visible: false)
+    assert_equal @participant_alice.id.to_s, hidden_field.value
+  end
 end
