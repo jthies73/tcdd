@@ -194,7 +194,7 @@
       </div>
 
       <div class="px-6 py-5">
-        <%= form_with url: confirm_participation_path, method: :get, local: true do |form| %>
+        <%= form_with url: confirm_participation_path, method: :get, data: { turbo: false } do |form| %>
           <div class="space-y-4">
             <%= render "shared/searchable_participant_select", 
                 participants: Participant.alphabetically, 

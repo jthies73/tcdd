@@ -145,4 +145,20 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
     # Verify the count was updated
     assert_equal 5, @participant.reload.people_count
   end
+
+  test "new participation page shows cleanup info and registration cards for active cleanup" do
+    visit new_participation_path
+
+    # Verify cleanup info is displayed
+    assert_text "Nächster Clean-Up", wait: 5
+    assert_text @clean_up.name
+
+    # Verify returning participant section is displayed
+    assert_text "Schon mal dabei gewesen?"
+    assert_selector "input[data-searchable-select-target='input']"
+
+    # Verify new participant section is displayed
+    assert_text "Zum ersten Mal hier?"
+    assert_selector "input[name='participant_name']"
+  end
 end

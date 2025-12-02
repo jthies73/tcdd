@@ -122,6 +122,40 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3", text: "Unsere bisherigen Erfolge"
   end
 
+  test "new shows cleanup info and registration cards when cleanup is active (registration_enabled)" do
+    @clean_up.update!(status: "registration_enabled")
+
+    get new_participation_path
+    assert_response :success
+    
+    # Should show cleanup info
+    assert_select "h2", text: "Nächster Clean-Up"
+    assert_select "h3", text: @clean_up.name
+    
+    # Should show returning participant section
+    assert_select "h3", text: "Schon mal dabei gewesen?"
+    
+    # Should show new participant section
+    assert_select "h3", text: "Zum ersten Mal hier?"
+  end
+
+  test "new shows cleanup info and registration cards when cleanup is active (started)" do
+    @clean_up.update!(status: "started")
+
+    get new_participation_path
+    assert_response :success
+    
+    # Should show cleanup info
+    assert_select "h2", text: "Nächster Clean-Up"
+    assert_select "h3", text: @clean_up.name
+    
+    # Should show returning participant section
+    assert_select "h3", text: "Schon mal dabei gewesen?"
+    
+    # Should show new participant section
+    assert_select "h3", text: "Zum ersten Mal hier?"
+  end
+
   test "create with duplicate participant name returns turbo_stream response" do
     post participations_path,
       params: { participant_name: "Test Participant", participant_people_count: 3 },
