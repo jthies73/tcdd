@@ -98,25 +98,12 @@
               Bestehender Teilnehmer
             </label>
 
-            <select
-              name="participant_id"
-              id="participant_id"
-              class="
-                mt-2 block w-full h-[38px] rounded-md bg-white px-3 py-1.5
-                text-base text-gray-900 outline-1 -outline-offset-1
-                outline-gray-300 focus:outline-2 focus:-outline-offset-2
-                focus:outline-indigo-600 sm:text-sm/6
-              "
-            >
-              <option value="">-- Oder neuen Namen eingeben --</option>
-
-              <% @participants.each do |participant| %>
-                <option value="<%= participant.id %>">
-                  <%= participant.name %> (<%= participant.people_count %>
-                  Personen)
-                </option>
-              <% end %>
-            </select>
+            <div class="mt-2">
+              <%= render "shared/searchable_participant_select", 
+                  participants: @participants, 
+                  field_name: "participant_id",
+                  style: :default %>
+            </div>
           </div>
 
           <div class="flex sm:flex-row sm:items-end gap-4">
