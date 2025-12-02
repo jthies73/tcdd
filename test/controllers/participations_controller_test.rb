@@ -167,6 +167,68 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to show_participation_path(Participation.last)
   end
 
+  # Confirm action tests
+  test "confirm displays confirmation page for returning participant" do
+    get confirm_participation_path, params: { participant_id: @participant.id }
+    assert_response :success
+    assert_select "input[name='participant_people_count']"
+  end
+
+  test "confirm shows participant name" do
+    get confirm_participation_path, params: { participant_id: @participant.id }
+    assert_response :success
+    assert_includes response.body, @participant.name
+  end
+
+  test "confirm shows current people count" do
+    get confirm_participation_path, params: { participant_id: @participant.id }
+    assert_response :success
+    assert_select "input[value='#{@participant.people_count}']"
+  end
+
+  # Create with participant_id and updated people_count tests
+  test "create with participant_id and updated people_count updates participant and creates participation" do
+    @clean_up.update!(status: "registration_enabled")
+    original_count = @participant.people_count
+
+    assert_difference "Participation.count", 1 do
+      post participations_path,
+        params: { participant_id: @participant.id, participant_people_count: 5 }
+    end
+
+    assert_redirected_to show_participation_path(Participation.last)
+    assert_equal 5, @participant.reload.people_count
+    assert_not_equal original_count, @participant.people_count
+  end
+
+  test "create with participant_id enforces minimum people_count of 1" do
+    @clean_up.update!(status: "registration_enabled")
+
+    post participations_path,
+      params: { participant_id: @participant.id, participant_people_count: 0 }
+
+    assert_equal 1, @participant.reload.people_count
+  end
+
+  test "create with participant_id enforces minimum people_count for negative values" do
+    @clean_up.update!(status: "registration_enabled")
+
+    post participations_path,
+      params: { participant_id: @participant.id, participant_people_count: -5 }
+
+    assert_equal 1, @participant.reload.people_count
+  end
+
+  test "create with participant_id without people_count does not update participant" do
+    @clean_up.update!(status: "registration_enabled")
+    original_count = @participant.people_count
+
+    post participations_path,
+      params: { participant_id: @participant.id }
+
+    assert_equal original_count, @participant.reload.people_count
+  end
+
   # Destroy action tests
   test "destroy deletes participation and redirects to farewell when registered and clean-up not started" do
     @clean_up.update!(status: "registration_enabled")
