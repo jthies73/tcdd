@@ -9,6 +9,7 @@ class Participation < ApplicationRecord
   after_create_commit :broadcast_participation_created
   after_update_commit :broadcast_cigarettes_count_update, if: :saved_change_to_cigarettes_count?
   after_update_commit :broadcast_participation_status_changed, if: :saved_change_to_status?
+  after_update_commit :broadcast_scoreboard_update, if: :should_broadcast_scoreboard_update?
   after_destroy_commit :broadcast_participation_destroyed
 
   def color_by_status
@@ -123,6 +124,20 @@ class Participation < ApplicationRecord
       target: "admin_participants_table_#{clean_up_id}",
       partial: "admin/participations/participants_table",
       locals: { clean_up: clean_up }
+    )
+  end
+
+  def should_broadcast_scoreboard_update?
+    saved_change_to_status? && status == "returned" && cigarettes_count.present? && cigarettes_count > 0
+  end
+
+  def broadcast_scoreboard_update
+    # Broadcast to all clients viewing the scoreboard for this clean_up
+    broadcast_replace_to(
+      "scoreboard_#{clean_up_id}",
+      target: "scoreboard_#{clean_up_id}",
+      partial: "participations/scoreboard",
+      locals: { clean_up: clean_up, participation: self }
     )
   end
 end

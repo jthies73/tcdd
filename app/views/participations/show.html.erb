@@ -1,5 +1,6 @@
 <%= turbo_stream_from "participation_#{@participation.id}" %>
 <%= turbo_stream_from @participation.clean_up %>
+<%= turbo_stream_from "scoreboard_#{@participation.clean_up_id}" %>
 <div class="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
   <div class="pt-10 pb-24 px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto">
     <%# Header with logo %>
