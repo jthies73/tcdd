@@ -35,24 +35,17 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     counter_input = find("input[data-cigarette-counter-target='input']")
     assert_equal "0", counter_input.value
 
-    # Test increment button updates UI
-    find("button[data-action='click->cigarette-counter#increment']").click
-    assert_equal "1", counter_input.value
+    # Test +10 button updates UI
+    find("button[data-action='click->cigarette-counter#increment10']").click
+    assert_equal "10", counter_input.value
 
-    # Test increment again
-    find("button[data-action='click->cigarette-counter#increment']").click
-    assert_equal "2", counter_input.value
+    # Test +20 button updates UI
+    find("button[data-action='click->cigarette-counter#increment20']").click
+    assert_equal "30", counter_input.value
 
-    # Test decrement button updates UI
-    find("button[data-action='click->cigarette-counter#decrement']").click
-    assert_equal "1", counter_input.value
-
-    # Decrement cannot go below 0
-    find("button[data-action='click->cigarette-counter#decrement']").click
-    assert_equal "0", counter_input.value
-
-    find("button[data-action='click->cigarette-counter#decrement']").click
-    assert_equal "0", counter_input.value
+    # Test +50 button updates UI
+    find("button[data-action='click->cigarette-counter#increment50']").click
+    assert_equal "80", counter_input.value
   end
 
   test "cigarette counter is not visible when participation is registered" do

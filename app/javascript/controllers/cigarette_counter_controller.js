@@ -17,15 +17,20 @@ export default class extends Controller {
     }
   }
 
-  increment() {
+  increment1() {
     this.updateValue(this.getCurrentValue() + 1)
   }
 
-  decrement() {
-    const currentValue = this.getCurrentValue()
-    if (currentValue > 0) {
-      this.updateValue(currentValue - 1)
-    }
+  increment10() {
+    this.updateValue(this.getCurrentValue() + 10)
+  }
+
+  increment20() {
+    this.updateValue(this.getCurrentValue() + 20)
+  }
+
+  increment50() {
+    this.updateValue(this.getCurrentValue() + 50)
   }
 
   inputChanged() {
