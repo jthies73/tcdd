@@ -177,7 +177,7 @@
                       <button
                         type="button"
                         data-action="click->qr-modal#open"
-                        data-qr-url="<%= show_participation_url(participation.id) %>"
+                        data-qr-image="data:image/png;base64,<%= qr_code_base64(show_participation_url(participation.id)) %>"
                         data-participant-name="<%= h(participation.participant.name) %>"
                         class="
                           inline-flex items-center gap-x-1 rounded-sm

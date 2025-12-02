@@ -1,8 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { QRCode } from "qrcode"
-
-// QR code generation constants
-const QR_SIZE = 200 // Size of QR code in pixels
 
 export default class extends Controller {
   static targets = ["modal", "qrCode", "participantName"]
@@ -16,37 +12,29 @@ export default class extends Controller {
     event.stopPropagation()
 
     const button = event.currentTarget
-    const url = button.dataset.qrUrl
+    const qrImage = button.dataset.qrImage
     const participantName = button.dataset.participantName
 
     // Set participant name
     this.participantNameTarget.textContent = participantName
 
-    // Generate QR code
-    this.generateQrCode(url)
+    // Display QR code image (server-generated via rqrcode)
+    this.displayQrCode(qrImage)
 
     // Show the modal
     this.modalTarget.classList.remove("hidden")
   }
 
-  generateQrCode(url) {
+  displayQrCode(imageSrc) {
     // Clear previous QR code
     this.qrCodeTarget.innerHTML = ""
 
-    try {
-      // Generate QR code using our ES module library
-      const qr = new QRCode(url)
-      
-      // Create the QR code SVG
-      const svgElement = qr.toSVGElement({ size: QR_SIZE })
-      this.qrCodeTarget.appendChild(svgElement)
-    } catch (error) {
-      console.error("Error generating QR code:", error)
-      const errorMessage = document.createElement("p")
-      errorMessage.className = "text-red-500"
-      errorMessage.textContent = "Error generating QR code"
-      this.qrCodeTarget.appendChild(errorMessage)
-    }
+    // Create and display the QR code image
+    const img = document.createElement("img")
+    img.src = imageSrc
+    img.alt = "QR Code"
+    img.className = "w-48 h-48"
+    this.qrCodeTarget.appendChild(img)
   }
 
   close() {

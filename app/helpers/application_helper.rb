@@ -1,4 +1,23 @@
+require "rqrcode"
+
 module ApplicationHelper
+  # Generate a QR code as a base64-encoded PNG image
+  # Uses the same rqrcode gem as the existing QR code implementation
+  def qr_code_base64(url, size: 200)
+    qr_code = RQRCode::QRCode.new(url, size: 4, level: :h)
+    png = qr_code.as_png(
+      resize_gte_to: false,
+      resize_exactly_to: false,
+      fill: "white",
+      color: "black",
+      size: size,
+      border_modules: 4,
+      module_px_size: 6,
+      file: nil
+    )
+    Base64.strict_encode64(png.to_s)
+  end
+
   def button_classes(color)
     "inline-flex items-center gap-x-4 rounded-4xl bg-#{color}-600 pl-5 pr-7 py-3 text-xl font-semibold text-white shadow-sm hover:bg-#{color}-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-#{color}-600 cursor-pointer"
   end
