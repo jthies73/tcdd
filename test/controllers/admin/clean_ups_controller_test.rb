@@ -120,5 +120,35 @@ module Admin
       assert_response :success
       assert_match "turbo-stream", response.body
     end
+
+    test "revert_status transitions registration_enabled to created and redirects to show" do
+      @clean_up.update!(status: "registration_enabled")
+
+      post revert_status_admin_clean_up_path(@clean_up)
+
+      @clean_up.reload
+      assert_equal "created", @clean_up.status
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "revert_status transitions started to registration_enabled and redirects to show" do
+      @clean_up.update!(status: "started")
+
+      post revert_status_admin_clean_up_path(@clean_up)
+
+      @clean_up.reload
+      assert_equal "registration_enabled", @clean_up.status
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
+
+    test "revert_status transitions ended to started and redirects to show" do
+      @clean_up.update!(status: "ended")
+
+      post revert_status_admin_clean_up_path(@clean_up)
+
+      @clean_up.reload
+      assert_equal "started", @clean_up.status
+      assert_redirected_to admin_clean_up_path(@clean_up)
+    end
   end
 end

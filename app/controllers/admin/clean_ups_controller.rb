@@ -45,6 +45,22 @@ module Admin
       redirect_to admin_clean_up_path(@clean_up)
     end
 
+    # POST /admin/clean_ups/:id/revert_status
+    def revert_status
+      @clean_up = CleanUp.find(params[:id])
+
+      case @clean_up.status
+      when "registration_enabled"
+        @clean_up.update!(status: "created")
+      when "started"
+        @clean_up.update!(status: "registration_enabled")
+      when "ended"
+        @clean_up.update!(status: "started")
+      end
+
+      redirect_to admin_clean_up_path(@clean_up)
+    end
+
     # DELETE /admin/clean_ups/:id
     def destroy
       @clean_up = CleanUp.find(params[:id])
