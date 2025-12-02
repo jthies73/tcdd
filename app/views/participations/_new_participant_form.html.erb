@@ -37,7 +37,7 @@
         </div>
       <% end %>
 
-      <%= form_with url: participations_path, method: :post do |form| %>
+      <%= form_with url: participations_path, method: :post, data: { turbo_frame: "_top" } do |form| %>
         <div class="space-y-4">
           <div>
             <%= form.label :participant_name, "Name / Gruppenname", class: "block text-sm font-medium text-gray-700 mb-1" %>
