@@ -1,10 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
+import { QRCode } from "qrcode"
 
 // QR code generation constants
-const QR_TYPE_AUTO = 0 // Auto-detect QR code type number
-const QR_ERROR_CORRECTION = "M" // Medium error correction level (~15% recovery)
-const QR_CELL_SIZE = 6 // Cell size in pixels
-const QR_MARGIN = 0 // Margin size in modules
+const QR_SIZE = 200 // Size of QR code in pixels
 
 export default class extends Controller {
   static targets = ["modal", "qrCode", "participantName"]
@@ -35,23 +33,20 @@ export default class extends Controller {
     // Clear previous QR code
     this.qrCodeTarget.innerHTML = ""
 
-    // Check if qrcode-generator is available
-    if (typeof qrcode === "undefined") {
-      console.error("qrcode-generator library not loaded")
+    try {
+      // Generate QR code using our ES module library
+      const qr = new QRCode(url, { errorCorrectionLevel: 'M' })
+      
+      // Create the QR code SVG
+      const svgElement = qr.toSVGElement({ size: QR_SIZE })
+      this.qrCodeTarget.appendChild(svgElement)
+    } catch (error) {
+      console.error("Error generating QR code:", error)
       const errorMessage = document.createElement("p")
       errorMessage.className = "text-red-500"
-      errorMessage.textContent = "QR Code library not loaded"
+      errorMessage.textContent = "Error generating QR code"
       this.qrCodeTarget.appendChild(errorMessage)
-      return
     }
-
-    // Generate QR code using qrcode-generator library
-    const qr = qrcode(QR_TYPE_AUTO, QR_ERROR_CORRECTION)
-    qr.addData(url)
-    qr.make()
-
-    // Create the QR code image
-    this.qrCodeTarget.innerHTML = qr.createImgTag(QR_CELL_SIZE, QR_MARGIN)
   }
 
   close() {
