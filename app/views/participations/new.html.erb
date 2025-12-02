@@ -276,54 +276,7 @@
       </div>
     </div>
 
-    <%# New participant section %>
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-      <div class="px-6 py-4">
-        <h3 class="text-base font-semibold text-gray-900 flex items-center">
-          <svg
-            class="w-5 h-5 text-green-500 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-            />
-          </svg>
-          Zum ersten Mal hier?
-        </h3>
-
-        <p class="text-sm text-gray-500 mt-1">
-          Gib einen Spitznamen oder Gruppennamen an, damit wir prüfen können, ob
-          alle sicher zurück sind.
-        </p>
-      </div>
-
-      <div class="px-6 py-5">
-        <%= form_with url: participations_path, method: :post, local: true do |form| %>
-          <div class="space-y-4">
-            <div>
-              <%= form.label :participant_name, "Name / Gruppenname", class: "block text-sm font-medium text-gray-700 mb-1" %>
-              <%= form.text_field :participant_name, placeholder: "z.B. Kehr Forces Dresden oder Reinemach-Rabauken", class: "block w-full rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-colors sm:text-sm" %>
-            </div>
-
-            <div>
-              <%= form.label :participant_people_count, "Gruppengröße", class: "block text-sm font-medium text-gray-700 mb-1" %>
-              <%= form.number_field :participant_people_count, value: 1, min: 1, class: "block w-full rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-colors sm:text-sm" %>
-
-              <p class="mt-1 text-xs text-gray-500">
-                Wie viele Personen seid ihr insgesamt?
-              </p>
-            </div>
-
-            <%= form.submit "Neu registrieren", class: "w-full rounded-xl bg-green-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer transition-colors" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render "participations/new_participant_form" %>
 
     <%# Instagram link %>
     <%= render "shared/instagram_link" %>
