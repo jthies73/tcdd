@@ -8,7 +8,7 @@
   </div>
 
   <div class="px-6 py-6 text-center">
-    <h2 class="text-lg font-semibold text-gray-900 mb-2">Du bist dabei! 🎉</h2>
+    <h2 class="text-lg font-semibold text-gray-900 mb-2">Let's go! 🎉</h2>
 
     <%# Elapsed timer %>
     <div
@@ -60,7 +60,7 @@
 <%# Group sharing info box %>
 <div class="mb-20">
   <%= render 'shared/share_link_box', 
-      message: raw("<strong>Gruppenfunktion:</strong> Teile diesen Link mit deiner Gruppe – alle können gemeinsam Kippen zählen!"),
+      message: raw("<strong>Gruppenfunktion:</strong> Falls ihr euch als Gruppe angemeldet habt, könnt ihr den Link unten teilen, um eure gesammelten Kippen gemeinsam zu erfassen!"),
       url: show_participation_url(participation),
       icon_path: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" %>
 </div>
