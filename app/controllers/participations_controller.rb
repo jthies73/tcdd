@@ -19,6 +19,12 @@ class ParticipationsController < ApplicationController
     render :show
   end
 
+  def confirm
+    @participant = Participant.find(params[:participant_id])
+    @latest_clean_up = CleanUp.last
+    render :confirm
+  end
+
   # POST /participations
   def create
     # initialize participation
@@ -41,6 +47,13 @@ class ParticipationsController < ApplicationController
       else
         # if the participant has not registered for this clean up, create a new participation
         participation.participant_id = registration_params[:participant_id]
+        
+        # Update participant's people_count if provided
+        if registration_params[:participant_people_count].present?
+          participant = Participant.find(registration_params[:participant_id])
+          people_count = [ registration_params[:participant_people_count].to_i, 1 ].max
+          participant.update!(people_count: people_count)
+        end
       end
     else
       # if only a participant name is provided, create a new participant

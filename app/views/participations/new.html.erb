@@ -194,14 +194,14 @@
       </div>
 
       <div class="px-6 py-5">
-        <%= form_with url: participations_path, method: :post, local: true do |form| %>
+        <%= form_with url: confirm_participation_path, method: :get, local: true do |form| %>
           <div class="space-y-4">
             <%= render "shared/searchable_participant_select", 
                 participants: Participant.alphabetically, 
                 field_name: "participant_id",
                 style: :card %>
 
-            <%= form.submit "Anmelden", class: "w-full rounded-xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer transition-colors" %>
+            <%= form.submit "Weiter", class: "w-full rounded-xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer transition-colors" %>
           </div>
         <% end %>
       </div>

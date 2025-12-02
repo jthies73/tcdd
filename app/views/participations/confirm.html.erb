@@ -1,0 +1,167 @@
+<div class="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+  <%# Hero banner %>
+  <%= render "shared/hero_banner", 
+      title: "Bestätige deine Teilnahme", 
+      icon_container_size: "w-20 h-20",
+      icon_size: "w-12 h-12",
+      icon_margin: "mb-4" %>
+
+  <div class="px-4 sm:px-8 max-w-2xl mx-auto -mt-8 pb-20">
+    <%# Confirmation card %>
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6">
+      <div class="px-6 py-4 bg-indigo-600 rounded-t-2xl">
+        <h3 class="text-base font-semibold text-white flex items-center">
+          <svg
+            class="w-5 h-5 text-indigo-200 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Teilnahme bestätigen
+        </h3>
+      </div>
+
+      <div class="px-6 py-5">
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Name / Gruppenname
+          </label>
+          <div class="block w-full rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-gray-900 font-medium">
+            <%= @participant.name %>
+          </div>
+        </div>
+
+        <%= form_with url: participations_path, method: :post, local: true do |form| %>
+          <%= form.hidden_field :participant_id, value: @participant.id %>
+
+          <div data-controller="people-counter" class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Wie viele Personen seid ihr?
+            </label>
+            
+            <div class="flex items-center space-x-4">
+              <button
+                type="button"
+                data-action="click->people-counter#decrement"
+                class="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                </svg>
+              </button>
+
+              <%= form.number_field :participant_people_count, 
+                  value: @participant.people_count || 1,
+                  min: 1,
+                  data: { people_counter_target: "input" },
+                  class: "flex-1 text-center text-2xl font-bold rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-colors" %>
+
+              <button
+                type="button"
+                data-action="click->people-counter#increment"
+                class="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+
+            <p class="mt-2 text-xs text-gray-500 text-center">
+              Mindestens 1 Person erforderlich
+            </p>
+          </div>
+
+          <%= form.submit "Bestätigen", class: "w-full rounded-xl bg-green-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer transition-colors" %>
+        <% end %>
+
+        <div class="mt-4">
+          <%= link_to "Zurück", new_participation_path, class: "block w-full text-center rounded-xl bg-gray-100 px-4 py-3 text-base font-semibold text-gray-700 hover:bg-gray-200 transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <%# Clean-up info card %>
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div class="bg-indigo-600 px-6 py-4">
+        <div class="flex items-center">
+          <svg
+            class="w-6 h-6 text-indigo-200 mr-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+
+          <h2 class="text-lg font-semibold text-white">Clean-Up Details</h2>
+        </div>
+      </div>
+
+      <div class="px-6 py-5">
+        <h3 class="text-xl font-bold text-gray-900 mb-3">
+          <%= @latest_clean_up.name %>
+        </h3>
+
+        <div class="space-y-3">
+          <div class="flex items-center text-gray-700">
+            <svg
+              class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <span class="font-medium">
+              <%= @latest_clean_up.starts_at.in_time_zone("Europe/Berlin").strftime("%d.%m.%Y um %H:%M") %>
+              Uhr
+            </span>
+          </div>
+
+          <div class="flex items-start text-gray-700">
+            <svg
+              class="w-5 h-5 text-indigo-500 mr-3 flex-shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+
+            <span><%= @latest_clean_up.address %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
