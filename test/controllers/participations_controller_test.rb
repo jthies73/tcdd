@@ -186,6 +186,22 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[value='#{@participant.people_count}']"
   end
 
+  test "confirm redirects to registration when participant not found" do
+    get confirm_participation_path, params: { participant_id: 99999 }
+    assert_redirected_to new_participation_path
+  end
+
+  test "confirm redirects to registration when no participant_id provided" do
+    get confirm_participation_path
+    assert_redirected_to new_participation_path
+  end
+
+  test "confirm redirects to registration when clean-up is inactive" do
+    @clean_up.update!(status: "created")
+    get confirm_participation_path, params: { participant_id: @participant.id }
+    assert_redirected_to new_participation_path
+  end
+
   # Create with participant_id and updated people_count tests
   test "create with participant_id and updated people_count updates participant and creates participation" do
     @clean_up.update!(status: "registration_enabled")
