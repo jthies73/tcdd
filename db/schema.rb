@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_02_180000) do
   create_table "clean_ups", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.string "status", default: "created", null: false
     t.datetime "starts_at"
     t.string "address"
-    t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "manual_cigarettes_count", default: 0, null: false
@@ -44,7 +43,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
     t.string "status", default: "registered", null: false
     t.datetime "started_at"
     t.datetime "returned_at"
-    t.integer "steps_count"
     t.integer "cigarettes_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
