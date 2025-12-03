@@ -5,56 +5,35 @@ module Admin
 
     # POST /admin/clean_ups/:clean_up_id/participations
     def create
-      @participation = @clean_up.participations.new(status: "registered")
-
-      # Validate input parameters
       validation_error = validate_participation_input
       return redirect_with_alert(validation_error) if validation_error
 
-      # Find or create participant
       participant = find_or_create_participant
-      return redirect_with_alert(participant) if participant.is_a?(String) # Error message
+      return redirect_with_alert(participant) if participant.is_a?(String)
 
-      # Check if participant is already registered
+      update_participant_people_count(participant)
+
       if @clean_up.participant_already_registered?(participant)
-        return redirect_with_alert("Teilnehmer ist bereits registriert.")
+        return redirect_to admin_clean_up_path(@clean_up), notice: "Registrierung wurde geupdatet."
       end
 
-      @participation.participant = participant
-
-      if @participation.save
-        redirect_to admin_clean_up_path(@clean_up), notice: "Teilnehmer wurde erfolgreich registriert."
-      else
-        redirect_with_alert(@participation.errors.full_messages.join(", "))
-      end
+      create_and_save_participation(participant)
     end
 
     # POST /admin/clean_ups/:clean_up_id/participations/:id/change_status
     def change_status
-      case change_status_params[:status_action]
-      when "start"
-        @participation.start!
-      when "return"
-        @participation.return!
-      else
+      unless update_participation_status
         return redirect_to admin_clean_up_path(@clean_up), alert: "Ungültige Aktion."
       end
 
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "participants_table",
-            partial: "admin/participations/participants_table",
-            locals: { clean_up: @clean_up }
-          )
-        end
+        format.turbo_stream { render_participants_table }
         format.html { redirect_to admin_clean_up_path(@clean_up) }
       end
     end
 
     # DELETE /admin/clean_ups/:clean_up_id/participations/:id
     def destroy
-      # Only allow deletion of participants in registered state
       unless @participation.status == "registered"
         return redirect_to admin_clean_up_path(@clean_up), alert: "Nur Teilnehmer im Status 'registriert' können entfernt werden."
       end
@@ -81,16 +60,50 @@ module Admin
       params.permit(:status_action)
     end
 
+    # Status and participation management
+    def update_participation_status
+      case change_status_params[:status_action]
+      when "start"
+        @participation.start!
+        true
+      when "return"
+        @participation.return!
+        true
+      else
+        false
+      end
+    end
+
+    def render_participants_table
+      render turbo_stream: turbo_stream.replace(
+        "participants_table",
+        partial: "admin/participations/participants_table",
+        locals: { clean_up: @clean_up }
+      )
+    end
+
+    def create_and_save_participation(participant)
+      participation = @clean_up.participations.new(
+        participant: participant,
+        status: "registered"
+      )
+
+      if participation.save
+        redirect_to admin_clean_up_path(@clean_up), notice: "Teilnehmer wurde erfolgreich registriert."
+      else
+        redirect_with_alert(participation.errors.full_messages.join(", "))
+      end
+    end
+
     # Validation methods
     def validate_participation_input
-      participant_id_present = participation_params[:participant_id].present?
-      participant_name_present = participation_params[:participant_name].present?
+      has_id = participation_params[:participant_id].present?
+      has_name = participation_params[:participant_name].present?
 
-      if participant_id_present && participant_name_present
-        "Bitte wählen Sie entweder einen bestehenden Teilnehmer ODER geben Sie einen neuen Namen ein - nicht beides."
-      elsif !participant_id_present && !participant_name_present
-        "Bitte einen Namen eingeben oder einen Teilnehmer auswählen."
-      end
+      return "Bitte wählen Sie entweder einen bestehenden Teilnehmer ODER geben Sie einen neuen Namen ein - nicht beides." if has_id && has_name
+      return "Bitte einen Namen eingeben oder einen Teilnehmer auswählen." if !has_id && !has_name
+
+      nil
     end
 
     def find_or_create_participant
@@ -109,13 +122,10 @@ module Admin
     end
 
     def find_or_create_participant_by_name
-      existing_participant = Participant.find_by(name: participation_params[:participant_name])
+      existing = Participant.find_by(name: participation_params[:participant_name])
+      return "Dieser Name ist bereits vergeben. Bitte wähle deinen Namen aus der Liste oder gib einen anderen Namen ein." if existing
 
-      if existing_participant
-        existing_participant
-      else
-        create_new_participant
-      end
+      create_new_participant
     end
 
     def create_new_participant
@@ -124,9 +134,14 @@ module Admin
         people_count: participation_params[:participant_people_count].presence || 1
       )
 
-      return participant.errors.full_messages.join(", ") unless participant.save
+      participant.save ? participant : participant.errors.full_messages.join(", ")
+    end
 
-      participant
+    def update_participant_people_count(participant)
+      return unless participation_params[:participant_people_count].present?
+
+      people_count = [ participation_params[:participant_people_count].to_i, 1 ].max
+      participant.update!(people_count: people_count)
     end
 
     def redirect_with_alert(message)

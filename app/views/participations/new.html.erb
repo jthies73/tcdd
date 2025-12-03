@@ -169,7 +169,10 @@
     </div>
 
     <%# Returning participant section %>
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6">
+    <div
+      class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6"
+      data-controller="people-count-modal"
+    >
       <div class="px-6 py-4 rounded-t-2xl">
         <h3 class="text-base font-semibold text-gray-900 flex items-center">
           <svg
@@ -194,17 +197,32 @@
       </div>
 
       <div class="px-6 py-5">
-        <%= form_with url: participations_path, method: :post, local: true do |form| %>
+        <%= form_with url: participations_path, method: :post, data: { turbo: false } do |form| %>
           <div class="space-y-4">
             <%= render "shared/searchable_participant_select", 
                 participants: Participant.alphabetically, 
                 field_name: "participant_id",
                 style: :card %>
 
-            <%= form.submit "Anmelden", class: "w-full rounded-xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer transition-colors" %>
+            <button
+              type="button"
+              data-action="click->people-count-modal#open"
+              class="
+                w-full rounded-xl bg-indigo-600 px-4 py-3 text-base
+                font-semibold text-white shadow-sm hover:bg-indigo-500
+                focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-indigo-600 cursor-pointer
+                transition-colors
+              "
+            >
+              Weiter
+            </button>
           </div>
         <% end %>
       </div>
+
+      <%# People count modal for returning participants - moved inside controller scope %>
+      <%= render "shared/people_count_modal" %>
     </div>
 
     <%= render "participations/new_participant_form" %>

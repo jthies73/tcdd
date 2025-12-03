@@ -30,12 +30,14 @@
                     Gruppengröße
                   </th>
 
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-sm font-semibold text-gray-900 text-center"
-                  >
-                    Kippen
-                  </th>
+                  <% if clean_up.started? || clean_up.ended? %>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-sm font-semibold text-gray-900 text-center"
+                    >
+                      Kippen
+                    </th>
+                  <% end %>
 
                   <th
                     scope="col"
@@ -74,14 +76,16 @@
                       <%= participation.participant.people_count %>
                     </td>
 
-                    <td
-                      class="
-                        px-3 py-4 text-sm whitespace-nowrap text-gray-500
-                        text-center
-                      "
-                    >
-                      <%= participation.cigarettes_count || 0 %>
-                    </td>
+                    <% if clean_up.started? || clean_up.ended? %>
+                      <td
+                        class="
+                          px-3 py-4 text-sm whitespace-nowrap text-gray-500
+                          text-center
+                        "
+                      >
+                        <%= participation.cigarettes_count || 0 %>
+                      </td>
+                    <% end %>
 
                     <td
                       class="

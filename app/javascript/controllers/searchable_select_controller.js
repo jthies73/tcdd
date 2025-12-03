@@ -37,10 +37,15 @@ export default class extends Controller {
     const item = event.currentTarget
     const id = item.dataset.id
     const name = item.dataset.name
+    const peopleCount = item.dataset.peopleCount || "1"
 
     this.selectedId = id
     this.hiddenFieldTarget.value = id
     this.inputTarget.value = name
+    
+    // Store people count in a data attribute on the form or hidden field parent
+    this.hiddenFieldTarget.dataset.peopleCount = peopleCount
+    
     this.hideList()
 
     // Mark the selected item
