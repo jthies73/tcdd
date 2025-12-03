@@ -46,7 +46,7 @@ module ApplicationHelper
 
   # Generate dynamic encouraging message based on total cigarettes collected
   def encouraging_message_for_cigarettes(count)
-    return "Jede Kippe zählt! Weiter so!" if count.nil? || count == 0
+    return "Jede Kippe zählt! Weiter so!" if count.nil?
 
     case count
     when 0..99
