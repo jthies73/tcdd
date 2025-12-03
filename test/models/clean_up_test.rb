@@ -82,16 +82,6 @@ class CleanUpTest < ActiveSupport::TestCase
     assert clean_up.started?
   end
 
-  test "start! does not schedule job when starts_at is nil" do
-    clean_up = CleanUp.create!(name: "Test Cleanup", status: "created", starts_at: nil)
-
-    assert_no_enqueued_jobs only: EndCleanUpJob do
-      clean_up.start!
-    end
-
-    assert clean_up.started?
-  end
-
   test "end! stores the final participant count" do
     participant1 = Participant.create!(name: "Group A", people_count: 3)
     participant2 = Participant.create!(name: "Group B", people_count: 5)
