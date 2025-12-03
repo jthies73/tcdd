@@ -2,7 +2,7 @@ require "test_helper"
 
 class EndCleanUpJobTest < ActiveJob::TestCase
   test "ends a clean up" do
-    clean_up = CleanUp.create!(name: "Test Cleanup", status: "started", starts_at: 1.day.ago)
+    clean_up = CleanUp.create!(name: "Test Cleanup", status: "started", starts_at: 1.day.ago, address: "Test address")
 
     EndCleanUpJob.perform_now(clean_up.id)
 
@@ -11,7 +11,7 @@ class EndCleanUpJobTest < ActiveJob::TestCase
   end
 
   test "does not end an already ended clean up" do
-    clean_up = CleanUp.create!(name: "Test Cleanup", status: "ended", starts_at: 1.day.ago)
+    clean_up = CleanUp.create!(name: "Test Cleanup", status: "ended", starts_at: 1.day.ago, address: "Test address")
 
     EndCleanUpJob.perform_now(clean_up.id)
 

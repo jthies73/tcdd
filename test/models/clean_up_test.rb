@@ -73,19 +73,9 @@ class CleanUpTest < ActiveSupport::TestCase
 
   test "start! schedules EndCleanUpJob for 24 hours after starts_at" do
     starts_at = Time.current + 1.hour
-    clean_up = CleanUp.create!(name: "Test Cleanup", status: "created", starts_at: starts_at)
+    clean_up = CleanUp.create!(name: "Test Cleanup", status: "created", starts_at: starts_at, address: "Test address")
 
     assert_enqueued_with(job: EndCleanUpJob, args: [ clean_up.id ], at: starts_at + 24.hours) do
-      clean_up.start!
-    end
-
-    assert clean_up.started?
-  end
-
-  test "start! does not schedule job when starts_at is nil" do
-    clean_up = CleanUp.create!(name: "Test Cleanup", status: "created", starts_at: nil)
-
-    assert_no_enqueued_jobs only: EndCleanUpJob do
       clean_up.start!
     end
 
@@ -107,7 +97,7 @@ class CleanUpTest < ActiveSupport::TestCase
   end
 
   test "end! stores zero final participant count when no participations exist" do
-    clean_up = CleanUp.create!(name: "Empty Cleanup", status: "started")
+    clean_up = CleanUp.create!(name: "Empty Cleanup", status: "started", starts_at: 1.hour.ago, address: "Test address")
     clean_up.end!
 
     assert_equal 0, clean_up.reload.final_participant_count
@@ -189,8 +179,8 @@ class CleanUpTest < ActiveSupport::TestCase
     participant1 = Participant.create!(name: "Global Participant 1", people_count: 1)
     participant2 = Participant.create!(name: "Global Participant 2", people_count: 1)
 
-    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", manual_cigarettes_count: 50, starts_at: 1.day.ago)
-    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", manual_cigarettes_count: 30, starts_at: 1.day.ago)
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", manual_cigarettes_count: 50, starts_at: 1.day.ago, address: "Test address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", manual_cigarettes_count: 30, starts_at: 1.day.ago, address: "Test address 2")
 
     clean_up1.participations.create!(participant: participant1, status: "returned", cigarettes_count: 10)
     clean_up2.participations.create!(participant: participant2, status: "returned", cigarettes_count: 20)
@@ -210,10 +200,10 @@ class CleanUpTest < ActiveSupport::TestCase
     Participation.destroy_all
     CleanUp.destroy_all
 
-    CleanUp.create!(name: "Ended Clean-Up 1", status: "ended", starts_at: 2.weeks.ago)
-    CleanUp.create!(name: "Ended Clean-Up 2", status: "ended", starts_at: 1.week.ago)
-    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago)
-    CleanUp.create!(name: "Created Clean-Up", status: "created")
+    CleanUp.create!(name: "Ended Clean-Up 1", status: "ended", starts_at: 2.weeks.ago, address: "Test address 1")
+    CleanUp.create!(name: "Ended Clean-Up 2", status: "ended", starts_at: 1.week.ago, address: "Test address 2")
+    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago, address: "Test address 3")
+    CleanUp.create!(name: "Created Clean-Up", status: "created", starts_at: 1.hour.from_now, address: "Test address 4")
 
     # Only ended cleanups should be counted
     assert_equal 2, CleanUp.total_count
@@ -223,8 +213,8 @@ class CleanUpTest < ActiveSupport::TestCase
     Participation.destroy_all
     CleanUp.destroy_all
 
-    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago)
-    CleanUp.create!(name: "Created Clean-Up", status: "created")
+    CleanUp.create!(name: "Active Clean-Up", status: "started", starts_at: 1.day.ago, address: "Test address 1")
+    CleanUp.create!(name: "Created Clean-Up", status: "created", starts_at: 1.hour.from_now, address: "Test address 2")
 
     assert_equal 0, CleanUp.total_count
   end
@@ -240,7 +230,7 @@ class CleanUpTest < ActiveSupport::TestCase
     Participant.destroy_all
     CleanUp.destroy_all
 
-    clean_up = CleanUp.create!(name: "Test Clean-Up", status: "ended", starts_at: 1.day.ago)
+    clean_up = CleanUp.create!(name: "Test Clean-Up", status: "ended", starts_at: 1.day.ago, address: "Test address")
 
     participant1 = Participant.create!(name: "Solo Person", people_count: 1)
     participant2 = Participant.create!(name: "Group of Three", people_count: 3)
@@ -266,8 +256,8 @@ class CleanUpTest < ActiveSupport::TestCase
     Participant.destroy_all
     CleanUp.destroy_all
 
-    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", starts_at: 1.day.ago)
-    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", starts_at: 1.day.ago)
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", starts_at: 1.day.ago, address: "Test address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "ended", starts_at: 1.day.ago, address: "Test address 2")
 
     participant1 = Participant.create!(name: "Person A", people_count: 2)
     participant2 = Participant.create!(name: "Person B", people_count: 4)
