@@ -20,24 +20,6 @@ class ParticipationsController < ApplicationController
     render :show
   end
 
-  def confirm
-    @participant = Participant.find_by(id: params[:participant_id])
-    
-    # If participant not found or no clean-up exists, redirect to registration
-    if @participant.nil?
-      redirect_to new_participation_path and return
-    end
-    
-    @latest_clean_up = CleanUp.last
-    
-    # If no active clean-up exists, redirect to registration
-    if @latest_clean_up.nil? || @latest_clean_up.inactive?
-      redirect_to new_participation_path and return
-    end
-    
-    render :confirm
-  end
-
   # POST /participations
   def create
     # initialize participation
