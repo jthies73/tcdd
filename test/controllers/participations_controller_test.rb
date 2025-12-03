@@ -203,45 +203,63 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
 
   # Create with participant_id and updated people_count tests
   test "create with participant_id and updated people_count updates participant and creates participation" do
+    # Use a different participant without existing participation
+    new_participant = Participant.create!(name: "New Participant", people_count: 3)
     @clean_up.update!(status: "registration_enabled")
-    original_count = @participant.people_count
+    original_count = new_participant.people_count
 
     assert_difference "Participation.count", 1 do
+      post participations_path,
+        params: { participant_id: new_participant.id, participant_people_count: 5 }
+    end
+
+    assert_redirected_to show_participation_path(Participation.last)
+    assert_equal 5, new_participant.reload.people_count
+    assert_not_equal original_count, new_participant.people_count
+  end
+
+  test "create with participant_id enforces minimum people_count of 1" do
+    new_participant = Participant.create!(name: "Min Count Participant", people_count: 2)
+    @clean_up.update!(status: "registration_enabled")
+
+    post participations_path,
+      params: { participant_id: new_participant.id, participant_people_count: 0 }
+
+    assert_equal 1, new_participant.reload.people_count
+  end
+
+  test "create with participant_id enforces minimum people_count for negative values" do
+    new_participant = Participant.create!(name: "Negative Count Participant", people_count: 2)
+    @clean_up.update!(status: "registration_enabled")
+
+    post participations_path,
+      params: { participant_id: new_participant.id, participant_people_count: -5 }
+
+    assert_equal 1, new_participant.reload.people_count
+  end
+
+  test "create with participant_id without people_count does not update participant" do
+    new_participant = Participant.create!(name: "No Update Participant", people_count: 3)
+    @clean_up.update!(status: "registration_enabled")
+    original_count = new_participant.people_count
+
+    post participations_path,
+      params: { participant_id: new_participant.id }
+
+    assert_equal original_count, new_participant.reload.people_count
+  end
+
+  test "create with existing participant_id redirects to existing participation without creating duplicate" do
+    @clean_up.update!(status: "registration_enabled")
+
+    assert_no_difference "Participation.count" do
       post participations_path,
         params: { participant_id: @participant.id, participant_people_count: 5 }
     end
 
-    assert_redirected_to show_participation_path(Participation.last)
+    assert_redirected_to show_participation_path(@participation)
+    # People count should still be updated even when redirecting to existing participation
     assert_equal 5, @participant.reload.people_count
-    assert_not_equal original_count, @participant.people_count
-  end
-
-  test "create with participant_id enforces minimum people_count of 1" do
-    @clean_up.update!(status: "registration_enabled")
-
-    post participations_path,
-      params: { participant_id: @participant.id, participant_people_count: 0 }
-
-    assert_equal 1, @participant.reload.people_count
-  end
-
-  test "create with participant_id enforces minimum people_count for negative values" do
-    @clean_up.update!(status: "registration_enabled")
-
-    post participations_path,
-      params: { participant_id: @participant.id, participant_people_count: -5 }
-
-    assert_equal 1, @participant.reload.people_count
-  end
-
-  test "create with participant_id without people_count does not update participant" do
-    @clean_up.update!(status: "registration_enabled")
-    original_count = @participant.people_count
-
-    post participations_path,
-      params: { participant_id: @participant.id }
-
-    assert_equal original_count, @participant.reload.people_count
   end
 
   # Destroy action tests
