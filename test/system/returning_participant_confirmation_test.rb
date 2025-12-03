@@ -100,7 +100,7 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
 
     # Verify we're still on the registration page
     assert_text "Schon mal dabei gewesen?"
-    
+
     # Verify no participation was created
     assert_equal 0, Participation.count
   end

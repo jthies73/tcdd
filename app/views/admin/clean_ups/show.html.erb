@@ -32,6 +32,8 @@
 
   <%# CLEAN-UP DETAILS %>
   <%= form_with model: [:admin, @clean_up], local: true do |form| %>
+    <%= render 'shared/validation_errors', model: @clean_up %>
+
     <div class="gap-5 grid grid-cols-1 mt-6">
       <div>
         <%= form.label :name, class: "block text-sm/6 font-medium text-gray-900" %>
@@ -112,7 +114,7 @@
                 for="participant_name"
                 class="block text-sm/6 font-medium text-gray-900"
               >
-                Neuer Name
+                Neuer Teilnehmer
               </label>
 
               <input

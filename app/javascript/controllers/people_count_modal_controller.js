@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["countInput", "error"]
+  static targets = ["countInput", "error", "modal"]
 
   connect() {
     this.form = null
@@ -29,7 +29,9 @@ export default class extends Controller {
     this.countInputTarget.value = peopleCount
 
     // Show the modal
-    this.element.classList.remove("hidden")
+    if (this.hasModalTarget) {
+      this.modalTarget.classList.remove("hidden")
+    }
   }
 
   confirm() {
@@ -58,7 +60,9 @@ export default class extends Controller {
   }
 
   close() {
-    this.element.classList.add("hidden")
+    if (this.hasModalTarget) {
+      this.modalTarget.classList.add("hidden")
+    }
     this.hideError()
     this.form = null
   }

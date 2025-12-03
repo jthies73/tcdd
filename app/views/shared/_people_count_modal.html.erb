@@ -1,11 +1,11 @@
 <%#
   People count modal component for returning participants
-  
+
   This modal dynamically loads participant data when opened via JavaScript
 %>
 
 <div
-  data-controller="people-count-modal"
+  data-people-count-modal-target="modal"
   class="hidden fixed inset-0 z-50 overflow-y-auto"
   aria-labelledby="modal-title"
   role="dialog"
@@ -37,15 +37,32 @@
               type="button"
               data-action="click->people-counter#decrement"
               aria-label="Anzahl verringern"
-              class="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              class="
+                flex items-center justify-center w-12 h-12 rounded-lg
+                bg-indigo-600 text-white hover:bg-indigo-500
+                transition-colors focus:outline-none focus:ring-2
+                focus:ring-indigo-500 focus:ring-offset-2
+              "
             >
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M20 12H4"
+                />
               </svg>
             </button>
 
             <input
               type="number"
+              autocomplete="off"
               data-people-counter-target="input"
               data-people-count-modal-target="countInput"
               data-action="change->people-counter#validateInput"
@@ -54,37 +71,55 @@
               step="1"
               value="1"
               aria-label="Anzahl der Personen"
-              class="flex-1 max-w-[120px] text-center text-3xl font-bold rounded-lg bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-colors"
-            />
+              class="
+                flex-1 max-w-[120px] text-center text-3xl font-bold
+                rounded-lg bg-gray-50 border-2 border-gray-200 px-4 py-3
+                text-gray-900 focus:border-indigo-500 focus:ring-2
+                focus:ring-indigo-200 focus:bg-white transition-colors
+              "
+            >
 
             <button
               type="button"
               data-action="click->people-counter#increment"
               aria-label="Anzahl erhöhen"
-              class="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              class="
+                flex items-center justify-center w-12 h-12 rounded-lg
+                bg-indigo-600 text-white hover:bg-indigo-500
+                transition-colors focus:outline-none focus:ring-2
+                focus:ring-indigo-500 focus:ring-offset-2
+              "
             >
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
             </button>
           </div>
-
-          <p class="mt-2 text-xs text-gray-500 text-center">
-            Mindestens 1 Person erforderlich
-          </p>
         </div>
-      </div>
-
-      <%# Error message (hidden by default) %>
-      <div data-people-count-modal-target="error" class="hidden mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
-        <p class="text-sm text-red-700 text-center">Bitte wähle einen Namen aus der Liste</p>
       </div>
 
       <div class="mt-5 sm:flex sm:flex-row-reverse gap-3">
         <button
           type="button"
           data-action="click->people-count-modal#confirm"
-          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 hover:bg-green-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto sm:text-sm cursor-pointer"
+          class="
+            w-full inline-flex justify-center rounded-md border
+            border-transparent shadow-sm px-4 py-2 bg-green-600
+            hover:bg-green-500 text-base font-medium text-white
+            focus:outline-none focus:ring-2 focus:ring-offset-2
+            focus:ring-green-500 sm:w-auto sm:text-sm cursor-pointer
+          "
         >
           Bestätigen
         </button>
@@ -92,7 +127,13 @@
         <button
           type="button"
           data-action="click->people-count-modal#close"
-          class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm cursor-pointer"
+          class="
+            mt-3 w-full inline-flex justify-center rounded-md border
+            border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+            font-medium text-gray-700 hover:bg-gray-50 focus:outline-none
+            focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0
+            sm:w-auto sm:text-sm cursor-pointer
+          "
         >
           Abbrechen
         </button>

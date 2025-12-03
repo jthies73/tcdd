@@ -169,7 +169,10 @@
     </div>
 
     <%# Returning participant section %>
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6">
+    <div
+      class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6"
+      data-controller="people-count-modal"
+    >
       <div class="px-6 py-4 rounded-t-2xl">
         <h3 class="text-base font-semibold text-gray-900 flex items-center">
           <svg
@@ -204,13 +207,22 @@
             <button
               type="button"
               data-action="click->people-count-modal#open"
-              class="w-full rounded-xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer transition-colors"
+              class="
+                w-full rounded-xl bg-indigo-600 px-4 py-3 text-base
+                font-semibold text-white shadow-sm hover:bg-indigo-500
+                focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-indigo-600 cursor-pointer
+                transition-colors
+              "
             >
               Weiter
             </button>
           </div>
         <% end %>
       </div>
+
+      <%# People count modal for returning participants - moved inside controller scope %>
+      <%= render "shared/people_count_modal" %>
     </div>
 
     <%= render "participations/new_participant_form" %>
@@ -218,7 +230,4 @@
     <%# Instagram link %>
     <%= render "shared/instagram_link" %>
   </div>
-
-  <%# People count modal for returning participants %>
-  <%= render "shared/people_count_modal" %>
 </div>

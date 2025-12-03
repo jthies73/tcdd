@@ -127,14 +127,14 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
 
     get new_participation_path
     assert_response :success
-    
+
     # Should show cleanup info
     assert_select "h2", text: "Nächster Clean-Up"
     assert_select "h3", text: @clean_up.name
-    
+
     # Should show returning participant section
     assert_select "h3", text: "Schon mal dabei gewesen?"
-    
+
     # Should show new participant section
     assert_select "h3", text: "Zum ersten Mal hier?"
   end
@@ -144,14 +144,14 @@ class ParticipationsControllerTest < ActionDispatch::IntegrationTest
 
     get new_participation_path
     assert_response :success
-    
+
     # Should show cleanup info
     assert_select "h2", text: "Nächster Clean-Up"
     assert_select "h3", text: @clean_up.name
-    
+
     # Should show returning participant section
     assert_select "h3", text: "Schon mal dabei gewesen?"
-    
+
     # Should show new participant section
     assert_select "h3", text: "Zum ersten Mal hier?"
   end

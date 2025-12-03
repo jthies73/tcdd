@@ -131,7 +131,6 @@ module Admin
     end
 
     def build_params_with_starts_at
-      puts "time parsing: #{clean_up_params[:date]} #{clean_up_params[:time]}"
       date_str = clean_up_params[:date]
       time_str = clean_up_params[:time]
       base_params = clean_up_params.except(:date, :time)

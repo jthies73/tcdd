@@ -58,16 +58,15 @@ class CleanUp < ApplicationRecord
     end
   end
 
+  def self.latest_active
+    where(status: [ "registration_enabled", "started" ]).order(starts_at: :desc).first
+  end
+
   def inactive?
     status == "created" || status == "ended"
   end
 
   def enable_registration!
-    # end all clean ups that are currently NOT ended
-    CleanUp.where.not(status: "ended").each do |clean_up|
-      clean_up.end!
-    end
-
     update!(status: "registration_enabled")
     schedule_auto_start
   end

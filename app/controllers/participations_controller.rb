@@ -2,7 +2,7 @@ class ParticipationsController < ApplicationController
   def new
     PageVisit.track_visit!
     # find the latest clean up that is in status registration_enabled or started
-    @latest_clean_up = CleanUp.where(status: [ "registration_enabled", "started" ]).order(starts_at: :desc).first
+    @latest_clean_up = CleanUp.latest_active
 
     # Set statistics for display
     @total_cigarettes = CleanUp.total_cigarettes_collected
@@ -22,61 +22,16 @@ class ParticipationsController < ApplicationController
 
   # POST /participations
   def create
-    # initialize participation
-    participation = Participation.new
-    participation.status = "registered"
-    participation.clean_up = CleanUp.last
+    clean_up = CleanUp.latest_active
 
-    # if the clean up is not in the registration enabled state, redirect to the participation page
-    if !participation.clean_up.registerable? && !participation.idle?
+    unless clean_up&.registerable?
       redirect_to root_path and return
     end
 
-    # if a participant id is provided, use it to create the participation
-    # this means the participant has already registered at least once for a clean up
     if registration_params[:participant_id].present?
-       existing_participation = participation.clean_up.find_participation_by_participant_id(registration_params[:participant_id])
-      if existing_participation.present?
-        # if the participant has already registered for the clean up, redirect him to the participation page
-        redirect_to show_participation_path(existing_participation) and return
-      else
-        # if the participant has not registered for this clean up, create a new participation
-        participation.participant_id = registration_params[:participant_id]
-        
-        # Update participant's people_count if provided
-        if registration_params[:participant_people_count].present?
-          participant = Participant.find(registration_params[:participant_id])
-          people_count = [ registration_params[:participant_people_count].to_i, 1 ].max
-          participant.update!(people_count: people_count)
-        end
-      end
+      handle_existing_participant(clean_up)
     else
-      # if only a participant name is provided, create a new participant
-      participant_name = registration_params[:participant_name]
-      participant_people_count = registration_params[:participant_people_count] || 1
-
-      # Check if a participant with this name already exists
-      if Participant.exists?(name: participant_name)
-        @error_message = "Dieser Name ist bereits vergeben. Bitte wähle deinen Namen aus der Liste oder gib einen anderen Namen ein."
-        @participant_data = { name: participant_name, people_count: participant_people_count }
-
-        respond_to do |format|
-          format.turbo_stream
-          format.html { redirect_to new_participation_path }
-        end
-        return
-      end
-
-      participant = Participant.new
-      participant.name = participant_name
-      participant.people_count = participant_people_count
-      participant.save
-      participation.participant_id = participant.id
-    end
-
-    if participation.save
-      # once the participation is saved, redirect to the participation page
-      redirect_to show_participation_path(participation)
+      handle_new_participant(clean_up)
     end
   end
 
@@ -127,6 +82,67 @@ class ParticipationsController < ApplicationController
   end
 
   private
+
+  def handle_existing_participant(clean_up)
+    participant = Participant.find(registration_params[:participant_id])
+
+    # Update participant's people_count if provided
+    update_participant_people_count(participant)
+
+    # Check for existing participation
+    existing_participation = clean_up.participations.find_by(participant_id: participant.id)
+    if existing_participation
+      redirect_to show_participation_path(existing_participation) and return
+    end
+
+    # Create new participation
+    create_participation(clean_up, participant)
+  end
+
+  def handle_new_participant(clean_up)
+    participant_name = registration_params[:participant_name]
+    participant_people_count = registration_params[:participant_people_count] || 1
+
+    # Check if a participant with this name already exists
+    if Participant.exists?(name: participant_name)
+      handle_duplicate_name_error(participant_name, participant_people_count)
+      return
+    end
+
+    # Create new participant and participation
+    participant = Participant.create!(
+      name: participant_name,
+      people_count: participant_people_count
+    )
+
+    create_participation(clean_up, participant)
+  end
+
+  def update_participant_people_count(participant)
+    return unless registration_params[:participant_people_count].present?
+
+    people_count = [ registration_params[:participant_people_count].to_i, 1 ].max
+    participant.update!(people_count: people_count)
+  end
+
+  def create_participation(clean_up, participant)
+    participation = clean_up.participations.create!(
+      participant_id: participant.id,
+      status: "registered"
+    )
+
+    redirect_to show_participation_path(participation)
+  end
+
+  def handle_duplicate_name_error(participant_name, participant_people_count)
+    @error_message = "Dieser Name ist bereits vergeben. Bitte wähle deinen Namen aus der Liste oder gib einen anderen Namen ein."
+    @participant_data = { name: participant_name, people_count: participant_people_count }
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to new_participation_path }
+    end
+  end
 
   def registration_params
     params.permit(:participant_id, :participant_name, :participant_people_count)
