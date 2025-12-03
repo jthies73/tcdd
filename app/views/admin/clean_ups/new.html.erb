@@ -1,6 +1,8 @@
 <div class="pt-10 px-4 sm:px-6 lg:px-8">
   <h1 class="text-2xl font-semibold text-gray-900">Neuer Clean-Up</h1>
 
+  <%= render 'shared/validation_errors', model: @clean_up %>
+
   <%= form_with model: [:admin, @clean_up], local: true do |form| %>
     <div class="gap-5 grid grid-cols-1 mt-6">
       <div>
