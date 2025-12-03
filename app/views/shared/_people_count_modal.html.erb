@@ -1,15 +1,11 @@
 <%#
   People count modal component for returning participants
   
-  Required local variables:
-  - participant: Participant object with id, name, and people_count
+  This modal dynamically loads participant data when opened via JavaScript
 %>
 
 <div
   data-controller="people-count-modal"
-  data-people-count-modal-participant-id-value="<%= participant.id %>"
-  data-people-count-modal-participant-name-value="<%= participant.name %>"
-  data-people-count-modal-initial-count-value="<%= participant.people_count || 1 %>"
   class="hidden fixed inset-0 z-50 overflow-y-auto"
   aria-labelledby="modal-title"
   role="dialog"
@@ -56,7 +52,7 @@
               min="1"
               max="999"
               step="1"
-              value="<%= participant.people_count || 1 %>"
+              value="1"
               aria-label="Anzahl der Personen"
               class="flex-1 max-w-[120px] text-center text-3xl font-bold rounded-lg bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-colors"
             />
@@ -77,6 +73,11 @@
             Mindestens 1 Person erforderlich
           </p>
         </div>
+      </div>
+
+      <%# Error message (hidden by default) %>
+      <div data-people-count-modal-target="error" class="hidden mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+        <p class="text-sm text-red-700 text-center">Bitte wähle einen Namen aus der Liste</p>
       </div>
 
       <div class="mt-5 sm:flex sm:flex-row-reverse gap-3">

@@ -1,12 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["countInput"]
-  static values = {
-    participantId: Number,
-    participantName: String,
-    initialCount: Number
-  }
+  static targets = ["countInput", "error"]
 
   connect() {
     this.form = null
@@ -23,14 +18,15 @@ export default class extends Controller {
     // Get participant info from the searchable select
     const hiddenInput = this.form.querySelector('input[name="participant_id"]')
     if (!hiddenInput || !hiddenInput.value) {
-      alert("Bitte wähle einen Namen aus der Liste")
+      this.showError()
       return
     }
 
-    this.participantIdValue = hiddenInput.value
-
-    // Reset the count to the initial value
-    this.countInputTarget.value = this.initialCountValue
+    this.hideError()
+    
+    // Get the people count from the hidden input's data attribute (set by searchable-select controller)
+    const peopleCount = hiddenInput.dataset.peopleCount || "1"
+    this.countInputTarget.value = peopleCount
 
     // Show the modal
     this.element.classList.remove("hidden")
@@ -63,6 +59,19 @@ export default class extends Controller {
 
   close() {
     this.element.classList.add("hidden")
+    this.hideError()
     this.form = null
+  }
+
+  showError() {
+    if (this.hasErrorTarget) {
+      this.errorTarget.classList.remove("hidden")
+    }
+  }
+
+  hideError() {
+    if (this.hasErrorTarget) {
+      this.errorTarget.classList.add("hidden")
+    }
   }
 }
