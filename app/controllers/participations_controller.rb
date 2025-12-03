@@ -1,7 +1,8 @@
 class ParticipationsController < ApplicationController
   def new
     PageVisit.track_visit!
-    @latest_clean_up = CleanUp.last
+    # find the latest clean up that is in status registration_enabled or started
+    @latest_clean_up = CleanUp.where(status: [ "registration_enabled", "started" ]).order(starts_at: :desc).first
 
     # Set statistics for display
     @total_cigarettes = CleanUp.total_cigarettes_collected

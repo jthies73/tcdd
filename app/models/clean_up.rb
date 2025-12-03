@@ -5,6 +5,8 @@ class CleanUp < ApplicationRecord
   has_many :participations, dependent: :destroy
 
   validates :name, presence: true
+  validates :starts_at, presence: true
+  validates :address, presence: true
   validates :status, inclusion: { in: %w[created registration_enabled started ended] }
 
   def participant_count

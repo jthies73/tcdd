@@ -1,0 +1,20 @@
+<%#
+  Validation errors component for displaying model validation errors
+
+  Usage:
+    <%= render 'shared/validation_errors', model: @clean_up
+%>
+
+<% if model.errors.any? %>
+  <div class="mt-6 p-4 rounded-lg bg-red-50 border border-red-200">
+    <h2 class="text-red-700 font-semibold mb-2">
+      <%= local_assigns[:title] || "Fehler beim Speichern:" %>
+    </h2>
+
+    <ul class="text-red-600 text-sm pl-4 list-disc">
+      <% model.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

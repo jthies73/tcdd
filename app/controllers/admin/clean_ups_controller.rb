@@ -18,7 +18,7 @@ module Admin
       if @clean_up.save
         redirect_to admin_clean_ups_path, notice: "CleanUp was successfully created."
       else
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
 
@@ -119,7 +119,7 @@ module Admin
     private
 
     def clean_up_params
-      params.require(:clean_up).permit(:id, :name, :description, :status, :date, :time, :address, :location)
+      params.require(:clean_up).permit(:id, :name, :description, :status, :date, :time, :address)
     end
 
     def change_params
@@ -131,6 +131,7 @@ module Admin
     end
 
     def build_params_with_starts_at
+      puts "time parsing: #{clean_up_params[:date]} #{clean_up_params[:time]}"
       date_str = clean_up_params[:date]
       time_str = clean_up_params[:time]
       base_params = clean_up_params.except(:date, :time)
