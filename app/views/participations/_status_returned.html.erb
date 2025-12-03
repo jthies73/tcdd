@@ -67,5 +67,8 @@
   </div>
 </div>
 
+<%# Total cigarettes summary for the event %>
+<%= render 'participations/cigarette_summary', clean_up: participation.clean_up %>
+
 <%# Scoreboard %>
 <%= render 'participations/scoreboard', clean_up: participation.clean_up %>

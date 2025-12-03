@@ -1,0 +1,49 @@
+<%# Display summary of total cigarettes collected with encouraging message %>
+<% if clean_up.started? || clean_up.ended? %>
+  <% total_cigarettes = clean_up.total_cigarettes_count %>
+  <% if total_cigarettes > 0 %>
+    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl shadow-lg border border-amber-200 overflow-hidden mt-6">
+      <div class="px-6 py-6">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500 rounded-full mb-4">
+            <svg
+              class="w-10 h-10 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+
+          <h3 class="text-2xl font-bold text-amber-900 mb-2">
+            Gemeinsam gesammelt
+          </h3>
+
+          <div class="bg-white rounded-xl p-6 border border-amber-300 mb-4 shadow-sm">
+            <p class="text-sm font-medium text-amber-700 mb-2">
+              Gesamtzahl der Kippen
+            </p>
+            <p class="text-5xl font-extrabold text-amber-600">
+              <%= number_with_delimiter(total_cigarettes, delimiter: '.') %>
+            </p>
+          </div>
+
+          <div class="bg-amber-100 rounded-xl p-4 border border-amber-200">
+            <p class="text-lg font-semibold text-amber-900">
+              <%= encouraging_message_for_cigarettes(total_cigarettes) %>
+            </p>
+            <p class="text-sm text-amber-700 mt-2">
+              Ihr macht Dresden sauberer! 💚
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
