@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, staging ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, staging ]
 
 jobs:
   scan_ruby:
@@ -117,3 +117,42 @@ jobs:
                      -v tcdd-app-data:/rails/db/production.sqlite3 \
                      -v tcdd-app-data:/rails/storage \
                      --name tcdd-app tcdd-app-image
+
+  deploy_staging:
+    name: Deploy to Staging
+    runs-on: self-hosted
+    needs: [scan_ruby, lint, test]
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Build staging image
+        run: |
+          echo "Building tcdd-app-staging image... 🏗"
+          docker build -t tcdd-app-staging-image .
+  
+      - name: Deploy staging image
+        env:
+          RAILS_ENV: staging
+          SECRET_KEY_BASE: ${{ secrets.STAGING_SECRET_KEY_BASE }}
+          RAILS_MASTER_KEY: ${{ secrets.STAGING_RAILS_MASTER_KEY }}
+          STAGING_HOST: tcdd.yafa.app
+        run: |
+          echo "Deploying tcdd-app-staging image to staging environment 🚀"
+          docker stop tcdd-app-staging || true && docker rm tcdd-app-staging || true
+          docker network ls
+          docker ps -a
+          docker run -d -e "SECRET_KEY_BASE=${{ secrets.STAGING_SECRET_KEY_BASE }}" \
+                     -e "RAILS_ENV=staging" \
+                     -e "RAILS_LOG_LEVEL=debug" \
+                     --net tcdd-net --ip 172.43.0.11 \
+                     -v tcdd-app-staging-data:/rails/storage \
+                     --name tcdd-app-staging tcdd-app-staging-image
+          echo "✅ Staging deployment complete!"

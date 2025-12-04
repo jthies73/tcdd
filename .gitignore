@@ -36,8 +36,13 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore Kamal secrets (contains sensitive deployment credentials)
+/.kamal/secrets
+/.kamal/secrets-staging
+
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
 /config/credentials/production.key
+/config/credentials/staging.key
 vendor/bundle
