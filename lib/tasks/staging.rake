@@ -21,7 +21,7 @@ namespace :staging do
     5.times do |i|
       start_time = (i + 1).weeks.ago.beginning_of_day + 10.hours
       end_time = start_time + 2.hours
-      
+
       CleanUp.create!(
         start_time: start_time,
         end_time: end_time,
@@ -82,7 +82,7 @@ namespace :staging do
     Participant.find_each do |participant|
       # Generate fake phone number
       fake_phone = "555-#{rand(1000..9999)}"
-      
+
       participant.update!(
         phone_number: fake_phone
       )
@@ -100,10 +100,10 @@ namespace :staging do
     end
 
     puts "🔄 Resetting staging environment..."
-    
+
     Rake::Task["db:reset"].invoke
     Rake::Task["staging:seed"].invoke
-    
+
     puts "✅ Staging environment reset complete!"
   end
 end
