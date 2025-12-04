@@ -9,6 +9,8 @@ class CleanUp < ApplicationRecord
   validates :address, presence: true
   validates :status, inclusion: { in: %w[created registration_enabled started ended] }
 
+  after_save_commit :ensure_only_one_active_clean_up
+
   def participant_count
     return final_participant_count if status == "ended" && final_participant_count.present?
 
@@ -62,6 +64,10 @@ class CleanUp < ApplicationRecord
     where(status: [ "registration_enabled", "started" ]).order(starts_at: :desc).first
   end
 
+  def active?
+    status == "registration_enabled" || status == "started"
+  end
+
   def inactive?
     status == "created" || status == "ended"
   end
@@ -108,6 +114,13 @@ class CleanUp < ApplicationRecord
   end
 
   private
+
+  def ensure_only_one_active_clean_up
+    unless inactive?
+      # Set all other active clean_ups to ended
+      CleanUp.where.not(id: id).where(status: %w[registration_enabled started]).update_all(status: "ended")
+    end
+  end
 
   def schedule_auto_end
     return unless starts_at.present?

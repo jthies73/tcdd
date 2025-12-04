@@ -270,4 +270,77 @@ class CleanUpTest < ActiveSupport::TestCase
     # Total should be: 2 + 4 = 6
     assert_equal 6, Participant.total_people_count
   end
+
+  test "ensure_only_one_active_clean_up ends other active clean ups when enabling registration" do
+    CleanUp.destroy_all
+
+    # Create multiple clean ups
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "created", starts_at: 1.day.from_now, address: "Address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "created", starts_at: 2.days.from_now, address: "Address 2")
+    clean_up3 = CleanUp.create!(name: "Clean-Up 3", status: "created", starts_at: 3.days.from_now, address: "Address 3")
+
+    # Enable registration for first clean up
+    clean_up1.enable_registration!
+
+    # clean_up1 should be registration_enabled, others should remain created
+    assert_equal "registration_enabled", clean_up1.reload.status
+    assert_equal "created", clean_up2.reload.status
+    assert_equal "created", clean_up3.reload.status
+
+    # Now enable registration for clean_up2
+    clean_up2.enable_registration!
+
+    # clean_up1 should be ended, clean_up2 should be registration_enabled
+    assert_equal "ended", clean_up1.reload.status
+    assert_equal "registration_enabled", clean_up2.reload.status
+    assert_equal "created", clean_up3.reload.status
+  end
+
+  test "ensure_only_one_active_clean_up ends other active clean ups when starting" do
+    CleanUp.destroy_all
+
+    # Create clean ups with different statuses
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "registration_enabled", starts_at: 1.day.from_now, address: "Address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "created", starts_at: 2.days.from_now, address: "Address 2")
+
+    # Start clean_up2
+    clean_up2.start!
+
+    # clean_up1 should be ended, clean_up2 should be started
+    assert_equal "ended", clean_up1.reload.status
+    assert_equal "started", clean_up2.reload.status
+  end
+
+  test "ensure_only_one_active_clean_up does not affect ended clean ups" do
+    CleanUp.destroy_all
+
+    # Create clean ups
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "ended", starts_at: 1.day.ago, address: "Address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "created", starts_at: 1.day.from_now, address: "Address 2")
+
+    # Enable registration for clean_up2
+    clean_up2.enable_registration!
+
+    # clean_up1 should remain ended, clean_up2 should be registration_enabled
+    assert_equal "ended", clean_up1.reload.status
+    assert_equal "registration_enabled", clean_up2.reload.status
+  end
+
+  test "ensure_only_one_active_clean_up handles multiple active clean ups" do
+    CleanUp.destroy_all
+
+    # Create multiple active clean ups
+    clean_up1 = CleanUp.create!(name: "Clean-Up 1", status: "registration_enabled", starts_at: 1.day.from_now, address: "Address 1")
+    clean_up2 = CleanUp.create!(name: "Clean-Up 2", status: "started", starts_at: 2.days.from_now, address: "Address 2")
+    clean_up3 = CleanUp.create!(name: "Clean-Up 3", status: "created", starts_at: 3.days.from_now, address: "Address 3")
+
+    # Start clean_up3
+    clean_up3.start!
+
+    # clean_up1 and clean_up2 should be ended, clean_up3 should be started
+    assert_equal "ended", clean_up1.reload.status
+    assert_equal "ended", clean_up2.reload.status
+    assert_equal "started", clean_up3.reload.status
+  end
 end
+
