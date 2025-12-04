@@ -343,4 +343,3 @@ class CleanUpTest < ActiveSupport::TestCase
     assert_equal "started", clean_up3.reload.status
   end
 end
-
