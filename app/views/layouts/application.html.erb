@@ -32,6 +32,20 @@
   <body>
     <%# Flash messages %>
     <%= render 'shared/flash_messages' %>
+
+    <%# Environment Indicator %>
+    <% if Rails.env.staging? || Rails.env.development? %>
+      <div
+        style="background: #FFD700; color: #000; padding: 10px; text-align: center; position: fixed; width: 100%; z-index: 9999;"
+      >
+        <strong>
+          <%= Rails.env.staging? ? "STAGING ENVIRONMENT" : "DEVELOPMENT ENVIRONMENT" %>
+        </strong>
+      </div>
+      <div style="height: 45px;"></div>
+      <!-- Spacer for fixed banner -->
+    <% end %>
+
     <main class="overflow-y-auto"><%= yield %></main>
   </body>
 </html>
