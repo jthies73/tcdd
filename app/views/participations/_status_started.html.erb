@@ -14,7 +14,7 @@
     <div
       class="my-4"
       data-controller="elapsed-timer"
-      data-elapsed-timer-start-time-value="<%= participation.started_at || Time.current %>"
+      data-elapsed-timer-start-time-value="<%= (participation.started_at || Time.current).iso8601 %>"
     >
       <div
         class="
