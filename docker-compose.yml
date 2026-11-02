@@ -1,0 +1,14 @@
+services:
+  tcdd:
+    container_name: tcdd
+    image: ghcr.io/jthies73/tcdd:latest
+    restart: always
+    volumes:
+      - ./storage:/rails/storage
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+
+networks:
+  default:
+    name: web_proxy
+    external: true
