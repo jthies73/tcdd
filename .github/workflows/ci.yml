@@ -109,6 +109,8 @@ jobs:
           GHCR_PAT: ${{ secrets.GHCR_PAT }}
           REGISTRY_USER: ${{ github.actor }}
           SECRET_KEY_BASE: ${{ env.IS_RELEASE == 'true' && secrets.SECRET_KEY_BASE || secrets.STAGING_SECRET_KEY_BASE }}
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           COMPOSE_FILE: ${{ env.IS_RELEASE == 'true' && 'docker-compose.yml' || 'docker-compose.staging.yml' }}
           DEPLOY_PATH: ${{ env.IS_RELEASE == 'true' && '/opt/tcdd' || '/opt/tcdd-staging' }}
         run: |
@@ -120,8 +122,10 @@ jobs:
           # Ship this environment's compose file as docker-compose.yml.
           ssh "$VPS_USER@$VPS_IP" "sudo tee $DEPLOY_PATH/docker-compose.yml > /dev/null" < "$COMPOSE_FILE"
 
-          # Runtime env the compose file expects (value over stdin, never in argv).
-          printf 'SECRET_KEY_BASE=%s\n' "$SECRET_KEY_BASE" \
+          # Runtime env the compose file expects (values over stdin, never in argv).
+          # Single quotes stop compose from expanding $ in the password.
+          printf "SECRET_KEY_BASE=%s\nADMIN_USERNAME='%s'\nADMIN_PASSWORD='%s'\n" \
+            "$SECRET_KEY_BASE" "$ADMIN_USERNAME" "$ADMIN_PASSWORD" \
             | ssh "$VPS_USER@$VPS_IP" "sudo tee $DEPLOY_PATH/.env > /dev/null && sudo chmod 600 $DEPLOY_PATH/.env"
 
           # The VPS — not the runner — does the pull, so authenticate it to GHCR.
