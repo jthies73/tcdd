@@ -47,7 +47,7 @@ class ShareLinkTest < ApplicationSystemTestCase
 
     # Verify the group sharing info box is visible
     assert_text "Gruppenfunktion:"
-    assert_text "Teile diesen Link mit deiner Gruppe – alle können gemeinsam Kippen zählen!"
+    assert_text "Falls ihr euch als Gruppe angemeldet habt"
 
     # Verify the copy button is present
     assert_selector "button", text: "Kopieren"

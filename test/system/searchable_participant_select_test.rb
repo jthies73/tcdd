@@ -106,7 +106,10 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     assert_equal @participant_bob.id.to_s, hidden_field.value
 
     # Submit the form
-    click_button "Anmelden"
+    click_button "Weiter"
+    within "[data-controller='people-count-modal']" do
+      click_button "Bestätigen"
+    end
 
     # Wait for navigation and verify we're on the participation show page
     # The show page shows "Es geht los!" when clean_up is started
@@ -140,7 +143,10 @@ class SearchableParticipantSelectTest < ApplicationSystemTestCase
     assert_equal @participant_charlie.id.to_s, hidden_field.value
 
     # Submit the form
-    click_button "Anmelden"
+    click_button "Weiter"
+    within "[data-controller='people-count-modal']" do
+      click_button "Bestätigen"
+    end
 
     # Wait for navigation and verify we're on the participation show page
     # The show page shows "Es geht los!" when clean_up is started

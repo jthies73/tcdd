@@ -10,6 +10,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     clean_up1 = CleanUp.create!(
       name: "First Clean-Up",
       status: "ended",
+      address: "Test address",
       starts_at: 2.weeks.ago,
       manual_cigarettes_count: 100
     )
@@ -17,6 +18,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     clean_up2 = CleanUp.create!(
       name: "Second Clean-Up",
       status: "ended",
+      address: "Test address",
       starts_at: 1.week.ago,
       manual_cigarettes_count: 50
     )
@@ -58,7 +60,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
 
     # Verify participant count: 1 + 4 + 2 = 7
     assert_text "7"
-    assert_text "Teilnehmer insgesamt"
+    assert_text "Registrierte Teilnehmer"
 
     # Verify cleanup count: 2 (both ended clean-ups)
     assert_text "2"
@@ -80,7 +82,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     # The statistics section should not be shown when there's no data
     assert_no_text "Unsere bisherigen Erfolge"
     assert_no_text "Zigaretten gesammelt"
-    assert_no_text "Teilnehmer insgesamt"
+    assert_no_text "Registrierte Teilnehmer"
     assert_no_text "Clean-Ups durchgeführt"
   end
 
@@ -92,6 +94,7 @@ class LandingPageStatisticsTest < ApplicationSystemTestCase
     CleanUp.create!(
       name: "Active Clean-Up",
       status: "registration_enabled",
+      address: "Test address",
       starts_at: 1.hour.from_now
     )
 

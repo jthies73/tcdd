@@ -28,8 +28,8 @@ class CigaretteCounterTest < ApplicationSystemTestCase
 
     # Verify the cigarette counter is visible
     assert_selector "div[data-controller='cigarette-counter']"
-    assert_text "Kippen"
-    assert_text "Gefundene Kippen zählen"
+    assert_text "Kippen-Zähler"
+    assert_text "Kippen-Zähler"
 
     # Check the input starts at 0
     counter_input = find("input[data-cigarette-counter-target='input']")
@@ -54,7 +54,7 @@ class CigaretteCounterTest < ApplicationSystemTestCase
     visit show_participation_path(@participation)
 
     assert_no_selector "div[data-controller='cigarette-counter']"
-    assert_no_text "Kippen"
+    assert_no_text "Kippen-Zähler"
   end
 
   test "admin can view cigarette counts on cleanup detail page" do
