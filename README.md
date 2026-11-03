@@ -16,7 +16,7 @@ A Rails application designed to track cigarette cleanup events, manage participa
 *   **Framework**: Rails 8.0.1
 *   **Database**: SQLite (Production & Development)
 *   **Styling**: Tailwind CSS (via `tailwindcss-rails`)
-*   **Deployment**: Kamal
+*   **Deployment**: Docker Compose on the yafa VPS (via GitHub Actions)
 *   **Frontend**: Hotwire (Turbo & Stimulus), Importmaps
 
 ## Setup & Development
@@ -52,4 +52,9 @@ Visit `http://localhost:3000` to view the application.
 
 ## Deployment
 
-The application is configured for deployment using [Kamal](https://kamal-deploy.org/). Refer to `config/deploy.yml` for specific deployment configurations.
+CI builds the image, pushes it to GHCR and deploys it over SSH to the VPS managed by [cinfra](https://github.com/jthies73/cinfra), behind Nginx Proxy Manager:
+
+*   **Staging** (`tcdd.yafa.app`): every push to `main`, image `ghcr.io/jthies73/tcdd:staging`, compose file `docker-compose.staging.yml` in `/opt/tcdd-staging`.
+*   **Production** (`trashcan-dresden.yafa.app`): every published release, image tags `:<version>` and `:latest`, compose file `docker-compose.yml` in `/opt/tcdd`.
+
+The SQLite databases live in `storage/` next to the compose file on the server.

@@ -47,7 +47,7 @@ class RevokeParticipationTest < ApplicationSystemTestCase
     # Verify redirect to farewell page
     assert_current_path farewell_path
     assert_text "Schade, dass du nicht dabei sein kannst!"
-    assert_text "Deine Anmeldung wurde erfolgreich storniert"
+    assert_text "Deine Anmeldung wurde storniert"
 
     # Verify participation was deleted
     assert_nil Participation.find_by(id: @participation.id)

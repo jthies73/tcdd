@@ -1,77 +1,56 @@
 name: CI
 
+# push to main      → staging    (image tag :staging, /opt/tcdd-staging)
+# published release → production (image tags :<version> + :latest, /opt/tcdd)
 on:
   push:
-    branches: [ main, staging ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, staging ]
+    branches: [ main ]
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/tcdd
+  IS_RELEASE: ${{ github.event_name == 'release' }}
 
 jobs:
   scan_ruby:
     name: Security Scan (Brakeman)
-    runs-on: self-hosted
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
-      - name: Run Brakeman security scan
-        run: |
-          echo "🛡️ Running Brakeman security scan..."
-          bin/brakeman --no-pager
+      - run: bin/brakeman --no-pager
 
   lint:
     name: Lint (RuboCop)
-    runs-on: self-hosted
-    
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
-      - name: Run RuboCop linter
-        run: |
-          echo "🎨 Running RuboCop code style check..."
-          bin/rubocop -f github
+      - run: bin/rubocop -f github
 
   test:
     name: Test Suite (Rails Test)
-    runs-on: self-hosted
-
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
-      - name: Prepare test database
-        env:
-          RAILS_ENV: test
-        run: |
-          echo "🗄️ Preparing test database..."
-          bin/rails db:test:prepare
-
-      - name: Run tests
-        env:
-          RAILS_ENV: test
-        run: |
-          echo "🧪 Running test suite..."
-          bin/rails test test:system
+      - run: bin/rails db:test:prepare
+      - run: bin/rails test:all
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v5
@@ -81,78 +60,73 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
+  build:
+    name: Build & Push
+    if: github.event_name != 'pull_request'
+    needs: [ scan_ruby, lint, test ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Derive image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=staging,enable=${{ env.IS_RELEASE != 'true' }}
+            type=semver,pattern={{version}},enable=${{ env.IS_RELEASE }}
+            type=raw,value=latest,enable=${{ env.IS_RELEASE }}
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   deploy:
-    name: Deploy to Production
-    runs-on: self-hosted
-    needs: [scan_ruby, lint, test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'release' && 'production' || 'staging' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Build image
-        run: |
-          echo "Building tcdd-app-be image... 🏗"
-          docker build -t tcdd-app-image .
-  
-      - name: Deploy image
+      - uses: actions/checkout@v6
+      - name: Deploy via SSH
         env:
-          RAILS_ENV: production
-          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_IP: ${{ secrets.VPS_IP }}
+          GHCR_PAT: ${{ secrets.GHCR_PAT }}
+          REGISTRY_USER: ${{ github.actor }}
+          SECRET_KEY_BASE: ${{ env.IS_RELEASE == 'true' && secrets.SECRET_KEY_BASE || secrets.STAGING_SECRET_KEY_BASE }}
+          COMPOSE_FILE: ${{ env.IS_RELEASE == 'true' && 'docker-compose.yml' || 'docker-compose.staging.yml' }}
+          DEPLOY_PATH: ${{ env.IS_RELEASE == 'true' && '/opt/tcdd' || '/opt/tcdd-staging' }}
         run: |
-          echo "Deploying tcdd-app-be image 🚀"
-          docker stop tcdd-app || true && docker rm tcdd-app || true
-          docker network ls
-          docker ps -a
-          docker run -d -e "SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }}" \
-                     -e "RAILS_ENV=production" \
-                     --net tcdd-net --ip 172.43.0.10 \
-                     -v tcdd-app-data:/rails/db/production.sqlite3 \
-                     -v tcdd-app-data:/rails/storage \
-                     --name tcdd-app tcdd-app-image
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$VPS_IP" >> ~/.ssh/known_hosts
 
-  deploy_staging:
-    name: Deploy to Staging
-    runs-on: self-hosted
-    needs: [scan_ruby, lint, test]
-    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+          # Ship this environment's compose file as docker-compose.yml.
+          ssh "$VPS_USER@$VPS_IP" "sudo tee $DEPLOY_PATH/docker-compose.yml > /dev/null" < "$COMPOSE_FILE"
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          # Runtime env the compose file expects (value over stdin, never in argv).
+          printf 'SECRET_KEY_BASE=%s\n' "$SECRET_KEY_BASE" \
+            | ssh "$VPS_USER@$VPS_IP" "sudo tee $DEPLOY_PATH/.env > /dev/null && sudo chmod 600 $DEPLOY_PATH/.env"
 
-      - name: Build staging image
-        run: |
-          echo "Building tcdd-app-staging image... 🏗"
-          docker build -t tcdd-app-staging-image .
-  
-      - name: Deploy staging image
-        env:
-          RAILS_ENV: staging
-          SECRET_KEY_BASE: ${{ secrets.STAGING_SECRET_KEY_BASE }}
-          RAILS_MASTER_KEY: ${{ secrets.STAGING_RAILS_MASTER_KEY }}
-          STAGING_HOST: tcdd.yafa.app
-        run: |
-          echo "Deploying tcdd-app-staging image to staging environment 🚀"
-          docker stop tcdd-app-staging || true && docker rm tcdd-app-staging || true
-          docker network ls
-          docker ps -a
-          docker run -d -e "SECRET_KEY_BASE=${{ secrets.STAGING_SECRET_KEY_BASE }}" \
-                     -e "RAILS_ENV=staging" \
-                     -e "RAILS_LOG_LEVEL=debug" \
-                     --net tcdd-net --ip 172.43.0.11 \
-                     -v tcdd-app-staging-data:/rails/storage \
-                     --name tcdd-app-staging tcdd-app-staging-image
-          echo "✅ Staging deployment complete!"
+          # The VPS — not the runner — does the pull, so authenticate it to GHCR.
+          echo "$GHCR_PAT" | ssh "$VPS_USER@$VPS_IP" \
+            "sudo docker login ghcr.io -u $REGISTRY_USER --password-stdin"
+
+          ssh "$VPS_USER@$VPS_IP" \
+            "cd $DEPLOY_PATH && sudo docker compose pull && sudo docker compose up -d"

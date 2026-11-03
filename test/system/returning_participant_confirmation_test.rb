@@ -36,7 +36,7 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
     click_button "Weiter"
 
     # Step 3: Verify the modal is visible
-    assert_selector "[data-controller='people-count-modal']:not(.hidden)", wait: 5
+    assert_selector "[data-people-count-modal-target='modal']:not(.hidden)", wait: 5
     assert_text "Wie viele Personen seid ihr?"
 
     # Verify the people count shows current value
@@ -64,7 +64,7 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
     end
 
     # Step 7: Verify we're redirected to the participation show page
-    assert_text "Es geht los!", wait: 5
+    assert_text "Anmeldung erfolgreich!", wait: 5
 
     # Step 8: Verify the participant's people_count was updated in the database
     assert_equal 3, @participant.reload.people_count
@@ -88,7 +88,7 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
     click_button "Weiter"
 
     # Verify modal is visible
-    assert_selector "[data-controller='people-count-modal']:not(.hidden)", wait: 5
+    assert_selector "[data-people-count-modal-target='modal']:not(.hidden)", wait: 5
 
     # Click cancel button
     within "[data-controller='people-count-modal']" do
@@ -96,7 +96,7 @@ class ReturningParticipantConfirmationTest < ApplicationSystemTestCase
     end
 
     # Verify modal is hidden
-    assert_selector "[data-controller='people-count-modal'].hidden", wait: 5
+    assert_selector "[data-people-count-modal-target='modal'].hidden", visible: :all, wait: 5
 
     # Verify we're still on the registration page
     assert_text "Schon mal dabei gewesen?"
