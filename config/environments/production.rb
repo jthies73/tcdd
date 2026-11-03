@@ -61,7 +61,7 @@ Rails.application.configure do
 
   # Set default URL options for ActionCable broadcasts and other URL generation
   # TODO: Replace "example.com" with your actual production domain
-  Rails.application.routes.default_url_options = { host: "trashcan-dresden.yafa.app" }
+  Rails.application.routes.default_url_options = { host: "trashcan-dresden.de" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
