@@ -50,7 +50,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
       - run: bin/rails db:test:prepare
-      - run: bin/rails test test:system
+      - run: bin/rails test:all
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v5
