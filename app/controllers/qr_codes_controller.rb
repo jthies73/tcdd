@@ -3,7 +3,7 @@ require "chunky_png"
 
 class QrCodesController < ApplicationController
   def show
-    qr_code = RQRCode::QRCode.new("https://trashcan-dresden.yafa.app", size: 4, level: :h)
+    qr_code = RQRCode::QRCode.new("https://trashcan-dresden.de", size: 4, level: :h)
     png = qr_code.as_png(
       resize_gte_to: false,
       resize_exactly_to: false,

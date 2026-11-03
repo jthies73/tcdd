@@ -55,6 +55,6 @@ Visit `http://localhost:3000` to view the application.
 CI builds the image, pushes it to GHCR and deploys it over SSH to the VPS managed by [cinfra](https://github.com/jthies73/cinfra), behind Nginx Proxy Manager:
 
 *   **Staging** (`tcdd.yafa.app`): every push to `main`, image `ghcr.io/jthies73/tcdd:staging`, compose file `docker-compose.staging.yml` in `/opt/tcdd-staging`.
-*   **Production** (`trashcan-dresden.yafa.app`): every published release, image tags `:<version>` and `:latest`, compose file `docker-compose.yml` in `/opt/tcdd`.
+*   **Production** (`trashcan-dresden.de`): every published release, image tags `:<version>` and `:latest`, compose file `docker-compose.yml` in `/opt/tcdd`.
 
 The SQLite databases live in `storage/` next to the compose file on the server.
