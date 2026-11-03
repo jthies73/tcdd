@@ -1,5 +1,5 @@
 module Admin
-  class ParticipationsController < ApplicationController
+  class ParticipationsController < BaseController
     before_action :set_clean_up
     before_action :set_participation, only: %i[change_status destroy]
 

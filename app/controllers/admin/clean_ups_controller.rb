@@ -1,5 +1,5 @@
 module Admin
-  class CleanUpsController < ApplicationController
+  class CleanUpsController < BaseController
     def index
       @clean_ups = CleanUp.order(starts_at: :desc)
     end
